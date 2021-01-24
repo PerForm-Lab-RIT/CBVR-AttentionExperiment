@@ -1,6 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using ScriptableObjects;
+﻿using ScriptableObjects;
 using UnityEngine;
 
 public class Dot
@@ -8,7 +6,7 @@ public class Dot
     private readonly Vector2 _velocity;
     private Vector3 _position;
     private Vector3 _oldPosition;
-    private readonly Vector3 _scale;
+    private readonly float _scale;
     private StimulusSettings _settings;
 
     private float _apertureRadius;
@@ -28,7 +26,7 @@ public class Dot
         var dotSize = settings.dotSizeArcMinutes * Mathf.PI / (60 * 180) * settings.stimDepthMeters;
         _apertureRadius = Mathf.Tan(settings.apertureRadiusDegrees * Mathf.PI / 180) * settings.stimDepthMeters;
         _sqrApertureRadius = _apertureRadius * _apertureRadius;
-        _scale = new Vector3(dotSize, 0.1f, dotSize);
+        _scale = dotSize;
     }
 
     public void UpdateDot()
@@ -57,8 +55,13 @@ public class Dot
         _oldPosition = _position;
     }
 
-    public Matrix4x4 GetLocalTransformMatrix()
+    public Vector3 GetPosition()
     {
-        return Matrix4x4.TRS(_position, Quaternion.identity, _scale);
+        return _position;
+    }
+    
+    public float GetScale()
+    {
+        return _scale;
     }
 }

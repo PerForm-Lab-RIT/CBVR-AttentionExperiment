@@ -54,7 +54,8 @@ public class DotManager : MonoBehaviour
         {
             _dots[i].UpdateDot();
 
-            _meshProperties[i].localTransform = _dots[i].GetLocalTransformMatrix();
+            _meshProperties[i].localPosition = _dots[i].GetPosition();
+            _meshProperties[i].localScale = _dots[i].GetScale();
             _meshProperties[i].parentLocalToWorld = viewOrigin.transform.localToWorldMatrix;
             
         }
@@ -81,12 +82,14 @@ public class DotManager : MonoBehaviour
     }
 
     private struct MeshProperties {
-        public Matrix4x4 localTransform;
+        public Vector3 localPosition;
+        public float localScale;
         public Matrix4x4 parentLocalToWorld;
 
         public static int Size()
         {
-            return 2 * (sizeof(float) * 4 * 4);
+            return (sizeof(float) * 4 * 4) +
+                   (sizeof(float) * 4);
         }
     }
 

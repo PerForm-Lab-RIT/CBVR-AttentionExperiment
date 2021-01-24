@@ -33,7 +33,8 @@
             };
 
             struct MeshProperties {
-                float4x4 localTransform;
+                float3 localPosition;
+                float localScale;
                 float4x4 parentLocalToWorld;
             };
 
@@ -46,9 +47,23 @@
                 UNITY_SETUP_INSTANCE_ID(v);
                 UNITY_INITIALIZE_OUTPUT(v2f, o);
                 UNITY_INITIALIZE_VERTEX_OUTPUT_STEREO(o);
+
+                const float4x4 localPosition =
+                {1.0f, 0.0f, 0.0f, _Properties[instanceID].localPosition.x,
+                 0.0f, 1.0f, 0.0f, _Properties[instanceID].localPosition.y,
+                 0.0f, 0.0f, 1.0f, _Properties[instanceID].localPosition.z,
+                 0.0f, 0.0f, 0.0f, 1.0f};
+
+                const float4x4 localScale =
+                {_Properties[instanceID].localScale, 0.0f, 0.0f, 0.0f,
+                 0.0f, _Properties[instanceID].localScale, 0.0f, 0.0f,
+                 0.0f, 0.0f, _Properties[instanceID].localScale, 0.0f,
+                 0.0f, 0.0f, 0.0f, 1.0f};
+
+                const float4x4 localTransform =  mul(localPosition, localScale);
                 
                 const float4x4 worldTransform =
-                    mul(_Properties[instanceID].parentLocalToWorld, _Properties[instanceID].localTransform);
+                    mul(_Properties[instanceID].parentLocalToWorld, localTransform);
                 
                 const float4 pos = mul(worldTransform, v.vertex);
                 o.vertex = UnityObjectToClipPos(pos);
