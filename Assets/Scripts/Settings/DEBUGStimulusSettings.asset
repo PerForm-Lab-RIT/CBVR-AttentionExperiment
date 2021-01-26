@@ -28,7 +28,7 @@ MonoBehaviour:
   yOffset: -10
   apertureRadiusDegrees: 55
   trialBridgeInterval: 2.5
-  density: 1.05231
+  density: 2
   noiseDotPercentage: 0
   dotSizeArcMinutes: 20
   speed: 12

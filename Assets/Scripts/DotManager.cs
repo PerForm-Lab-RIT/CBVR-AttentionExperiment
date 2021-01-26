@@ -6,10 +6,10 @@ public class DotManager : MonoBehaviour
 {
     [SerializeField] private Mesh dotMesh;
     [SerializeField] private float boundsRange;
+    [SerializeField] private Transform viewOrigin;
     private Bounds _bounds;
     
     [SerializeField] private Material dotMeshMaterial;
-    [SerializeField] private Transform viewOrigin;
     [SerializeField] private StimulusSettings stimulusSettings;
 
     private Dot[] _dots;
@@ -25,7 +25,7 @@ public class DotManager : MonoBehaviour
     public void Start()
     {
         numDots = Mathf.RoundToInt(Mathf.Pow(stimulusSettings.apertureRadiusDegrees, 2.0f) * Mathf.PI *
-                                       stimulusSettings.density);
+                                   stimulusSettings.density);
         _dots = new Dot[numDots];
         
         // Some setup for custom shader
@@ -93,7 +93,7 @@ public class DotManager : MonoBehaviour
         }
     }
 
-    public void OnDisable()
+    public void OnDestroy()
     {
         _meshPropertiesBuffer?.Release();
         _meshPropertiesBuffer = null;
