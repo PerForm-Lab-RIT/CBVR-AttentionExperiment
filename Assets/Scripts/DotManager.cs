@@ -24,6 +24,9 @@ public class DotManager : MonoBehaviour
 
     public void Start()
     {
+        // Copying the material into a new instance allows for stacking of stimuli
+        dotMeshMaterial = new Material(dotMeshMaterial);
+        
         numDots = Mathf.RoundToInt(Mathf.Pow(stimulusSettings.apertureRadiusDegrees, 2.0f) * Mathf.PI *
                                    stimulusSettings.density);
         _dots = new Dot[numDots];
