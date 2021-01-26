@@ -1,9 +1,11 @@
 ﻿using ScriptableObjects;
+using Unity.Collections;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
 public class DotManager : MonoBehaviour
 {
+    [SerializeField] private bool buddyDotNoiseGeneration;
     [SerializeField] private Mesh dotMesh;
     [SerializeField] private float boundsRange;
     [SerializeField] private Transform viewOrigin;
@@ -14,60 +16,96 @@ public class DotManager : MonoBehaviour
 
     private Dot[] _dots;
 
-    public int numDots;
+    [SerializeField] 
+    private int numDots;
     
     private MeshProperties[] _meshProperties;
     private ComputeBuffer _meshPropertiesBuffer;
 
     private uint[] _args;
     private ComputeBuffer _argsBuffer;
+    private static readonly int Properties = Shader.PropertyToID("_Properties");
 
     public void Start()
     {
-        // Copying the material into a new instance allows for stacking of stimuli
+        // Copying the material into a new instance allows for multiple active stimuli
+        // at the same time as they require separate material buffers
         dotMeshMaterial = new Material(dotMeshMaterial);
         
         numDots = Mathf.RoundToInt(Mathf.Pow(stimulusSettings.apertureRadiusDegrees, 2.0f) * Mathf.PI *
                                    stimulusSettings.density);
-        _dots = new Dot[numDots];
-        
+        if (numDots % 2 != 0)
+            numDots += 1;
+
         // Some setup for custom shader
-        InitializeBuffers(numDots);
+        InitializeBuffers();
         _bounds = new Bounds(transform.position, Vector3.one * (boundsRange + 1));
 
         var apertureRadius = Mathf.Tan(stimulusSettings.apertureRadiusDegrees * Mathf.PI / 180) * stimulusSettings.stimDepthMeters;
         var dotSpeed = stimulusSettings.speed * ((Mathf.PI) / 180) * stimulusSettings.stimDepthMeters;
-        for (var i = 0; i < _dots.Length; i++)
-        {
-            var randomUnit = Random.insideUnitCircle;
-            
-            // 0.1 is subtracted to absolutely ensure the dot is spawned inside the aperture.
-            // This prevents a 'ring effect' because of dots being spawned in the center
-            var randomPosition = randomUnit * (apertureRadius - 0.1f);
-            
-            var randomVelocity = Random.insideUnitCircle.normalized * dotSpeed;
-            _dots[i] = new Dot(randomVelocity, new Vector3(randomPosition.x, 0, randomPosition.y),
-                stimulusSettings);
-        }
+
+        if (buddyDotNoiseGeneration)
+            GenerateDotsWithBuddy(apertureRadius, dotSpeed);
+        else
+            GenerateDots(apertureRadius, dotSpeed);
     }
-    
+
     public void Update()
     {
         for(var i = 0; i < _dots.Length; i++)
         {
             _dots[i].UpdateDot();
 
-            _meshProperties[i].localPosition = _dots[i].GetPosition();
-            _meshProperties[i].localScale = _dots[i].GetScale();
-            _meshProperties[i].parentLocalToWorld = viewOrigin.transform.localToWorldMatrix;
-            
+            _meshProperties[i].LocalPosition = _dots[i].GetPosition();
+            _meshProperties[i].LocalScale = _dots[i].GetScale();
+            _meshProperties[i].ParentLocalToWorld = viewOrigin.transform.localToWorldMatrix;
         }
+        
         _meshPropertiesBuffer.SetData(_meshProperties);
-        dotMeshMaterial.SetBuffer("_Properties", _meshPropertiesBuffer);
+        dotMeshMaterial.SetBuffer(Properties, _meshPropertiesBuffer);
         Graphics.DrawMeshInstancedIndirect(dotMesh, 0, dotMeshMaterial, _bounds, _argsBuffer);
     }
     
-    private void InitializeBuffers(int numDots)
+    private void GenerateDots(float apertureRad, float speed)
+    {
+        _dots = new Dot[numDots];
+        for (var i = 0; i < _dots.Length; i++)
+        {
+            var randomUnit = Random.insideUnitCircle;
+            
+            // 0.1 is subtracted to absolutely ensure the dot is spawned inside the aperture.
+            // This prevents a 'ring effect' because of dots being spawned in the center
+            var randomPosition = randomUnit * (apertureRad - 0.1f);
+            
+            var randomVelocity = Random.insideUnitCircle.normalized * speed;
+            _dots[i] = new Dot(randomVelocity, new Vector3(randomPosition.x, 0, randomPosition.y),
+                stimulusSettings);
+        }
+    }
+    
+    private void GenerateDotsWithBuddy(float apertureRad, float speed)
+    {
+        if (numDots % 2 != 0)
+            numDots += 1;
+        _dots = new Dot[numDots];
+        
+        for (var i = 0; i < _dots.Length; i += 2)
+        {
+            // 0.1 is subtracted to absolutely ensure the dot is spawned inside the aperture.
+            // This prevents a 'ring effect' because of dots being spawned in the center
+            var randomPosition = Random.insideUnitCircle * (apertureRad - 0.1f);
+            var randomBuddyPosition = Random.insideUnitCircle * (apertureRad - 0.1f);
+            
+            var randomVelocity = Random.insideUnitCircle.normalized * speed;
+            var buddyVelocity = new Vector2(-randomVelocity.x, -randomVelocity.y);
+            _dots[i] = new Dot(randomVelocity, new Vector3(randomPosition.x, 0, randomPosition.y),
+                stimulusSettings);
+            _dots[i+1] = new Dot(buddyVelocity, new Vector3(randomBuddyPosition.x, 0, randomBuddyPosition.y),
+                stimulusSettings);
+        }
+    }
+    
+    private void InitializeBuffers()
     {
         _meshProperties = new MeshProperties[numDots];
         _meshPropertiesBuffer = new ComputeBuffer(numDots, MeshProperties.Size());
@@ -84,10 +122,11 @@ public class DotManager : MonoBehaviour
         _argsBuffer.SetData(_args);
     }
 
+    // Data sent to shader
     private struct MeshProperties {
-        public Vector3 localPosition;
-        public float localScale;
-        public Matrix4x4 parentLocalToWorld;
+        public Vector3 LocalPosition;
+        public float LocalScale;
+        public Matrix4x4 ParentLocalToWorld;
 
         public static int Size()
         {
