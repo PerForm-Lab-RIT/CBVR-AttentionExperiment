@@ -23,8 +23,7 @@ public class DotManager : MonoBehaviour
     private uint[] _args;
     private ComputeBuffer _argsBuffer;
     private static readonly int Properties = Shader.PropertyToID("_Properties");
-
-    public const float ApertureTolerance = 0.001f;
+    
     private const float BoundsRange = 5.0f;
 
     public void Start()
@@ -81,14 +80,14 @@ public class DotManager : MonoBehaviour
         {
             // 0.1 is subtracted to absolutely ensure the dot is spawned inside the aperture.
             // This prevents a 'ring effect' because of dots being spawned in the center
-            var randomPosition = Random.insideUnitCircle * (apertureRad - ApertureTolerance);
+            var randomPosition = Random.insideUnitCircle * apertureRad;
             var randomVelocity = Random.insideUnitCircle.normalized * speed;
             _dots[i] = new Dot(randomVelocity, new Vector3(randomPosition.x, 0, randomPosition.y),
                 stimulusSettings);
         }
         for (; i < numDots; i++)
         {
-            var randomPosition = Random.insideUnitCircle * (apertureRad - ApertureTolerance);
+            var randomPosition = Random.insideUnitCircle * apertureRad;
             var velocityAngle = stimulusSettings.correctAngle
                                 + Random.Range(-stimulusSettings.coherenceRange / 2,
                                     stimulusSettings.coherenceRange / 2);
@@ -112,8 +111,8 @@ public class DotManager : MonoBehaviour
         {
             // 0.1 is subtracted to absolutely ensure the dot is spawned inside the aperture.
             // This prevents a 'ring effect' because of dots being spawned in the center
-            var randomPosition = Random.insideUnitCircle * (apertureRad - ApertureTolerance);
-            var randomBuddyPosition = Random.insideUnitCircle * (apertureRad - ApertureTolerance);
+            var randomPosition = Random.insideUnitCircle * apertureRad;
+            var randomBuddyPosition = Random.insideUnitCircle * apertureRad;
             
             var randomVelocity = Random.insideUnitCircle.normalized * speed;
             var buddyVelocity = new Vector2(-randomVelocity.x, -randomVelocity.y);
@@ -124,7 +123,7 @@ public class DotManager : MonoBehaviour
         }
         for (; i < numDots; i++)
         {
-            var randomPosition = Random.insideUnitCircle * (apertureRad - ApertureTolerance);
+            var randomPosition = Random.insideUnitCircle * apertureRad;
             var velocityAngle = stimulusSettings.correctAngle
                                 + Random.Range(-stimulusSettings.coherenceRange / 2,
                                     stimulusSettings.coherenceRange / 2);

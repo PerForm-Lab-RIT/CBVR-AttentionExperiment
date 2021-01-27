@@ -13,11 +13,11 @@ MonoBehaviour:
   m_Name: DEBUGStimulusSettings
   m_EditorClassIdentifier: 
   correctAngle: 0
-  coherenceRange: 25
+  coherenceRange: 37
   apertureRadiusDegrees: 55
-  density: 1
+  density: 2.5
   noiseDotPercentage: 0
   dotSizeArcMinutes: 15
-  speed: 10.1
-  dotLifetime: 83.41
+  speed: 25.75
+  dotLifetime: 20
   stimDepthMeters: 2

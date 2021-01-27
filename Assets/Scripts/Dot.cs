@@ -19,21 +19,22 @@ public class Dot
         _position = startingPosition;
         _settings = settings;
         _elapsedTime = 0;
-        
-        // In case first update puts dot outside circle
-        _oldPosition = new Vector3(velocity.x, 0 ,velocity.y);
 
         var dotSize = settings.dotSizeArcMinutes * Mathf.PI / (60 * 180) * settings.stimDepthMeters;
         _apertureRadius = Mathf.Tan(settings.apertureRadiusDegrees * Mathf.PI / 180) * settings.stimDepthMeters;
         _sqrApertureRadius = _apertureRadius * _apertureRadius;
         _scale = dotSize;
+        
+        // In case first update puts dot outside circle
+        var randomPosition = Random.insideUnitCircle * _apertureRadius;
+        _oldPosition = new Vector3(randomPosition.x, 0, randomPosition.y);
     }
 
     public void UpdateDot()
     {
         if (_elapsedTime > _settings.dotLifetime)
         {
-            var randomPosition = Random.insideUnitCircle * (_apertureRadius - DotManager.ApertureTolerance);
+            var randomPosition = Random.insideUnitCircle * _apertureRadius;
             _position.x = randomPosition.x;
             _position.z = randomPosition.y;
             _elapsedTime = 0.0f;
