@@ -32,7 +32,7 @@ public class DotManager : MonoBehaviour
         // Copying the material into a new instance allows for multiple active stimuli
         // at the same time as they require separate material buffers
         dotMeshMaterial = new Material(dotMeshMaterial);
-        
+
         numDots = Mathf.RoundToInt(Mathf.Pow(stimulusSettings.apertureRadiusDegrees, 2.0f) * Mathf.PI *
                                    stimulusSettings.density);
         if (numDots % 2 != 0)
@@ -44,13 +44,15 @@ public class DotManager : MonoBehaviour
 
         var apertureRadius = Mathf.Tan(stimulusSettings.apertureRadiusDegrees * Mathf.PI / 180) * stimulusSettings.stimDepthMeters;
         var dotSpeed = stimulusSettings.speed * (Mathf.PI / 180) * stimulusSettings.stimDepthMeters;
-
+        
         if (buddyDotNoiseGeneration)
             GenerateDotsWithBuddy(apertureRadius, dotSpeed);
         else
             GenerateDots(apertureRadius, dotSpeed);
-
-        transform.localPosition = new Vector3(0, 0, stimulusSettings.stimDepthMeters);
+        
+        var worldTransform = transform;
+        var worldPosition = worldTransform.position;
+        worldTransform.position = new Vector3(worldPosition.x, worldPosition.y, stimulusSettings.stimDepthMeters);
     }
 
     public void Update()

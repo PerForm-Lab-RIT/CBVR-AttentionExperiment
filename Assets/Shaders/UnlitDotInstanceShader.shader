@@ -66,7 +66,7 @@
                     mul(_Properties[instanceID].parentLocalToWorld, localTransform);
                 
                 const float4 pos = mul(worldTransform, v.vertex);
-                o.vertex = UnityObjectToClipPos(pos);
+                o.vertex = UnityWorldToClipPos(pos);
                 return o;
             }
 
