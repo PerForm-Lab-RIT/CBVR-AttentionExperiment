@@ -7,9 +7,9 @@ public class Dot
     private Vector3 _position;
     private Vector3 _oldPosition;
     private readonly float _scale;
-    private StimulusSettings _settings;
+    private readonly StimulusSettings _settings;
 
-    private float _apertureRadius;
+    private readonly float _apertureRadius;
     private readonly float _sqrApertureRadius;
     private float _elapsedTime;
     
@@ -20,7 +20,7 @@ public class Dot
         _settings = settings;
         _elapsedTime = 0;
         
-        // In case first step puts dot outside circle
+        // In case first update puts dot outside circle
         _oldPosition = new Vector3(velocity.x, 0 ,velocity.y);
 
         var dotSize = settings.dotSizeArcMinutes * Mathf.PI / (60 * 180) * settings.stimDepthMeters;
@@ -33,7 +33,7 @@ public class Dot
     {
         if (_elapsedTime > _settings.dotLifetime)
         {
-            var randomPosition = Random.insideUnitCircle * (_apertureRadius - 0.1f);
+            var randomPosition = Random.insideUnitCircle * (_apertureRadius - DotManager.ApertureTolerance);
             _position.x = randomPosition.x;
             _position.z = randomPosition.y;
             _elapsedTime = 0.0f;

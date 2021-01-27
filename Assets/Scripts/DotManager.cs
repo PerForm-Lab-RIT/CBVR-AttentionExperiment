@@ -1,5 +1,5 @@
-﻿using ScriptableObjects;
-using Unity.Collections;
+﻿using System;
+using ScriptableObjects;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
@@ -25,6 +25,8 @@ public class DotManager : MonoBehaviour
     private uint[] _args;
     private ComputeBuffer _argsBuffer;
     private static readonly int Properties = Shader.PropertyToID("_Properties");
+
+    public const float ApertureTolerance = 0.001f;
 
     public void Start()
     {
@@ -69,16 +71,24 @@ public class DotManager : MonoBehaviour
     private void GenerateDots(float apertureRad, float speed)
     {
         _dots = new Dot[numDots];
-        for (var i = 0; i < _dots.Length; i++)
+        var numNoiseDots = (int) (numDots * (stimulusSettings.noiseDotPercentage / 100.0f));
+
+        int i;
+        for (i = 0; i < numNoiseDots; i++)
         {
-            var randomUnit = Random.insideUnitCircle;
-            
             // 0.1 is subtracted to absolutely ensure the dot is spawned inside the aperture.
             // This prevents a 'ring effect' because of dots being spawned in the center
-            var randomPosition = randomUnit * (apertureRad - 0.1f);
-            
+            var randomPosition = Random.insideUnitCircle * (apertureRad - ApertureTolerance);
             var randomVelocity = Random.insideUnitCircle.normalized * speed;
             _dots[i] = new Dot(randomVelocity, new Vector3(randomPosition.x, 0, randomPosition.y),
+                stimulusSettings);
+        }
+        for (; i < numDots; i++)
+        {
+            var randomPosition = Random.insideUnitCircle * (apertureRad - ApertureTolerance);
+            var velocity = Rotate(Vector2.up, stimulusSettings.coherenceAngle) * speed;
+            
+            _dots[i] = new Dot(velocity, new Vector3(randomPosition.x, 0, randomPosition.y),
                 stimulusSettings);
         }
     }
@@ -88,13 +98,15 @@ public class DotManager : MonoBehaviour
         if (numDots % 2 != 0)
             numDots += 1;
         _dots = new Dot[numDots];
-        
-        for (var i = 0; i < _dots.Length; i += 2)
+        var numNoiseDots = (int) (numDots * (stimulusSettings.noiseDotPercentage / 100.0f));
+
+        int i;
+        for (i = 0; i < numNoiseDots; i += 2)
         {
             // 0.1 is subtracted to absolutely ensure the dot is spawned inside the aperture.
             // This prevents a 'ring effect' because of dots being spawned in the center
-            var randomPosition = Random.insideUnitCircle * (apertureRad - 0.1f);
-            var randomBuddyPosition = Random.insideUnitCircle * (apertureRad - 0.1f);
+            var randomPosition = Random.insideUnitCircle * (apertureRad - ApertureTolerance);
+            var randomBuddyPosition = Random.insideUnitCircle * (apertureRad - ApertureTolerance);
             
             var randomVelocity = Random.insideUnitCircle.normalized * speed;
             var buddyVelocity = new Vector2(-randomVelocity.x, -randomVelocity.y);
@@ -103,6 +115,23 @@ public class DotManager : MonoBehaviour
             _dots[i+1] = new Dot(buddyVelocity, new Vector3(randomBuddyPosition.x, 0, randomBuddyPosition.y),
                 stimulusSettings);
         }
+        for (; i < numDots; i++)
+        {
+            var randomPosition = Random.insideUnitCircle * (apertureRad - ApertureTolerance);
+            var velocity = Rotate(Vector2.up, stimulusSettings.coherenceAngle) * speed;
+            
+            _dots[i] = new Dot(velocity, new Vector3(randomPosition.x, 0, randomPosition.y),
+                stimulusSettings);
+        }
+    }
+    
+    private static Vector2 Rotate(Vector2 v, float deltaDegrees)
+    {
+        var angleRadians = deltaDegrees * (float) Math.PI / 180.0f;
+        return new Vector2(
+            v.x * Mathf.Cos(angleRadians) - v.y * Mathf.Sin(angleRadians),
+            v.x * Mathf.Sin(angleRadians) + v.y * Mathf.Cos(angleRadians)
+        );
     }
     
     private void InitializeBuffers()

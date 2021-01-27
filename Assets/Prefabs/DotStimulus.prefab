@@ -44,7 +44,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1f8154f896205cb4fac7463ae36411d1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _stimulusSettings: {fileID: 11400000, guid: 322865ad387a2f64aae51f9e46d67f4d, type: 2}
+  stimulusSettings: {fileID: 11400000, guid: 322865ad387a2f64aae51f9e46d67f4d, type: 2}
 --- !u!1 &9195127191921699775
 GameObject:
   m_ObjectHideFlags: 0
@@ -88,6 +88,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b7520ffe0bf447048aff710dca6b4f18, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  buddyDotNoiseGeneration: 0
   dotMesh: {fileID: 2534964839176971238, guid: 2d14a2f118ff0854e8fc4b0d1e2a1a36, type: 3}
   boundsRange: 20
   viewOrigin: {fileID: 3421911329118678124}

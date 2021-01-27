@@ -12,25 +12,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1015bda014a000d449230ede5f2f6db5, type: 3}
   m_Name: DEBUGStimulusSettings
   m_EditorClassIdentifier: 
-  duration: 2
-  staircaseAngles:
-  - 0
-  - 40
-  - 80
-  - 120
-  - 160
-  - 200
-  - 240
-  - 280
-  - 320
-  - 338
-  xOffset: 10
-  yOffset: -10
+  coherenceAngle: 229
   apertureRadiusDegrees: 55
-  trialBridgeInterval: 2.5
   density: 1
-  noiseDotPercentage: 0
+  noiseDotPercentage: 50.1
   dotSizeArcMinutes: 15
-  speed: 12
-  dotLifetime: 0.025
-  stimDepthMeters: 2.2
+  speed: 10.1
+  dotLifetime: 12.84
+  stimDepthMeters: 2
