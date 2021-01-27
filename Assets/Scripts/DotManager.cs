@@ -7,8 +7,6 @@ public class DotManager : MonoBehaviour
 {
     [SerializeField] private bool buddyDotNoiseGeneration;
     [SerializeField] private Mesh dotMesh;
-    [SerializeField] private float boundsRange;
-    [SerializeField] private Transform viewOrigin;
     private Bounds _bounds;
     
     [SerializeField] private Material dotMeshMaterial;
@@ -27,6 +25,7 @@ public class DotManager : MonoBehaviour
     private static readonly int Properties = Shader.PropertyToID("_Properties");
 
     public const float ApertureTolerance = 0.001f;
+    private const float BoundsRange = 5.0f;
 
     public void Start()
     {
@@ -41,15 +40,17 @@ public class DotManager : MonoBehaviour
 
         // Some setup for custom shader
         InitializeBuffers();
-        _bounds = new Bounds(transform.position, Vector3.one * (boundsRange + 1));
+        _bounds = new Bounds(transform.position, Vector3.one * (BoundsRange + 1));
 
         var apertureRadius = Mathf.Tan(stimulusSettings.apertureRadiusDegrees * Mathf.PI / 180) * stimulusSettings.stimDepthMeters;
-        var dotSpeed = stimulusSettings.speed * ((Mathf.PI) / 180) * stimulusSettings.stimDepthMeters;
+        var dotSpeed = stimulusSettings.speed * (Mathf.PI / 180) * stimulusSettings.stimDepthMeters;
 
         if (buddyDotNoiseGeneration)
             GenerateDotsWithBuddy(apertureRadius, dotSpeed);
         else
             GenerateDots(apertureRadius, dotSpeed);
+
+        transform.localPosition = new Vector3(0, 0, stimulusSettings.stimDepthMeters);
     }
 
     public void Update()
@@ -60,7 +61,7 @@ public class DotManager : MonoBehaviour
 
             _meshProperties[i].LocalPosition = _dots[i].GetPosition();
             _meshProperties[i].LocalScale = _dots[i].GetScale();
-            _meshProperties[i].ParentLocalToWorld = viewOrigin.transform.localToWorldMatrix;
+            _meshProperties[i].ParentLocalToWorld = transform.localToWorldMatrix;
         }
         
         _meshPropertiesBuffer.SetData(_meshProperties);
@@ -126,7 +127,7 @@ public class DotManager : MonoBehaviour
                                 + Random.Range(-stimulusSettings.coherenceRange / 2,
                                     stimulusSettings.coherenceRange / 2);
             
-            var velocity = Rotate(Vector2.up,  velocityAngle) * speed;
+            var velocity = Rotate(Vector2.up, velocityAngle) * speed;
             
             _dots[i] = new Dot(velocity, new Vector3(randomPosition.x, 0, randomPosition.y),
                 stimulusSettings);
