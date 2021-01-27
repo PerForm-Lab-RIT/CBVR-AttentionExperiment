@@ -86,7 +86,11 @@ public class DotManager : MonoBehaviour
         for (; i < numDots; i++)
         {
             var randomPosition = Random.insideUnitCircle * (apertureRad - ApertureTolerance);
-            var velocity = Rotate(Vector2.up, stimulusSettings.coherenceAngle) * speed;
+            var velocityAngle = stimulusSettings.correctAngle
+                                + Random.Range(-stimulusSettings.coherenceRange / 2,
+                                    stimulusSettings.coherenceRange / 2);
+            
+            var velocity = Rotate(Vector2.up,  velocityAngle) * speed;
             
             _dots[i] = new Dot(velocity, new Vector3(randomPosition.x, 0, randomPosition.y),
                 stimulusSettings);
@@ -118,7 +122,11 @@ public class DotManager : MonoBehaviour
         for (; i < numDots; i++)
         {
             var randomPosition = Random.insideUnitCircle * (apertureRad - ApertureTolerance);
-            var velocity = Rotate(Vector2.up, stimulusSettings.coherenceAngle) * speed;
+            var velocityAngle = stimulusSettings.correctAngle
+                                + Random.Range(-stimulusSettings.coherenceRange / 2,
+                                    stimulusSettings.coherenceRange / 2);
+            
+            var velocity = Rotate(Vector2.up,  velocityAngle) * speed;
             
             _dots[i] = new Dot(velocity, new Vector3(randomPosition.x, 0, randomPosition.y),
                 stimulusSettings);

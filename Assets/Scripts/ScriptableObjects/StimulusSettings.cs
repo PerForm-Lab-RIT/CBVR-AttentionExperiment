@@ -7,7 +7,10 @@ namespace ScriptableObjects
     public class StimulusSettings : ScriptableObject
     {
         [Range(0, 360)]
-        public float coherenceAngle;
+        public float correctAngle;
+        
+        [Range(0, 360)]
+        public float coherenceRange;
         
         [Range(0,120)]
         public float apertureRadiusDegrees;
