@@ -15,8 +15,8 @@ MonoBehaviour:
   correctAngle: 160
   coherenceRange: 21
   apertureRadiusDegrees: 25
-  density: 2.53
-  noiseDotPercentage: 87.9
+  density: 2.5
+  noiseDotPercentage: 9.6
   dotSizeArcMinutes: 12
   speed: 21.69
   dotLifetime: 200

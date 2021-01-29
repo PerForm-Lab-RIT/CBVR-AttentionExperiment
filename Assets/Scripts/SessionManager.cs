@@ -2,7 +2,6 @@
 using UnityEngine;
 using UXF;
 
-// TODO
 public class SessionManager : MonoBehaviour
 {
     private int _winStreak;
@@ -13,17 +12,17 @@ public class SessionManager : MonoBehaviour
 
     public void StartSession(Session session)
     {
-        _settings = ScriptableObject.CreateInstance<SessionSettings>();
-        SetSky();
+        _settings = ScriptableObject.CreateInstance<SessionSettings>().LoadFromUxfJson();
+        SetSky(_settings.skyColor);
 
         _primaryBlock = session.CreateBlock();
         var trial = _primaryBlock.CreateTrial();
         trial.settings.SetValue("difficulty", 0);
     }
     
-    private void SetSky()
+    private static void SetSky(Color skyColor)
     {
-        RenderSettings.skybox.color = Color.white;
+        RenderSettings.skybox.color = skyColor;
     }
 
     public void RunTrial(Trial trial)

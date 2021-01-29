@@ -1,0 +1,12 @@
+{
+	"SessionSettings": {
+		"NumTrials": 300,
+		"FixationTimeInSeconds": 1,
+		"SkyColor": [1.0, 1.0, 1.0],
+		"OuterStimulusDurationMs": 3000,
+		"InnerStimulusDurationMs": 500,
+		
+		"TotalRegionSlices": 8,
+		"FlipRegions": false
+	}
+}
