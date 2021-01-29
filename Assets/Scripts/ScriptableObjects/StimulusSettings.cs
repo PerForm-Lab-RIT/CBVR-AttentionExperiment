@@ -24,6 +24,5 @@ namespace ScriptableObjects
         public float speed;
         public float dotLifetime;
         public float stimDepthMeters;
-        
     }
 }
