@@ -8,16 +8,19 @@ public class SessionManager : MonoBehaviour
     private int _score;
     private int _currentDifficulty;
     private Block _primaryBlock;
-    private SessionSettings _settings;
+    
+    [SerializeField] private SessionSettings settings;
+    [SerializeField] private TrialManager trialManager;
 
     public void StartSession(Session session)
     {
-        _settings = ScriptableObject.CreateInstance<SessionSettings>().LoadFromUxfJson();
-        SetSky(_settings.skyColor);
+        settings.LoadFromUxfJson();
+        SetSky(settings.skyColor);
 
         _primaryBlock = session.CreateBlock();
         var trial = _primaryBlock.CreateTrial();
         trial.settings.SetValue("difficulty", 0);
+        trial.Begin();
     }
     
     private static void SetSky(Color skyColor)
