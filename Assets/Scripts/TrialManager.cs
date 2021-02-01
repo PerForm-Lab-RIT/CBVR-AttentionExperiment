@@ -10,22 +10,29 @@ public class TrialManager : MonoBehaviour
     [SerializeField] private GameObject fixationDot;
     [SerializeField] private SessionSettings sessionSettings;
 
-
-    public void Awake()
+    private int _trialCount = 1;
+    private bool isTrialFinished;
+    
+    public void Start()
     {
         var fixationDotRadius = sessionSettings.fixationDotRadius * Mathf.PI / 180 * sessionSettings.stimulusDepth;
         fixationDot.transform.localScale = new Vector3(2.0f * fixationDotRadius, 0.0f, 2.0f * fixationDotRadius);
         fixationDot.transform.localPosition = new Vector3(0.0f, 0.0f, sessionSettings.stimulusDepth);
     }
-    
-    public void Update()
-    {
-        
-    }
 
     public void BeginTrial(Trial trial)
     {
         StartCoroutine(nameof(TrialRoutine));
+    }
+
+    public void EndTrial(Trial trial)
+    {
+        if (_trialCount < sessionSettings.numTrials)
+        {
+            trial.block.CreateTrial();
+            _trialCount++;
+            Session.instance.NextTrial.Begin();
+        }
     }
 
     private IEnumerator TrialRoutine()
@@ -39,5 +46,6 @@ public class TrialManager : MonoBehaviour
         innerStimulus.SetActive(false);
         yield return new WaitForSeconds((sessionSettings.outerStimulusDuration - sessionSettings.innerStimulusDuration) / 1000);
         outerStimulus.SetActive(false);
+        Session.instance.CurrentTrial.End();
     }
 }

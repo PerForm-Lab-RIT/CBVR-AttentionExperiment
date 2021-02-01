@@ -33,7 +33,7 @@ namespace DotStimulus
         {
             var worldTransform = transform;
             var worldPosition = worldTransform.position;
-            worldTransform.position = new Vector3(worldPosition.x, worldPosition.y, stimulusSettings.stimDepthMeters);
+            worldTransform.localPosition = new Vector3(0.0f, 0.0f, stimulusSettings.stimDepthMeters);
         }
 
         public void Update()

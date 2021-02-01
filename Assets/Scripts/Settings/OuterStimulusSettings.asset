@@ -17,7 +17,7 @@ MonoBehaviour:
   apertureRadiusDegrees: 55
   density: 1.5
   noiseDotPercentage: 100
-  dotSizeArcMinutes: 12
-  speed: 20
+  dotSizeArcMinutes: 16
+  speed: 10
   dotLifetime: 0.025
   stimDepthMeters: 2
