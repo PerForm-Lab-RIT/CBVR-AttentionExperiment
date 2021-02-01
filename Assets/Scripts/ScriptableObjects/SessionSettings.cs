@@ -17,9 +17,11 @@ namespace ScriptableObjects
         public SessionType sessionType;
         public int numTrials;
         public float fixationTime;
+        public float fixationDotRadius;
         public Color skyColor;
         public float outerStimulusDuration;
         public float innerStimulusDuration;
+        public float stimulusDepth;
         
         public int regionSlices;
         public bool flipRegions;
@@ -33,9 +35,11 @@ namespace ScriptableObjects
             sessionType = ParseSessionType((string) Session.instance.participantDetails["SessionType"]);
             numTrials = Convert.ToInt32(sessionSettingsDict["NumTrials"]);
             fixationTime = (float) Convert.ToDouble(sessionSettingsDict["FixationTimeInSeconds"]);
+            fixationDotRadius = (float) Convert.ToDouble(sessionSettingsDict["FixationDotRadiusDegrees"]);
             skyColor = ParseColor((List<object>) sessionSettingsDict["SkyColor"]);
             outerStimulusDuration = (float) Convert.ToDouble(sessionSettingsDict["OuterStimulusDurationMs"]);
             innerStimulusDuration = (float) Convert.ToDouble(sessionSettingsDict["InnerStimulusDurationMs"]);
+            stimulusDepth = (float) Convert.ToDouble(sessionSettingsDict["StimulusDepthMeters"]);
 
             regionSlices = Convert.ToInt32(sessionSettingsDict["TotalRegionSlices"]);
             flipRegions = (bool) sessionSettingsDict["FlipRegions"];

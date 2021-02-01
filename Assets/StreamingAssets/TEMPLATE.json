@@ -2,12 +2,18 @@
 	"SessionSettings": {
 		"NumTrials": 300,
 		"FixationTimeInSeconds": 1,
+		"FixationDotRadiusDegrees": 2,
 		"SkyColor": [1.0, 1.0, 1.0],
+		
 		"OuterStimulusDurationMs": 3000,
 		"OuterStimulusRadiusDegrees": 55,
 		"InnerStimulusDurationMs": 500,
 		"InnerStimulusRadiusDegrees": 15,
+		
+		"StimulusDepthMeters": 2.0,
+		
 		"AllowedResponseTime": 2.5,
+		"InterTrialDelaySeconds": 2.5,
 		
 		"TotalRegionSlices": 8,
 		"FlipRegions": false,
