@@ -10,16 +10,17 @@ public class SessionManager : MonoBehaviour
     private Block _primaryBlock;
     
     [SerializeField] private SessionSettings settings;
-    [SerializeField] private TrialManager trialManager;
+    [SerializeField] private GameObject trialManager;
 
     public void StartSession(Session session)
     {
         settings.LoadFromUxfJson();
+        
         SetSky(settings.skyColor);
-
         _primaryBlock = session.CreateBlock();
         var trial = _primaryBlock.CreateTrial();
         trial.settings.SetValue("difficulty", 0);
+        trialManager.SetActive(true);
         trial.Begin();
     }
     

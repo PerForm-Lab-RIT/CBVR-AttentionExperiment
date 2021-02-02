@@ -71,6 +71,11 @@ namespace DotStimulus
             else
                 GenerateDots(apertureRadius, dotSpeed);
         }
+
+        public StimulusSettings GetSettings()
+        {
+            return stimulusSettings;
+        }
     
         private void GenerateDots(float apertureRad, float speed)
         {

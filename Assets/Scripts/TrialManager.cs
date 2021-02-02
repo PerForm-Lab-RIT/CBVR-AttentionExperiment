@@ -1,4 +1,5 @@
 ﻿using System.Collections;
+using DotStimulus;
 using ScriptableObjects;
 using UnityEngine;
 using UXF;
@@ -11,14 +12,18 @@ public class TrialManager : MonoBehaviour
     [SerializeField] private SessionSettings sessionSettings;
 
     private int _trialCount = 1;
-    private bool isTrialFinished;
-    
-    public void Start()
+    private StimulusSettings _innerStimulusSettings;
+    private StimulusSettings _outerStimulusSettings;
+    private (float, float)[] _apertureSlices;
+
+    public void OnEnable()
     {
         if(sessionSettings.regionSlices % 2 != 0)
             Debug.LogWarning("Odd number of aperture slices detected! Please use an even number.");
         
-        var apertureSlices = PartitionAperture();
+        _apertureSlices = PartitionAperture();
+        _innerStimulusSettings = innerStimulus.GetComponent<DotManager>().GetSettings();
+        _outerStimulusSettings = outerStimulus.GetComponent<DotManager>().GetSettings();
 
         var fixationDotRadius = sessionSettings.fixationDotRadius * Mathf.PI / 180 * sessionSettings.stimulusDepth;
         fixationDot.transform.localScale = new Vector3(2.0f * fixationDotRadius, 0.0f, 2.0f * fixationDotRadius);
@@ -27,12 +32,14 @@ public class TrialManager : MonoBehaviour
 
     private (float, float)[] PartitionAperture()
     {
-        var slices = new (float, float)[sessionSettings.regionSlices];
+        var slices = new (float, float)[sessionSettings.regionSlices / 2];
         var sliceSize = 360.0f / sessionSettings.regionSlices;
 
-        for (var i = (sessionSettings.flipRegions) ? 1 : 0; i < _apertureSlices.Length; i += 2)
+        var j = 0;
+        for (var i = (sessionSettings.flipRegions) ? 1 : 0; i < sessionSettings.regionSlices; i += 2)
         {
-            slices[i] = (i * sliceSize, (i + 1) * sliceSize);
+            slices[j] = (i * sliceSize, (i + 1) * sliceSize);
+            j++;
         }
 
         return slices;
@@ -40,6 +47,17 @@ public class TrialManager : MonoBehaviour
 
     public void BeginTrial(Trial trial)
     {
+        var (start, end) = _apertureSlices[Random.Range(0, _apertureSlices.Length)];
+        var randomAngle = Random.Range(start, end);
+
+        var outerApertureRadius = Mathf.Tan(_outerStimulusSettings.apertureRadiusDegrees * Mathf.PI / 180.0f) *
+                             sessionSettings.stimulusDepth;
+        var innerBuffer = Mathf.Tan(2 * _innerStimulusSettings.apertureRadiusDegrees * Mathf.PI / 180.0f) *
+                          sessionSettings.stimulusDepth;
+        var randomRadialMagnitude = Random.Range(innerBuffer, outerApertureRadius);
+        var randomPosition = Utility.Rotate2D(new Vector2(0.0f, randomRadialMagnitude), randomAngle);
+        innerStimulus.transform.localPosition =
+            new Vector3(randomPosition.x, randomPosition.y, sessionSettings.stimulusDepth);
         StartCoroutine(TrialRoutine(trial));
     }
 
