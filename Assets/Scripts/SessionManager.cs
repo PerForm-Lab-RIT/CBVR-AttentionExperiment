@@ -20,6 +20,7 @@ public class SessionManager : MonoBehaviour
         _primaryBlock = session.CreateBlock();
         var trial = _primaryBlock.CreateTrial();
         trial.settings.SetValue("difficulty", 0);
+        
         trialManager.SetActive(true);
         trial.Begin();
     }

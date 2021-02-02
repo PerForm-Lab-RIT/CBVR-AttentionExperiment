@@ -35,8 +35,14 @@ public class TrialManager : MonoBehaviour
         var slices = new (float, float)[sessionSettings.regionSlices / 2];
         var sliceSize = 360.0f / sessionSettings.regionSlices;
 
+        var startRegion = 0;
+        if (sessionSettings.sessionType == SessionSettings.SessionType.Training)
+            startRegion = (sessionSettings.flipRegions) ? 1 : 0;
+        else
+            startRegion = (sessionSettings.flipRegions) ? 0 : 1;
+        
         var j = 0;
-        for (var i = (sessionSettings.flipRegions) ? 1 : 0; i < sessionSettings.regionSlices; i += 2)
+        for (var i = startRegion; i < sessionSettings.regionSlices; i += 2)
         {
             slices[j] = (i * sliceSize, (i + 1) * sliceSize);
             j++;
