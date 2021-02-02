@@ -15,14 +15,32 @@ public class TrialManager : MonoBehaviour
     
     public void Start()
     {
+        if(sessionSettings.regionSlices % 2 != 0)
+            Debug.LogWarning("Odd number of aperture slices detected! Please use an even number.");
+        
+        var apertureSlices = PartitionAperture();
+
         var fixationDotRadius = sessionSettings.fixationDotRadius * Mathf.PI / 180 * sessionSettings.stimulusDepth;
         fixationDot.transform.localScale = new Vector3(2.0f * fixationDotRadius, 0.0f, 2.0f * fixationDotRadius);
         fixationDot.transform.localPosition = new Vector3(0.0f, 0.0f, sessionSettings.stimulusDepth);
     }
 
+    private (float, float)[] PartitionAperture()
+    {
+        var slices = new (float, float)[sessionSettings.regionSlices];
+        var sliceSize = 360.0f / sessionSettings.regionSlices;
+
+        for (var i = (sessionSettings.flipRegions) ? 1 : 0; i < _apertureSlices.Length; i += 2)
+        {
+            slices[i] = (i * sliceSize, (i + 1) * sliceSize);
+        }
+
+        return slices;
+    }
+
     public void BeginTrial(Trial trial)
     {
-        StartCoroutine(nameof(TrialRoutine));
+        StartCoroutine(TrialRoutine(trial));
     }
 
     public void EndTrial(Trial trial)
@@ -35,7 +53,7 @@ public class TrialManager : MonoBehaviour
         }
     }
 
-    private IEnumerator TrialRoutine()
+    private IEnumerator TrialRoutine(Trial trial)
     {
         fixationDot.SetActive(true);
         yield return new WaitForSeconds(sessionSettings.fixationTime);
@@ -46,6 +64,6 @@ public class TrialManager : MonoBehaviour
         innerStimulus.SetActive(false);
         yield return new WaitForSeconds((sessionSettings.outerStimulusDuration - sessionSettings.innerStimulusDuration) / 1000);
         outerStimulus.SetActive(false);
-        Session.instance.CurrentTrial.End();
+        trial.End();
     }
 }
