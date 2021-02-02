@@ -64,6 +64,8 @@ public class TrialManager : MonoBehaviour
         var randomPosition = Utility.Rotate2D(new Vector2(0.0f, randomRadialMagnitude), randomAngle);
         innerStimulus.transform.localPosition =
             new Vector3(randomPosition.x, randomPosition.y, sessionSettings.stimulusDepth);
+        _innerStimulusSettings.correctAngle = Random.Range(0, 360);
+        innerStimulus.GetComponent<DotManager>().InitializeWithSettings(_innerStimulusSettings);
         StartCoroutine(TrialRoutine(trial));
     }
 

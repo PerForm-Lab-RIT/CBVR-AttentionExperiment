@@ -1,6 +1,6 @@
 {
 	"SessionSettings": {
-		"NumTrials": 10,
+		"NumTrials": 25,
 		"FixationTimeInSeconds": 1,
 		"FixationDotRadiusDegrees": 0.3,
 		"SkyColor": [0.5, 0.5, 0.5],
