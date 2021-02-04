@@ -52,6 +52,9 @@ MonoBehaviour:
   arrowRotate:
     actionPath: /actions/AttentionExperiment/in/ArrowDirection
     needsReinit: 0
+  angleSelect:
+    actionPath: /actions/AttentionExperiment/in/Confirm
+    needsReinit: 0
   currentHand: 0
 --- !u!1001 &7154907202467566460
 PrefabInstance:

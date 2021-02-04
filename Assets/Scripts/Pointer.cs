@@ -1,6 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 using Valve.VR;
 
 public class Pointer : MonoBehaviour
@@ -30,7 +28,7 @@ public class Pointer : MonoBehaviour
         var pointerCollider = _pointer.GetComponent<CapsuleCollider>();
         Destroy(pointerCollider);
     }
-    
+
     public void Update()
     {
         var controllerTransform = transform;

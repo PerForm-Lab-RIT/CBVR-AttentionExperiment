@@ -1,8 +1,11 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using DotStimulus;
 using ScriptableObjects;
 using UnityEngine;
 using UXF;
+using Valve.VR;
+using Random = UnityEngine.Random;
 
 public class TrialManager : MonoBehaviour
 {
@@ -10,11 +13,14 @@ public class TrialManager : MonoBehaviour
     [SerializeField] private GameObject innerStimulus;
     [SerializeField] private GameObject fixationDot;
     [SerializeField] private SessionSettings sessionSettings;
+    [SerializeField] private SteamVR_Action_Boolean angleSelect;
+    [SerializeField] private SteamVR_Input_Sources inputSource;
 
     private int _trialCount = 1;
     private StimulusSettings _innerStimulusSettings;
     private StimulusSettings _outerStimulusSettings;
     private (float, float)[] _apertureSlices;
+    
 
     public void OnEnable()
     {
@@ -28,6 +34,13 @@ public class TrialManager : MonoBehaviour
         var fixationDotRadius = sessionSettings.fixationDotRadius * Mathf.PI / 180 * sessionSettings.stimulusDepth;
         fixationDot.transform.localScale = new Vector3(2.0f * fixationDotRadius, 0.0f, 2.0f * fixationDotRadius);
         fixationDot.transform.localPosition = new Vector3(0.0f, 0.0f, sessionSettings.stimulusDepth);
+
+        angleSelect[inputSource].onStateUp += GetUserSelection;
+    }
+
+    private void GetUserSelection(SteamVR_Action_Boolean action, SteamVR_Input_Sources source)
+    {
+        Debug.Log("USER PRESSED TRIGGER!");
     }
 
     private (float, float)[] PartitionAperture()
@@ -92,5 +105,10 @@ public class TrialManager : MonoBehaviour
         yield return new WaitForSeconds((sessionSettings.outerStimulusDuration - sessionSettings.innerStimulusDuration) / 1000);
         outerStimulus.SetActive(false);
         trial.End();
+    }
+
+    public void OnDisable()
+    {
+        angleSelect[inputSource].onStateUp -= GetUserSelection;
     }
 }
