@@ -1,4 +1,5 @@
 ﻿using ScriptableObjects;
+using UnityEditor;
 using UnityEngine;
 using UXF;
 
@@ -30,12 +31,9 @@ public class SessionManager : MonoBehaviour
         RenderSettings.skybox.color = skyColor;
     }
 
-    public void RunTrial(Trial trial)
+    public void EndSession()
     {
-        // TODO: Generate a stimulus
-        // Get input, or timeout
-        // Generate response
-        // Gather data
-        // Generate info/params for next trial(s)
+        Application.Quit();
+        EditorApplication.ExitPlaymode();
     }
 }
