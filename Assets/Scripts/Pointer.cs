@@ -6,8 +6,8 @@ public class Pointer : MonoBehaviour
 {
     [SerializeField] private float thickness;
     [SerializeField] private Material pointerMaterial;
-    [SerializeField] private MeshRenderer selectionCircle;
-    [SerializeField] private Material selectionCircleMaterial;
+    [SerializeField] private GameObject selectionCircle;
+    [SerializeField] private GameObject arrow;
 
     private GameObject _pointer;
 
@@ -16,7 +16,7 @@ public class Pointer : MonoBehaviour
     public void Start()
     {
         _pointer = GameObject.CreatePrimitive(PrimitiveType.Cylinder);
-        _pointer.name = "Laser Pointer";
+        _pointer.name = "Laser";
         _pointer.transform.localScale = new Vector3(thickness, thickness, DefaultDistance);
         _pointer.transform.localPosition = new Vector3(0f, 0f, DefaultDistance / 2f);
         _pointer.transform.localRotation = Quaternion.Euler(90, 0, 0);
@@ -24,7 +24,6 @@ public class Pointer : MonoBehaviour
         _pointer.GetComponent<MeshRenderer>().material = pointerMaterial;
         var pointerCollider = _pointer.GetComponent<CapsuleCollider>();
         Destroy(pointerCollider);
-        selectionCircle.material = selectionCircleMaterial;
     }
     
     public void Update()
@@ -37,7 +36,7 @@ public class Pointer : MonoBehaviour
         if (hasHit && hit.distance > 0.1f)
         {
             dist = hit.distance;
-            selectionCircle.enabled = true;
+            selectionCircle.SetActive(true);
             
             var selectionCircleTransform = selectionCircle.transform;
             selectionCircleTransform.position = hit.point;
@@ -45,7 +44,7 @@ public class Pointer : MonoBehaviour
         }
         else
         {
-            selectionCircle.enabled = false;
+            selectionCircle.SetActive(false);
         }
 
         _pointer.transform.localScale = new Vector3(thickness, dist / 2f, thickness);
