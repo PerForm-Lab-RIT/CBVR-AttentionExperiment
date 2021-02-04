@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 7154907203526173926}
   - component: {fileID: 7154907203526173925}
   m_Layer: 2
-  m_Name: Pointer
+  m_Name: LaserPointer
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -48,6 +48,11 @@ MonoBehaviour:
   pointerMaterial: {fileID: 2100000, guid: 4af13cbbee1da36438b733dfb3e21f98, type: 2}
   selectionCircle: {fileID: 8037306718828199493}
   arrow: {fileID: 8037306720059108909}
+  controllerDeadzone: 0.2
+  arrowRotate:
+    actionPath: /actions/AttentionExperiment/in/ArrowDirection
+    needsReinit: 0
+  currentHand: 0
 --- !u!1001 &7154907202467566460
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -63,17 +68,17 @@ PrefabInstance:
     - target: {fileID: -8679921383154817045, guid: 21e5e683c9314c840a11a8a70a1c1d63,
         type: 3}
       propertyPath: m_LocalScale.x
-      value: 0.8
+      value: 0.34
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 21e5e683c9314c840a11a8a70a1c1d63,
         type: 3}
       propertyPath: m_LocalScale.y
-      value: 0.8
+      value: 0.322152
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 21e5e683c9314c840a11a8a70a1c1d63,
         type: 3}
       propertyPath: m_LocalScale.z
-      value: 0.8
+      value: 0.1
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 21e5e683c9314c840a11a8a70a1c1d63,
         type: 3}
@@ -235,6 +240,11 @@ PrefabInstance:
       propertyPath: m_ReceiveShadows
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: -7511558181221131132, guid: 1364340f86daa3444af5a72fab660612,
+        type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: 4af13cbbee1da36438b733dfb3e21f98, type: 2}
     - target: {fileID: 919132149155446097, guid: 1364340f86daa3444af5a72fab660612,
         type: 3}
       propertyPath: m_Name
@@ -243,7 +253,7 @@ PrefabInstance:
     - target: {fileID: 919132149155446097, guid: 1364340f86daa3444af5a72fab660612,
         type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 1364340f86daa3444af5a72fab660612, type: 3}
