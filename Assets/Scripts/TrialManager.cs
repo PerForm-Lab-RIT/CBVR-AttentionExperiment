@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections;
+﻿using System.Collections;
 using DotStimulus;
 using ScriptableObjects;
 using UnityEngine;
@@ -13,16 +12,22 @@ public class TrialManager : MonoBehaviour
     [SerializeField] private GameObject innerStimulus;
     [SerializeField] private GameObject fixationDot;
     [SerializeField] private SessionSettings sessionSettings;
-    [SerializeField] private SteamVR_Action_Boolean angleSelect;
+    [SerializeField] private SteamVR_Action_Boolean confirmInputAction;
+    [SerializeField] private SteamVR_Action_Vector2 angleSelectAction;
     [SerializeField] private SteamVR_Input_Sources inputSource;
+    [SerializeField] private Transform selectedLocation;
 
     private int _trialCount = 1;
     private StimulusSettings _innerStimulusSettings;
     private StimulusSettings _outerStimulusSettings;
     private (float, float)[] _apertureSlices;
-    private bool _waitingForInput;
+    private IEnumerator _trialRoutine;
     
+    private bool _inputReceived;
+    private bool _waitingForInput;
 
+    private InputData _userInput;
+    
     public void OnEnable()
     {
         if(sessionSettings.regionSlices % 2 != 0)
@@ -36,13 +41,25 @@ public class TrialManager : MonoBehaviour
         fixationDot.transform.localScale = new Vector3(2.0f * fixationDotRadius, 0.0f, 2.0f * fixationDotRadius);
         fixationDot.transform.localPosition = new Vector3(0.0f, 0.0f, sessionSettings.stimulusDepth);
 
-        angleSelect[inputSource].onStateUp += GetUserSelection;
+        confirmInputAction[inputSource].onStateUp += GetUserSelection;
     }
 
     private void GetUserSelection(SteamVR_Action_Boolean action, SteamVR_Input_Sources source)
     {
-        if(_waitingForInput)
-            Debug.Log("USER PRESSED TRIGGER!");
+        if (_waitingForInput)
+        {
+            Debug.Log("User confirmed input!");
+            StopCoroutine(_trialRoutine);
+            innerStimulus.SetActive(false);
+            outerStimulus.SetActive(false);
+            fixationDot.SetActive(false);
+            _userInput = new InputData
+            {
+                chosenDirection = angleSelectAction.axis.normalized,
+                selectionLocation = outerStimulus.transform.worldToLocalMatrix * selectedLocation.position
+            };
+            Session.instance.CurrentTrial.End();
+        }
     }
 
     private (float, float)[] PartitionAperture()
@@ -81,7 +98,8 @@ public class TrialManager : MonoBehaviour
             new Vector3(randomPosition.x, randomPosition.y, sessionSettings.stimulusDepth);
         _innerStimulusSettings.correctAngle = Random.Range(0.0f, 360.0f);
         innerStimulus.GetComponent<DotManager>().InitializeWithSettings(_innerStimulusSettings);
-        StartCoroutine(TrialRoutine(trial));
+        _trialRoutine = TrialRoutine(trial);
+        StartCoroutine(_trialRoutine);
     }
 
     public void EndTrial(Trial trial)
@@ -115,6 +133,12 @@ public class TrialManager : MonoBehaviour
 
     public void OnDisable()
     {
-        angleSelect[inputSource].onStateUp -= GetUserSelection;
+        confirmInputAction[inputSource].onStateUp -= GetUserSelection;
+    }
+
+    public struct InputData
+    {
+        public Vector2 selectionLocation;
+        public Vector2 chosenDirection;
     }
 }
