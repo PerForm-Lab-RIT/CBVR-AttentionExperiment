@@ -1,4 +1,6 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
+using System.Media;
 using DotStimulus;
 using ScriptableObjects;
 using UnityEngine;
@@ -16,6 +18,17 @@ public class TrialManager : MonoBehaviour
     [SerializeField] private SteamVR_Action_Vector2 angleSelectAction;
     [SerializeField] private SteamVR_Input_Sources inputSource;
     [SerializeField] private ActiveLaserManager laserManager;
+
+    [SerializeField] private SoundEffects sfx;
+    [Serializable]
+    private struct SoundEffects
+    {
+        public AudioClip experimentStart;
+        public AudioClip attentionCue;
+        public AudioClip success;
+        public AudioClip failure;
+    }
+    private AudioSource _soundPlayer;
 
     private int _trialCount = 1;
     private StimulusSettings _innerStimulusSettings;
@@ -91,6 +104,7 @@ public class TrialManager : MonoBehaviour
 
     public void BeginTrial(Trial trial)
     {
+        _soundPlayer.PlayOneShot(sfx.experimentStart);
         var (start, end) = _apertureSlices[Random.Range(0, _apertureSlices.Length)];
         var randomAngle = Random.Range(start, end);
 
