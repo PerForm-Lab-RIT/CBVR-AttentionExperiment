@@ -20,6 +20,7 @@ public class TrialManager : MonoBehaviour
     private StimulusSettings _innerStimulusSettings;
     private StimulusSettings _outerStimulusSettings;
     private (float, float)[] _apertureSlices;
+    private bool _waitingForInput;
     
 
     public void OnEnable()
@@ -40,7 +41,8 @@ public class TrialManager : MonoBehaviour
 
     private void GetUserSelection(SteamVR_Action_Boolean action, SteamVR_Input_Sources source)
     {
-        Debug.Log("USER PRESSED TRIGGER!");
+        if(_waitingForInput)
+            Debug.Log("USER PRESSED TRIGGER!");
     }
 
     private (float, float)[] PartitionAperture()
@@ -97,12 +99,16 @@ public class TrialManager : MonoBehaviour
     {
         fixationDot.SetActive(true);
         yield return new WaitForSeconds(sessionSettings.fixationTime);
+        
         fixationDot.SetActive(false);
         outerStimulus.SetActive(true);
         innerStimulus.SetActive(true);
         yield return new WaitForSeconds(sessionSettings.innerStimulusDuration / 1000);
+        
         innerStimulus.SetActive(false);
+        _waitingForInput = true;
         yield return new WaitForSeconds((sessionSettings.outerStimulusDuration - sessionSettings.innerStimulusDuration) / 1000);
+        _waitingForInput = false;
         outerStimulus.SetActive(false);
         trial.End();
     }
