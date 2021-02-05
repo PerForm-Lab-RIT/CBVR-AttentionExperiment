@@ -126,6 +126,11 @@ public class TrialManager : MonoBehaviour
             trial.result["angle_error"] = angleError;
             trial.result["position_error"] = positionError;
         }
+        else
+        {
+            trial.result["angle_error"] = "T/O";
+            trial.result["position_error"] = "T/O";
+        }
         
         if (_trialCount < sessionSettings.numTrials)
         {
