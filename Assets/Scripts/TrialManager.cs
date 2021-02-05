@@ -96,9 +96,9 @@ public class TrialManager : MonoBehaviour
 
         var outerApertureRadius = Mathf.Tan(_outerStimulusSettings.apertureRadiusDegrees * Mathf.PI / 180.0f) *
                              sessionSettings.stimulusDepth;
-        var innerBuffer = Mathf.Tan(2 * _innerStimulusSettings.apertureRadiusDegrees * Mathf.PI / 180.0f) *
+        var spaceBuffer = Mathf.Tan(_innerStimulusSettings.apertureRadiusDegrees * Mathf.PI / 180.0f) *
                           sessionSettings.stimulusDepth;
-        var randomRadialMagnitude = Random.Range(innerBuffer, outerApertureRadius);
+        var randomRadialMagnitude = Random.Range(spaceBuffer, outerApertureRadius - spaceBuffer);
         var randomPosition = Utility.Rotate2D(new Vector2(0.0f, randomRadialMagnitude), randomAngle);
         innerStimulus.transform.localPosition =
             new Vector3(randomPosition.x, randomPosition.y, sessionSettings.stimulusDepth);
