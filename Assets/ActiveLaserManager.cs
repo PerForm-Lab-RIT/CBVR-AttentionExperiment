@@ -8,8 +8,9 @@ public class ActiveLaserManager : MonoBehaviour
     [SerializeField] private GameObject leftHandPointer;
     [SerializeField] private GameObject rightHandPointer;
     
-    public SteamVR_Action_Vector2 angleSelectAction;
-    public SteamVR_Action_Boolean confirmAction;
+    [SerializeField] private SteamVR_Action_Vector2 angleSelectAction;
+    [SerializeField] private SteamVR_Action_Boolean confirmAction;
+    [SerializeField] private float deadzone;
 
     private GameObject _activeLaser;
     private bool _deactivated;
@@ -46,7 +47,12 @@ public class ActiveLaserManager : MonoBehaviour
     
     private void UpdateActiveLaser(SteamVR_Action_Vector2 action, SteamVR_Input_Sources source, Vector2 axis, Vector2 delta)
     {
+
+        if (axis.sqrMagnitude < deadzone * deadzone)
+            return;
+        
         GameObject inactiveLaser;
+
         if (source == SteamVR_Input_Sources.RightHand)
         {
             _activeLaser = rightHandPointer;
