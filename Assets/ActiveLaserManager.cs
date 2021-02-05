@@ -18,6 +18,7 @@ public class ActiveLaserManager : MonoBehaviour
     public void Start()
     {
         _activeLaser = rightHandPointer;
+        DeactivateBothLasers();
         confirmAction[SteamVR_Input_Sources.LeftHand].onChange += UpdateActiveLaser;
         confirmAction[SteamVR_Input_Sources.RightHand].onChange += UpdateActiveLaser;
         angleSelectAction[SteamVR_Input_Sources.LeftHand].onChange += UpdateActiveLaser;
@@ -47,7 +48,6 @@ public class ActiveLaserManager : MonoBehaviour
     
     private void UpdateActiveLaser(SteamVR_Action_Vector2 action, SteamVR_Input_Sources source, Vector2 axis, Vector2 delta)
     {
-
         if (axis.sqrMagnitude < deadzone * deadzone)
             return;
         

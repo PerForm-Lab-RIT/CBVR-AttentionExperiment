@@ -54,9 +54,9 @@ public class TrialManager : MonoBehaviour
             outerStimulus.SetActive(false);
             fixationDot.SetActive(false);
 
-            var selectionLocation = outerStimulus.transform.worldToLocalMatrix *
-                                    laserManager.GetActiveSelectionTransform().position;
-            
+            var selectionLocation =
+                outerStimulus.transform.InverseTransformPoint(laserManager.GetActiveSelectionTransform().position);
+
             _userInput = new InputData
             {
                 ChosenDirection = angleSelectAction.axis.normalized,
