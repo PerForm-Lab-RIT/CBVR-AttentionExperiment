@@ -9,7 +9,7 @@ public class StimulusCollider : MonoBehaviour
     [SerializeField] private StimulusSettings settings;
     [SerializeField] private BoxCollider boxCollider;
     
-    public void Start()
+    public void OnEnable()
     {
         var apertureRadius = Mathf.Tan(settings.apertureRadiusDegrees * Mathf.PI / 180) *
             settings.stimDepthMeters;

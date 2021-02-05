@@ -16,6 +16,7 @@ public class TrialManager : MonoBehaviour
     [SerializeField] private SteamVR_Action_Vector2 angleSelectAction;
     [SerializeField] private SteamVR_Input_Sources inputSource;
     [SerializeField] private Transform selectedLocation;
+    [SerializeField] private ActiveLaserManager laserManager;
 
     private int _trialCount = 1;
     private StimulusSettings _innerStimulusSettings;
@@ -58,6 +59,7 @@ public class TrialManager : MonoBehaviour
                 chosenDirection = angleSelectAction.axis.normalized,
                 selectionLocation = outerStimulus.transform.worldToLocalMatrix * selectedLocation.position
             };
+            _waitingForInput = false;
             Session.instance.CurrentTrial.End();
         }
     }
@@ -105,6 +107,7 @@ public class TrialManager : MonoBehaviour
     public void EndTrial(Trial trial)
     {
         trial.result["correct_angle"] = _innerStimulusSettings.correctAngle;
+        laserManager.DeactivateBothLasers();
         if (_trialCount < sessionSettings.numTrials)
         {
             trial.block.CreateTrial();
@@ -123,6 +126,7 @@ public class TrialManager : MonoBehaviour
         innerStimulus.SetActive(true);
         yield return new WaitForSeconds(sessionSettings.innerStimulusDuration / 1000);
         
+        laserManager.ActivateLaser();
         innerStimulus.SetActive(false);
         _waitingForInput = true;
         yield return new WaitForSeconds((sessionSettings.outerStimulusDuration - sessionSettings.innerStimulusDuration) / 1000);
