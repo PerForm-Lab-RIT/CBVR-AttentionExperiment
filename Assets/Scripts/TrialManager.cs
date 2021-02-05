@@ -15,7 +15,6 @@ public class TrialManager : MonoBehaviour
     [SerializeField] private SteamVR_Action_Boolean confirmInputAction;
     [SerializeField] private SteamVR_Action_Vector2 angleSelectAction;
     [SerializeField] private SteamVR_Input_Sources inputSource;
-    [SerializeField] private Transform selectedLocation;
     [SerializeField] private ActiveLaserManager laserManager;
 
     private int _trialCount = 1;
@@ -54,12 +53,17 @@ public class TrialManager : MonoBehaviour
             innerStimulus.SetActive(false);
             outerStimulus.SetActive(false);
             fixationDot.SetActive(false);
+
+            var selectionLocation = outerStimulus.transform.worldToLocalMatrix *
+                                    laserManager.GetActiveSelectionTransform().position;
+            
             _userInput = new InputData
             {
-                chosenDirection = angleSelectAction.axis.normalized,
-                selectionLocation = outerStimulus.transform.worldToLocalMatrix * selectedLocation.position
+                ChosenDirection = angleSelectAction.axis.normalized,
+                SelectionLocation = new Vector2(selectionLocation.x, selectionLocation.z)
             };
             _waitingForInput = false;
+            _inputReceived = true;
             Session.instance.CurrentTrial.End();
         }
     }
@@ -101,13 +105,28 @@ public class TrialManager : MonoBehaviour
         _innerStimulusSettings.correctAngle = Random.Range(0.0f, 360.0f);
         innerStimulus.GetComponent<DotManager>().InitializeWithSettings(_innerStimulusSettings);
         _trialRoutine = TrialRoutine(trial);
+        _inputReceived = false;
         StartCoroutine(_trialRoutine);
     }
 
     public void EndTrial(Trial trial)
     {
-        trial.result["correct_angle"] = _innerStimulusSettings.correctAngle;
         laserManager.DeactivateBothLasers();
+        
+        trial.result["correct_angle"] = _innerStimulusSettings.correctAngle;
+
+        if (_inputReceived)
+        {
+            var angleError = Mathf.Acos(Vector2.Dot(_userInput.ChosenDirection, 
+                Utility.Rotate2D(Vector2.up, _innerStimulusSettings.correctAngle))) * 180f / Mathf.PI;
+
+            var innerStimulusPosition = innerStimulus.transform.localPosition;
+            var positionError = (_userInput.SelectionLocation - new Vector2(innerStimulusPosition.x,
+                innerStimulusPosition.y)).magnitude;
+            trial.result["angle_error"] = angleError;
+            trial.result["position_error"] = positionError;
+        }
+        
         if (_trialCount < sessionSettings.numTrials)
         {
             trial.block.CreateTrial();
@@ -140,9 +159,9 @@ public class TrialManager : MonoBehaviour
         confirmInputAction[inputSource].onStateUp -= GetUserSelection;
     }
 
-    public struct InputData
+    private struct InputData
     {
-        public Vector2 selectionLocation;
-        public Vector2 chosenDirection;
+        public Vector2 SelectionLocation;
+        public Vector2 ChosenDirection;
     }
 }

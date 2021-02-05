@@ -8,15 +8,15 @@ public class ActiveLaserManager : MonoBehaviour
     [SerializeField] private GameObject leftHandPointer;
     [SerializeField] private GameObject rightHandPointer;
     
-    public GameObject ActiveLaser { get; private set; }
     public SteamVR_Action_Vector2 angleSelectAction;
     public SteamVR_Action_Boolean confirmAction;
 
+    private GameObject _activeLaser;
     private bool _deactivated;
     
     public void Start()
     {
-        ActiveLaser = rightHandPointer;
+        _activeLaser = rightHandPointer;
         confirmAction[SteamVR_Input_Sources.LeftHand].onChange += UpdateActiveLaser;
         confirmAction[SteamVR_Input_Sources.RightHand].onChange += UpdateActiveLaser;
         angleSelectAction[SteamVR_Input_Sources.LeftHand].onChange += UpdateActiveLaser;
@@ -28,18 +28,18 @@ public class ActiveLaserManager : MonoBehaviour
         GameObject inactiveLaser;
         if (source == SteamVR_Input_Sources.RightHand)
         {
-            ActiveLaser = rightHandPointer;
+            _activeLaser = rightHandPointer;
             inactiveLaser = leftHandPointer;
         }
         else
         {
-            ActiveLaser = leftHandPointer;
+            _activeLaser = leftHandPointer;
             inactiveLaser = rightHandPointer;
         }
 
         if (!_deactivated)
         {
-            ActiveLaser.SetActive(true);
+            _activeLaser.SetActive(true);
             inactiveLaser.SetActive(false);
         }
     }
@@ -49,18 +49,18 @@ public class ActiveLaserManager : MonoBehaviour
         GameObject inactiveLaser;
         if (source == SteamVR_Input_Sources.RightHand)
         {
-            ActiveLaser = rightHandPointer;
+            _activeLaser = rightHandPointer;
             inactiveLaser = leftHandPointer;
         }
         else
         {
-            ActiveLaser = leftHandPointer;
+            _activeLaser = leftHandPointer;
             inactiveLaser = rightHandPointer;
         }
 
         if (!_deactivated)
         {
-            ActiveLaser.SetActive(true);
+            _activeLaser.SetActive(true);
             inactiveLaser.SetActive(false);
         }
     }
@@ -74,7 +74,14 @@ public class ActiveLaserManager : MonoBehaviour
 
     public void ActivateLaser()
     {
-        ActiveLaser.SetActive(true);
+        _activeLaser.SetActive(true);
         _deactivated = false;
+    }
+
+    public Transform GetActiveSelectionTransform()
+    {
+        // LaserPointer prefab should have the selection circle as its only immediate child
+        var selectionTransform = _activeLaser.gameObject.transform.GetChild(0);
+        return selectionTransform;
     }
 }
