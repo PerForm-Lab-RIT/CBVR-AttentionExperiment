@@ -28,7 +28,7 @@ public class TrialManager : MonoBehaviour
         public AudioClip success;
         public AudioClip failure;
     }
-    private AudioSource _soundPlayer;
+    [SerializeField] private AudioSource soundPlayer;
 
     private int _trialCount = 1;
     private StimulusSettings _innerStimulusSettings;
@@ -104,7 +104,7 @@ public class TrialManager : MonoBehaviour
 
     public void BeginTrial(Trial trial)
     {
-        _soundPlayer.PlayOneShot(sfx.experimentStart);
+        soundPlayer.PlayOneShot(sfx.experimentStart);
         var (start, end) = _apertureSlices[Random.Range(0, _apertureSlices.Length)];
         var randomAngle = Random.Range(start, end);
 
