@@ -10,7 +10,7 @@
 		"InnerStimulusDurationMs": 500,
 		"InnerStimulusRadiusDegrees": 15,
 		
-		"StimulusDepthMeters": 2.0,
+		"StimulusDepthMeters": 12.0,
 		
 		"InterTrialDelaySeconds": 2.5,
 		

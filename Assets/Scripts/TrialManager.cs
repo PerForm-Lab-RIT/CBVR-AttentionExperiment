@@ -52,6 +52,13 @@ public class TrialManager : MonoBehaviour
         _innerStimulusSettings = innerStimulus.GetComponent<DotManager>().GetSettings();
         _outerStimulusSettings = outerStimulus.GetComponent<DotManager>().GetSettings();
 
+        _innerStimulusSettings.stimDepthMeters = sessionSettings.stimulusDepth;
+        _outerStimulusSettings.stimDepthMeters = sessionSettings.stimulusDepth;
+        
+        innerStimulus.GetComponent<DotManager>().InitializeWithSettings(_innerStimulusSettings);
+        outerStimulus.GetComponent<DotManager>().InitializeWithSettings(_outerStimulusSettings);
+        
+
         var fixationDotRadius = sessionSettings.fixationDotRadius * Mathf.PI / 180 * sessionSettings.stimulusDepth;
         fixationDot.transform.localScale = new Vector3(2.0f * fixationDotRadius, 0.0f, 2.0f * fixationDotRadius);
         fixationDot.transform.localPosition = new Vector3(0.0f, 0.0f, sessionSettings.stimulusDepth);
