@@ -1,6 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 using Valve.VR;
 
 public class ActiveLaserManager : MonoBehaviour
@@ -89,5 +87,13 @@ public class ActiveLaserManager : MonoBehaviour
         // LaserPointer prefab should have the selection circle as its only immediate child
         var selectionTransform = _activeLaser.gameObject.transform.GetChild(0);
         return selectionTransform;
+    }
+    
+    public void OnDisable()
+    {
+        confirmAction[SteamVR_Input_Sources.LeftHand].onChange -= UpdateActiveLaser;
+        confirmAction[SteamVR_Input_Sources.RightHand].onChange -= UpdateActiveLaser;
+        angleSelectAction[SteamVR_Input_Sources.LeftHand].onChange -= UpdateActiveLaser;
+        angleSelectAction[SteamVR_Input_Sources.RightHand].onChange -= UpdateActiveLaser;
     }
 }

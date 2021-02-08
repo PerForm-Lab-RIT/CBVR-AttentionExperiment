@@ -12,7 +12,6 @@
 		
 		"StimulusDepthMeters": 2.0,
 		
-		"AllowedResponseTime": 2.5,
 		"InterTrialDelaySeconds": 2.5,
 		
 		"TotalRegionSlices": 4,

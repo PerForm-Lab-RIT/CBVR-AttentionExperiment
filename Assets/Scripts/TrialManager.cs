@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections;
-using System.Media;
 using DotStimulus;
 using ScriptableObjects;
 using UnityEngine;
@@ -18,8 +17,11 @@ public class TrialManager : MonoBehaviour
     [SerializeField] private SteamVR_Action_Vector2 angleSelectAction;
     [SerializeField] private SteamVR_Input_Sources inputSource;
     [SerializeField] private ActiveLaserManager laserManager;
+    [SerializeField] private GameObject correctCircle;
+    [SerializeField] private GameObject userCircle;
 
     [SerializeField] private SoundEffects sfx;
+    
     [Serializable]
     private struct SoundEffects
     {
@@ -53,6 +55,9 @@ public class TrialManager : MonoBehaviour
         var fixationDotRadius = sessionSettings.fixationDotRadius * Mathf.PI / 180 * sessionSettings.stimulusDepth;
         fixationDot.transform.localScale = new Vector3(2.0f * fixationDotRadius, 0.0f, 2.0f * fixationDotRadius);
         fixationDot.transform.localPosition = new Vector3(0.0f, 0.0f, sessionSettings.stimulusDepth);
+        
+        correctCircle.SetActive(false);
+        userCircle.SetActive(false);
 
         confirmInputAction[inputSource].onStateUp += GetUserSelection;
     }
@@ -145,13 +150,41 @@ public class TrialManager : MonoBehaviour
             trial.result["angle_error"] = "T/O";
             trial.result["position_error"] = "T/O";
         }
-        
+
         if (_trialCount < sessionSettings.numTrials)
         {
-            trial.block.CreateTrial();
+            Session.instance.CurrentBlock.CreateTrial();
             _trialCount++;
-            Session.instance.NextTrial.Begin();
         }
+        
+        StartCoroutine(FeedBackRoutine());
+    }
+
+    private IEnumerator FeedBackRoutine()
+    {
+        var innerApertureRadius = Mathf.Tan(_innerStimulusSettings.apertureRadiusDegrees * Mathf.PI / 180) *
+                                  _innerStimulusSettings.stimDepthMeters;
+        correctCircle.transform.localPosition = innerStimulus.transform.localPosition;
+        correctCircle.transform.localScale = new Vector3(2 * innerApertureRadius, 2 * innerApertureRadius, 1.0f);
+        correctCircle.transform.localRotation = Quaternion.Euler(0f, 0f, _innerStimulusSettings.correctAngle);
+        
+        var userRotation = Mathf.Acos(Vector2.Dot(Vector3.up, _userInput.ChosenDirection.normalized))
+            * 180f / Mathf.PI;
+        if (_userInput.ChosenDirection.x > 0)
+            userRotation = -userRotation;
+        userCircle.transform.localPosition = new Vector3(_userInput.SelectionLocation.x, _userInput.SelectionLocation.y, _outerStimulusSettings.stimDepthMeters);
+        userCircle.transform.localScale = new Vector3(2 * innerApertureRadius, 2 * innerApertureRadius, 1.0f);
+        userCircle.transform.localRotation = Quaternion.Euler(0f, 0f, userRotation);
+        
+        correctCircle.SetActive(true);
+        userCircle.SetActive(true);
+        
+        yield return new WaitForSeconds(sessionSettings.interTrialDelay);
+        
+        correctCircle.SetActive(false);
+        userCircle.SetActive(false);
+        
+        Session.instance.BeginNextTrialSafe();
     }
 
     private IEnumerator TrialRoutine(Trial trial)

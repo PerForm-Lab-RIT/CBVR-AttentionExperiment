@@ -22,6 +22,7 @@ namespace ScriptableObjects
         public float outerStimulusDuration;
         public float innerStimulusDuration;
         public float stimulusDepth;
+        public float interTrialDelay;
         
         public int regionSlices;
         public bool flipRegions;
@@ -40,7 +41,8 @@ namespace ScriptableObjects
             outerStimulusDuration = (float) Convert.ToDouble(sessionSettingsDict["OuterStimulusDurationMs"]);
             innerStimulusDuration = (float) Convert.ToDouble(sessionSettingsDict["InnerStimulusDurationMs"]);
             stimulusDepth = (float) Convert.ToDouble(sessionSettingsDict["StimulusDepthMeters"]);
-
+            interTrialDelay = (float) Convert.ToDouble(sessionSettingsDict["InterTrialDelaySeconds"]);
+ 
             regionSlices = Convert.ToInt32(sessionSettingsDict["TotalRegionSlices"]);
             flipRegions = (bool) sessionSettingsDict["FlipRegions"];
             return this;
