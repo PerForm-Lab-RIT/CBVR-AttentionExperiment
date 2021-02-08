@@ -180,7 +180,13 @@ public class TrialManager : MonoBehaviour
             userCircle.transform.localRotation = Quaternion.Euler(0f, 0f, userRotation);
             
             userCircle.SetActive(true);
+            soundPlayer.PlayOneShot(sfx.success);
         }
+        else
+        {
+            soundPlayer.PlayOneShot(sfx.failure);
+        }
+        
         correctCircle.SetActive(true);
         
         yield return new WaitForSeconds(sessionSettings.interTrialDelay);
