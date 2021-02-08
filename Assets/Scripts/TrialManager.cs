@@ -167,17 +167,21 @@ public class TrialManager : MonoBehaviour
         correctCircle.transform.localPosition = innerStimulus.transform.localPosition;
         correctCircle.transform.localScale = new Vector3(2 * innerApertureRadius, 2 * innerApertureRadius, 1.0f);
         correctCircle.transform.localRotation = Quaternion.Euler(0f, 0f, _innerStimulusSettings.correctAngle);
-        
-        var userRotation = Mathf.Acos(Vector2.Dot(Vector3.up, _userInput.ChosenDirection.normalized))
-            * 180f / Mathf.PI;
-        if (_userInput.ChosenDirection.x > 0)
-            userRotation = -userRotation;
-        userCircle.transform.localPosition = new Vector3(_userInput.SelectionLocation.x, _userInput.SelectionLocation.y, _outerStimulusSettings.stimDepthMeters);
-        userCircle.transform.localScale = new Vector3(2 * innerApertureRadius, 2 * innerApertureRadius, 1.0f);
-        userCircle.transform.localRotation = Quaternion.Euler(0f, 0f, userRotation);
-        
+
+        if (_inputReceived)
+        {
+            var userRotation = Mathf.Acos(Vector2.Dot(Vector3.up, _userInput.ChosenDirection.normalized))
+                * 180f / Mathf.PI;
+            if (_userInput.ChosenDirection.x > 0)
+                userRotation = -userRotation;
+            userCircle.transform.localPosition = new Vector3(_userInput.SelectionLocation.x,
+                _userInput.SelectionLocation.y, _outerStimulusSettings.stimDepthMeters);
+            userCircle.transform.localScale = new Vector3(2 * innerApertureRadius, 2 * innerApertureRadius, 1.0f);
+            userCircle.transform.localRotation = Quaternion.Euler(0f, 0f, userRotation);
+            
+            userCircle.SetActive(true);
+        }
         correctCircle.SetActive(true);
-        userCircle.SetActive(true);
         
         yield return new WaitForSeconds(sessionSettings.interTrialDelay);
         

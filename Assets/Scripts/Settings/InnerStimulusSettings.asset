@@ -12,12 +12,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1015bda014a000d449230ede5f2f6db5, type: 3}
   m_Name: InnerStimulusSettings
   m_EditorClassIdentifier: 
-  correctAngle: 132.67513
+  correctAngle: 114.88084
   coherenceRange: 0
   apertureRadiusDegrees: 15
   density: 1
   noiseDotPercentage: 0
   dotSizeArcMinutes: 16
   speed: 10
-  dotLifetime: 0.025
+  dotLifetime: 14.32
   stimDepthMeters: 2
