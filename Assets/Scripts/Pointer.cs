@@ -7,7 +7,7 @@ public class Pointer : MonoBehaviour
     [SerializeField] private Material pointerMaterial;
     [SerializeField] private GameObject selectionCircle;
     [SerializeField] private GameObject arrow;
-    [SerializeField] private float controllerDeadzone;
+    [SerializeField] private FloatReference controllerDeadzone;
 
     [SerializeField] private SteamVR_Action_Vector2 arrowRotate;
     [SerializeField] private SteamVR_Input_Sources currentHand;
@@ -58,7 +58,7 @@ public class Pointer : MonoBehaviour
     private void UpdateArrow()
     {
         var currentDirection = arrowRotate.GetAxis(currentHand);
-        if (currentDirection.sqrMagnitude > controllerDeadzone * controllerDeadzone)
+        if (currentDirection.sqrMagnitude > controllerDeadzone.Value * controllerDeadzone.Value)
         {
             arrow.SetActive(true);
             var currentRotation = Mathf.Acos(Vector2.Dot(Vector3.up, currentDirection.normalized))

@@ -20,4 +20,4 @@ MonoBehaviour:
   dotSizeArcMinutes: 12
   speed: 21.69
   dotLifetime: 200
-  stimDepthMeters: 2
+  stimDepthMeters: 1

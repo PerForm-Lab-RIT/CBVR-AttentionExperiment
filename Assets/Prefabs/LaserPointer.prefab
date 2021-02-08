@@ -48,7 +48,10 @@ MonoBehaviour:
   pointerMaterial: {fileID: 2100000, guid: 4af13cbbee1da36438b733dfb3e21f98, type: 2}
   selectionCircle: {fileID: 8037306718828199493}
   arrow: {fileID: 8037306720059108909}
-  controllerDeadzone: 0.2
+  controllerDeadzone:
+    useConstant: 0
+    constant: 0
+    variable: {fileID: 11400000, guid: fa8b1cfb80c442a4ea1d5b59c5df0746, type: 2}
   arrowRotate:
     actionPath: /actions/AttentionExperiment/in/ArrowDirection
     needsReinit: 0
