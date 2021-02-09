@@ -126,7 +126,7 @@ public class TrialManager : MonoBehaviour
         var randomRadialMagnitude = Random.Range(spaceBuffer, outerApertureRadius - spaceBuffer);
         var randomPosition = Utility.Rotate2D(new Vector2(0.0f, randomRadialMagnitude), randomAngle);
         innerStimulus.transform.localPosition =
-            new Vector3(randomPosition.x, randomPosition.y, sessionSettings.stimulusDepth);
+            new Vector3(0, outerApertureRadius, sessionSettings.stimulusDepth);
         _innerStimulusSettings.correctAngle = Random.Range(0.0f, 360.0f);
         innerStimulus.GetComponent<DotManager>().InitializeWithSettings(_innerStimulusSettings);
         _trialRoutine = TrialRoutine(trial);
@@ -148,16 +148,10 @@ public class TrialManager : MonoBehaviour
                 chosenAngle = 360.0f - chosenAngle;
 
             var innerStimulusPosition = innerStimulus.transform.localPosition;
-            var innerStimulusPositionDegrees = Mathf.Atan(new Vector2(innerStimulusPosition.x,
-                innerStimulusPosition.y).magnitude / _outerStimulusSettings.stimDepthMeters) * 180f / Mathf.PI;
+            var chosenPosition = new Vector3(_userInput.SelectionLocation.x, _userInput.SelectionLocation.y,
+                _outerStimulusSettings.stimDepthMeters);
 
-            if ((new Vector2(innerStimulusPosition.x, innerStimulusPosition.y) - _userInput.SelectionLocation).magnitude
-                < Mathf.Tan(_outerStimulusSettings.apertureRadiusDegrees * Mathf.PI / 180) *
-                _outerStimulusSettings.stimDepthMeters)
-                innerStimulusPositionDegrees = -innerStimulusPositionDegrees;
-            
-            var positionError = Mathf.Abs(Mathf.Atan(_userInput.SelectionLocation.magnitude / _outerStimulusSettings.stimDepthMeters) * 180f / Mathf.PI +
-                                innerStimulusPositionDegrees);
+            var positionError = Mathf.Acos(Vector3.Dot(innerStimulusPosition.normalized, chosenPosition.normalized)) * 180f / Mathf.PI;
             trial.result["chosen_angle"] = chosenAngle;
             trial.result["position_error"] = positionError;
         }
