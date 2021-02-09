@@ -73,7 +73,6 @@ public class TrialManager : MonoBehaviour
     {
         if (_waitingForInput)
         {
-            Debug.Log("User confirmed input!");
             StopCoroutine(_trialRoutine);
             innerStimulus.SetActive(false);
             outerStimulus.SetActive(false);
@@ -143,18 +142,22 @@ public class TrialManager : MonoBehaviour
 
         if (_inputReceived)
         {
-            var angleError = Mathf.Acos(Vector2.Dot(_userInput.ChosenDirection, 
-                Utility.Rotate2D(Vector2.up, _innerStimulusSettings.correctAngle))) * 180f / Mathf.PI;
+            var chosenAngle = Mathf.Acos(Vector2.Dot(Vector2.up, 
+                _userInput.ChosenDirection.normalized)) * 180f / Mathf.PI;
+            if (_userInput.ChosenDirection.x > 0)
+            {
+                chosenAngle = 360.0f - chosenAngle;
+            }
 
             var innerStimulusPosition = innerStimulus.transform.localPosition;
             var positionError = (_userInput.SelectionLocation - new Vector2(innerStimulusPosition.x,
                 innerStimulusPosition.y)).magnitude;
-            trial.result["angle_error"] = angleError;
+            trial.result["chosen_angle"] = chosenAngle;
             trial.result["position_error"] = positionError;
         }
         else
         {
-            trial.result["angle_error"] = "T/O";
+            trial.result["chosen_angle"] = "T/O";
             trial.result["position_error"] = "T/O";
         }
 
