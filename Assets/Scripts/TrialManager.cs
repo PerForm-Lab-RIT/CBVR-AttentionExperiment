@@ -148,8 +148,16 @@ public class TrialManager : MonoBehaviour
                 chosenAngle = 360.0f - chosenAngle;
 
             var innerStimulusPosition = innerStimulus.transform.localPosition;
-            var positionError = Mathf.Atan((_userInput.SelectionLocation - new Vector2(innerStimulusPosition.x,
-                                    innerStimulusPosition.y)).magnitude / _outerStimulusSettings.stimDepthMeters) * 180f / Mathf.PI;
+            var innerStimulusPositionDegrees = Mathf.Atan(new Vector2(innerStimulusPosition.x,
+                innerStimulusPosition.y).magnitude / _outerStimulusSettings.stimDepthMeters) * 180f / Mathf.PI;
+
+            if ((new Vector2(innerStimulusPosition.x, innerStimulusPosition.y) - _userInput.SelectionLocation).magnitude
+                < Mathf.Tan(_outerStimulusSettings.apertureRadiusDegrees * Mathf.PI / 180) *
+                _outerStimulusSettings.stimDepthMeters)
+                innerStimulusPositionDegrees = -innerStimulusPositionDegrees;
+            
+            var positionError = Mathf.Abs(Mathf.Atan(_userInput.SelectionLocation.magnitude / _outerStimulusSettings.stimDepthMeters) * 180f / Mathf.PI +
+                                innerStimulusPositionDegrees);
             trial.result["chosen_angle"] = chosenAngle;
             trial.result["position_error"] = positionError;
         }
