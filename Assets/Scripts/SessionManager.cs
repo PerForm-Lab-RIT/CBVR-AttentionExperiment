@@ -9,7 +9,7 @@ public class SessionManager : MonoBehaviour
     private int _score;
     private int _currentDifficulty;
     private Block _primaryBlock;
-    
+
     [SerializeField] private SessionSettings settings;
     [SerializeField] private GameObject trialManager;
 
