@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UXF;
 
@@ -23,32 +24,38 @@ namespace ScriptableObjects
         public float innerStimulusDuration;
         public float stimulusDepth;
         public float interTrialDelay;
+        public List<float> coherenceStaircase;
         
         public int regionSlices;
         public bool flipRegions;
 
         // IMPORTANT: Any changes made in this function should be cross-checked with both the corresponding JSON
         // and the UXF data-points collection
-        public SessionSettings LoadFromUxfJson()
+        public void LoadFromUxfJson()
         {
             var sessionSettingsDict = Session.instance.settings.GetDict("SessionSettings");
             
             sessionType = ParseSessionType((string) Session.instance.participantDetails["SessionType"]);
             numTrials = Convert.ToInt32(sessionSettingsDict["NumTrials"]);
-            fixationTime = (float) Convert.ToDouble(sessionSettingsDict["FixationTimeInSeconds"]);
-            fixationDotRadius = (float) Convert.ToDouble(sessionSettingsDict["FixationDotRadiusDegrees"]);
+            fixationTime = Convert.ToSingle(sessionSettingsDict["FixationTimeInSeconds"]);
+            fixationDotRadius = Convert.ToSingle(sessionSettingsDict["FixationDotRadiusDegrees"]);
             skyColor = ParseColor((List<object>) sessionSettingsDict["SkyColor"]);
-            outerStimulusDuration = (float) Convert.ToDouble(sessionSettingsDict["OuterStimulusDurationMs"]);
-            innerStimulusDuration = (float) Convert.ToDouble(sessionSettingsDict["InnerStimulusDurationMs"]);
-            stimulusDepth = (float) Convert.ToDouble(sessionSettingsDict["StimulusDepthMeters"]);
-            interTrialDelay = (float) Convert.ToDouble(sessionSettingsDict["InterTrialDelaySeconds"]);
+            outerStimulusDuration = Convert.ToSingle(sessionSettingsDict["OuterStimulusDurationMs"]);
+            innerStimulusDuration = Convert.ToSingle(sessionSettingsDict["InnerStimulusDurationMs"]);
+            stimulusDepth = Convert.ToSingle(sessionSettingsDict["StimulusDepthMeters"]);
+            interTrialDelay = Convert.ToSingle(sessionSettingsDict["InterTrialDelaySeconds"]);
  
             regionSlices = Convert.ToInt32(sessionSettingsDict["TotalRegionSlices"]);
             flipRegions = (bool) sessionSettingsDict["FlipRegions"];
-            return this;
+            coherenceStaircase = ParseStaircase((List<object>) sessionSettingsDict["CoherenceStaircase"]);
         }
 
-        private Color ParseColor(List<object> color)
+        private static List<float> ParseStaircase(IEnumerable<object> list)
+        {
+            return list.Select(Convert.ToSingle).ToList();
+        }
+
+        private static Color ParseColor(IReadOnlyList<object> color)
         {
             return new Color(
                 (float) (double) color[0],
