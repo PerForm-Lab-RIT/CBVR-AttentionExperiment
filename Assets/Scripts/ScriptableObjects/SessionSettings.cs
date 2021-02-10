@@ -32,6 +32,9 @@ namespace ScriptableObjects
         public int regionSlices;
         public bool flipRegions;
 
+        public bool coarseAdjustEnabled;
+        public List<float> choosableAngles;
+
         // IMPORTANT: Any changes made in this function should be cross-checked with both the corresponding JSON
         // and the UXF data-points collection
         public void LoadFromUxfJson()
@@ -49,15 +52,18 @@ namespace ScriptableObjects
             interTrialDelay = Convert.ToSingle(sessionSettingsDict["InterTrialDelaySeconds"]);
  
             regionSlices = Convert.ToInt32(sessionSettingsDict["TotalRegionSlices"]);
-            flipRegions = (bool) sessionSettingsDict["FlipRegions"];
+            flipRegions = Convert.ToBoolean(sessionSettingsDict["FlipRegions"]);
             
-            coherenceStaircase = ParseStaircase((List<object>) sessionSettingsDict["CoherenceStaircase"]);
+            coherenceStaircase = ParseFloatList((List<object>) sessionSettingsDict["CoherenceStaircase"]);
             staircaseIncreaseThreshold = Convert.ToInt32(sessionSettingsDict["StaircaseIncreaseThreshold"]);
             staircaseDecreaseThreshold = Convert.ToInt32(sessionSettingsDict["StaircaseDecreaseThreshold"]);
             interTrialDelay = Convert.ToSingle(sessionSettingsDict["InterTrialDelaySeconds"]);
+            
+            coarseAdjustEnabled = Convert.ToBoolean(sessionSettingsDict["CoarseAdjustment"]);
+            choosableAngles = ParseFloatList((List<object>) sessionSettingsDict["ChoosableAngles"]);
         }
 
-        private static List<float> ParseStaircase(IEnumerable<object> list)
+        private static List<float> ParseFloatList(IEnumerable<object> list)
         {
             return list.Select(Convert.ToSingle).ToList();
         }

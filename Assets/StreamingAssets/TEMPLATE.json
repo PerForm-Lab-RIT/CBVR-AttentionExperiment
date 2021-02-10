@@ -16,7 +16,9 @@
 		
 		"TotalRegionSlices": 4,
 		"FlipRegions": false,
-		"CoarseAdjustment": false,
+		
+		"CoarseAdjustment": true,
+		"ChoosableAngles": [0, 45, 90, 135, 180, 225, 270, 315]
 		
 		"CoherenceStaircase": [0,40,80,120,160,200,240,280,320,338]
 		"StaircaseIncreaseThreshold": 2

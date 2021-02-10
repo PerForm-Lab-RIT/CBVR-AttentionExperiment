@@ -46,19 +46,8 @@ public class TrialManager : MonoBehaviour
     
     public void OnEnable()
     {
-        if(sessionSettings.regionSlices % 2 != 0)
-            Debug.LogWarning("Odd number of aperture slices detected! Please use an even number.");
-        
         _apertureSlices = PartitionAperture();
-        _innerStimulusSettings = innerStimulus.GetComponent<DotManager>().GetSettings();
-        _outerStimulusSettings = outerStimulus.GetComponent<DotManager>().GetSettings();
-
-        _innerStimulusSettings.stimDepthMeters = sessionSettings.stimulusDepth;
-        _outerStimulusSettings.stimDepthMeters = sessionSettings.stimulusDepth;
-        
-        innerStimulus.GetComponent<DotManager>().InitializeWithSettings(_innerStimulusSettings);
-        outerStimulus.GetComponent<DotManager>().InitializeWithSettings(_outerStimulusSettings);
-        
+        InitializeStimuli();
 
         var fixationDotRadius = sessionSettings.fixationDotRadius * Mathf.PI / 180 * sessionSettings.stimulusDepth;
         fixationDot.transform.localScale = new Vector3(2.0f * fixationDotRadius, 0.0f, 2.0f * fixationDotRadius);
@@ -72,6 +61,19 @@ public class TrialManager : MonoBehaviour
             sessionSettings.staircaseDecreaseThreshold);
 
         confirmInputAction[inputSource].onStateUp += GetUserSelection;
+        soundPlayer.volume = 0.5f;
+    }
+
+    private void InitializeStimuli()
+    {
+        _innerStimulusSettings = innerStimulus.GetComponent<DotManager>().GetSettings();
+        _outerStimulusSettings = outerStimulus.GetComponent<DotManager>().GetSettings();
+
+        _innerStimulusSettings.stimDepthMeters = sessionSettings.stimulusDepth;
+        _outerStimulusSettings.stimDepthMeters = sessionSettings.stimulusDepth;
+
+        innerStimulus.GetComponent<DotManager>().InitializeWithSettings(_innerStimulusSettings);
+        outerStimulus.GetComponent<DotManager>().InitializeWithSettings(_outerStimulusSettings);
     }
 
     private void GetUserSelection(SteamVR_Action_Boolean action, SteamVR_Input_Sources source)
@@ -86,9 +88,13 @@ public class TrialManager : MonoBehaviour
             var selectionLocation =
                 outerStimulus.transform.InverseTransformPoint(laserManager.GetActiveSelectionTransform().position);
 
+            var chosenDirection = angleSelectAction.axis.normalized;
+            if (sessionSettings.coarseAdjustEnabled)
+                chosenDirection = DiscretizeInput(chosenDirection);
+            
             _userInput = new InputData
             {
-                ChosenDirection = angleSelectAction.axis.normalized,
+                ChosenDirection = chosenDirection,
                 SelectionLocation = new Vector2(selectionLocation.x, selectionLocation.z)
             };
             _waitingForInput = false;
@@ -97,8 +103,33 @@ public class TrialManager : MonoBehaviour
         }
     }
 
+    private Vector2 DiscretizeInput(Vector2 chosenDirection)
+    {
+        var angleChoiceList = sessionSettings.choosableAngles;
+        var choiceDifferences = new float[sessionSettings.choosableAngles.Count];
+        
+        var minimumDifference = float.MaxValue;
+        var bestChoice = new Vector2();
+
+        for (var i = 0; i < angleChoiceList.Count; i++)
+        {
+            var directionChoice = Utility.Rotate2D(Vector2.up, angleChoiceList[i]);
+            var difference = Mathf.Acos(Vector2.Dot(directionChoice, chosenDirection));
+
+            if (difference < minimumDifference)
+            {
+                bestChoice = directionChoice;
+                minimumDifference = difference;
+            }
+        }
+        return bestChoice;
+    }
+
     private (float, float)[] PartitionAperture()
     {
+        if(sessionSettings.regionSlices % 2 != 0)
+            Debug.LogWarning("Odd number of aperture slices detected! Please use an even number.");
+        
         var slices = new (float, float)[sessionSettings.regionSlices / 2];
         var sliceSize = 360.0f / sessionSettings.regionSlices;
 
@@ -133,7 +164,10 @@ public class TrialManager : MonoBehaviour
         var randomPosition = Utility.Rotate2D(new Vector2(0.0f, randomRadialMagnitude), randomAngle);
         innerStimulus.transform.localPosition =
             new Vector3(randomPosition.x, randomPosition.y, sessionSettings.stimulusDepth);
-        _innerStimulusSettings.correctAngle = Random.Range(0.0f, 360.0f);
+        
+        _innerStimulusSettings.correctAngle = (sessionSettings.coarseAdjustEnabled) ? 
+            sessionSettings.choosableAngles[Random.Range(0, sessionSettings.choosableAngles.Count)] : Random.Range(0.0f, 360.0f);
+        
         _innerStimulusSettings.coherenceRange = _coherenceStaircase.CurrentStaircaseLevel();
         innerStimulus.GetComponent<DotManager>().InitializeWithSettings(_innerStimulusSettings);
         _trialRoutine = TrialRoutine(trial);
