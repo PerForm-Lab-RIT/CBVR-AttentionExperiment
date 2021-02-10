@@ -33,6 +33,7 @@ public class TrialManager : MonoBehaviour
     [SerializeField] private AudioSource soundPlayer;
 
     private int _trialCount = 1;
+    private Staircase _coherenceStaircase;
     private StimulusSettings _innerStimulusSettings;
     private StimulusSettings _outerStimulusSettings;
     private (float, float)[] _apertureSlices;
@@ -65,6 +66,10 @@ public class TrialManager : MonoBehaviour
         
         correctCircle.SetActive(false);
         userCircle.SetActive(false);
+
+        _coherenceStaircase = new Staircase(sessionSettings.coherenceStaircase, 
+            sessionSettings.staircaseIncreaseThreshold, 
+            sessionSettings.staircaseDecreaseThreshold);
 
         confirmInputAction[inputSource].onStateUp += GetUserSelection;
     }
@@ -115,6 +120,7 @@ public class TrialManager : MonoBehaviour
 
     public void BeginTrial(Trial trial)
     {
+        Debug.Log("CURRENT STAIRCASE: " + _coherenceStaircase.CurrentStaircaseLevel());
         soundPlayer.PlayOneShot(sfx.experimentStart);
         var (start, end) = _apertureSlices[Random.Range(0, _apertureSlices.Length)];
         var randomAngle = Random.Range(start, end);
@@ -128,6 +134,7 @@ public class TrialManager : MonoBehaviour
         innerStimulus.transform.localPosition =
             new Vector3(randomPosition.x, randomPosition.y, sessionSettings.stimulusDepth);
         _innerStimulusSettings.correctAngle = Random.Range(0.0f, 360.0f);
+        _innerStimulusSettings.coherenceRange = _coherenceStaircase.CurrentStaircaseLevel();
         innerStimulus.GetComponent<DotManager>().InitializeWithSettings(_innerStimulusSettings);
         _trialRoutine = TrialRoutine(trial);
         _inputReceived = false;
@@ -154,11 +161,13 @@ public class TrialManager : MonoBehaviour
             var positionError = Mathf.Acos(Vector3.Dot(innerStimulusPosition.normalized, chosenPosition.normalized)) * 180f / Mathf.PI;
             trial.result["chosen_angle"] = chosenAngle;
             trial.result["position_error"] = positionError;
+            _coherenceStaircase.RecordWin();
         }
         else
         {
             trial.result["chosen_angle"] = "T/O";
             trial.result["position_error"] = "T/O";
+            _coherenceStaircase.RecordLoss();
         }
 
         if (_trialCount < sessionSettings.numTrials)

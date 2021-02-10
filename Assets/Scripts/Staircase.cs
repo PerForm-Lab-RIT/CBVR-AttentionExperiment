@@ -5,13 +5,13 @@ public class Staircase
     private readonly List<float> _staircaseLevels;
     private int _currentStaircase;
     
-    private readonly uint _increaseThreshold;
-    private readonly uint _decreaseThreshold;
+    private readonly int _increaseThreshold;
+    private readonly int _decreaseThreshold;
 
     private uint _winStreak;
     private uint _loseStreak;
     
-    public Staircase(List<float> staircaseLevels, uint increaseThreshold, uint decreaseThreshold)
+    public Staircase(List<float> staircaseLevels, int increaseThreshold, int decreaseThreshold)
     {
         _staircaseLevels = staircaseLevels;
         _increaseThreshold = increaseThreshold;

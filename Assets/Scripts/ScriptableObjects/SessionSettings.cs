@@ -24,7 +24,10 @@ namespace ScriptableObjects
         public float innerStimulusDuration;
         public float stimulusDepth;
         public float interTrialDelay;
+        
         public List<float> coherenceStaircase;
+        public int staircaseIncreaseThreshold;
+        public int staircaseDecreaseThreshold;
         
         public int regionSlices;
         public bool flipRegions;
@@ -47,7 +50,11 @@ namespace ScriptableObjects
  
             regionSlices = Convert.ToInt32(sessionSettingsDict["TotalRegionSlices"]);
             flipRegions = (bool) sessionSettingsDict["FlipRegions"];
+            
             coherenceStaircase = ParseStaircase((List<object>) sessionSettingsDict["CoherenceStaircase"]);
+            staircaseIncreaseThreshold = Convert.ToInt32(sessionSettingsDict["StaircaseIncreaseThreshold"]);
+            staircaseDecreaseThreshold = Convert.ToInt32(sessionSettingsDict["StaircaseDecreaseThreshold"]);
+            interTrialDelay = Convert.ToSingle(sessionSettingsDict["InterTrialDelaySeconds"]);
         }
 
         private static List<float> ParseStaircase(IEnumerable<object> list)
@@ -58,9 +65,9 @@ namespace ScriptableObjects
         private static Color ParseColor(IReadOnlyList<object> color)
         {
             return new Color(
-                (float) (double) color[0],
-                (float) (double) color[1],
-                (float) (double) color[2]
+                Convert.ToSingle(color[0]),
+                Convert.ToSingle(color[1]),
+                Convert.ToSingle(color[2])
             );
         }
 
