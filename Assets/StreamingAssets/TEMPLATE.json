@@ -14,7 +14,7 @@
 		
 		"InterTrialDelaySeconds": 2.5,
 		
-		"TotalRegionSlices": 4,
+		"TotalRegionSlices": 6,
 		"FlipRegions": false,
 		
 		"CoarseAdjustment": true,
