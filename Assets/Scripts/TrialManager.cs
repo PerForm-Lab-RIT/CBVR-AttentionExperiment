@@ -153,13 +153,16 @@ public class TrialManager : MonoBehaviour
         Debug.Log("CURRENT STAIRCASE: " + _coherenceStaircase.CurrentStaircaseLevel());
         soundPlayer.PlayOneShot(sfx.experimentStart);
         var (start, end) = _apertureSlices[Random.Range(0, _apertureSlices.Length)];
-        var randomAngle = Random.Range(start, end);
 
         var outerApertureRadius = Mathf.Tan(_outerStimulusSettings.apertureRadiusDegrees * Mathf.PI / 180.0f) *
-                             sessionSettings.stimulusDepth;
-        var spaceBuffer = Mathf.Tan(_innerStimulusSettings.apertureRadiusDegrees * Mathf.PI / 180.0f) *
-                          sessionSettings.stimulusDepth;
-        var randomRadialMagnitude = Random.Range(spaceBuffer, outerApertureRadius - spaceBuffer);
+                                  sessionSettings.stimulusDepth;
+        var sliceSize = 360.0f / sessionSettings.regionSlices;
+        var innerApertureRadius = Mathf.Tan(_innerStimulusSettings.apertureRadiusDegrees * Mathf.PI / 180.0f) *
+                                     sessionSettings.stimulusDepth;
+        var minDistance = innerApertureRadius / Mathf.Sin(sliceSize * Mathf.PI / 180.0f / 2);
+        var randomRadialMagnitude = Random.Range(minDistance, outerApertureRadius - innerApertureRadius);
+        var angleOffset = Mathf.Asin(innerApertureRadius / randomRadialMagnitude) * 180.0f / Mathf.PI;
+        var randomAngle = Random.Range(start + angleOffset, end - angleOffset);
         var randomPosition = Utility.Rotate2D(new Vector2(0.0f, randomRadialMagnitude), randomAngle);
         innerStimulus.transform.localPosition =
             new Vector3(randomPosition.x, randomPosition.y, sessionSettings.stimulusDepth);
