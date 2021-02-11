@@ -30,7 +30,7 @@ public class Staircase
     {
         _winStreak++;
         _loseStreak = 0;
-        if (_currentStaircase < _staircaseLevels.Count && _winStreak >= _increaseThreshold)
+        if (_currentStaircase < _staircaseLevels.Count - 1 && _winStreak >= _increaseThreshold)
         {
             _currentStaircase++;
             _winStreak = 0;

@@ -106,8 +106,7 @@ public class TrialManager : MonoBehaviour
     private Vector2 DiscretizeInput(Vector2 chosenDirection)
     {
         var angleChoiceList = sessionSettings.choosableAngles;
-        var choiceDifferences = new float[sessionSettings.choosableAngles.Count];
-        
+
         var minimumDifference = float.MaxValue;
         var bestChoice = new Vector2();
 

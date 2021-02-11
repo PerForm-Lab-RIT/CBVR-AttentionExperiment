@@ -11,6 +11,7 @@ public class Pointer : MonoBehaviour
 
     [SerializeField] private SteamVR_Action_Vector2 arrowRotate;
     [SerializeField] private SteamVR_Input_Sources currentHand;
+    [SerializeField] private bool showArrow;
     private GameObject _pointer;
 
     private const float DefaultDistance = 100f;
@@ -18,6 +19,8 @@ public class Pointer : MonoBehaviour
 
     public void Start()
     {
+        if(!showArrow)
+            arrow.SetActive(false);
         _pointer = GameObject.CreatePrimitive(PrimitiveType.Cylinder);
         _pointer.name = PointerObjectName;
         _pointer.transform.localScale = new Vector3(thickness, thickness, DefaultDistance);
@@ -44,7 +47,8 @@ public class Pointer : MonoBehaviour
             var selectionCircleTransform = selectionCircle.transform;
             selectionCircleTransform.position = hit.point;
             selectionCircleTransform.rotation = Quaternion.LookRotation(hit.normal);
-            UpdateArrow();
+            if(showArrow)
+                UpdateArrow();
         }
         else
         {
