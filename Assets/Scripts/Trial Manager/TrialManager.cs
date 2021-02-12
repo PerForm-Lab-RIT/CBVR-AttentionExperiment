@@ -13,6 +13,8 @@ namespace Trial_Manager
     {
         [SerializeField] private GameObject outerStimulus;
         [SerializeField] private GameObject innerStimulus;
+        [SerializeField] private GameObject stimulusSpacer;
+        [SerializeField] private float stimulusSpacing;
         [SerializeField] private GameObject fixationDot;
         [SerializeField] private SessionSettings sessionSettings;
         [SerializeField] private SteamVR_Action_Boolean confirmInputAction;
@@ -125,7 +127,7 @@ namespace Trial_Manager
             _innerStimulusSettings = innerStimulus.GetComponent<DotManager>().GetSettings();
             _outerStimulusSettings = outerStimulus.GetComponent<DotManager>().GetSettings();
 
-            _innerStimulusSettings.stimDepthMeters = sessionSettings.stimulusDepth;
+            _innerStimulusSettings.stimDepthMeters = sessionSettings.stimulusDepth - stimulusSpacing;
             _outerStimulusSettings.stimDepthMeters = sessionSettings.stimulusDepth;
 
             innerStimulus.GetComponent<DotManager>().InitializeWithSettings(_innerStimulusSettings);
@@ -221,14 +223,16 @@ namespace Trial_Manager
         {
             fixationDot.SetActive(true);
             yield return new WaitForSeconds(sessionSettings.fixationTime);
-        
+            
             fixationDot.SetActive(false);
             outerStimulus.SetActive(true);
+            stimulusSpacer.SetActive(true);
             innerStimulus.SetActive(true);
             yield return new WaitForSeconds(sessionSettings.innerStimulusDuration / 1000);
         
             laserManager.ActivateLaser();
             innerStimulus.SetActive(false);
+            stimulusSpacer.SetActive(false);
             _waitingForInput = true;
             yield return new WaitForSeconds((sessionSettings.outerStimulusDuration - sessionSettings.innerStimulusDuration) / 1000);
             _waitingForInput = false;
@@ -240,7 +244,7 @@ namespace Trial_Manager
         {
             var randomPosition = _partition.RandomInnerStimulusPosition();
             innerStimulus.transform.localPosition =
-                new Vector3(randomPosition.x, randomPosition.y, sessionSettings.stimulusDepth);
+                new Vector3(randomPosition.x, randomPosition.y, sessionSettings.stimulusDepth - stimulusSpacing);
 
             _innerStimulusSettings.correctAngle = sessionSettings.coarseAdjustEnabled
                 ? sessionSettings.choosableAngles[Random.Range(0, sessionSettings.choosableAngles.Count)]
@@ -248,6 +252,9 @@ namespace Trial_Manager
 
             _innerStimulusSettings.coherenceRange = _coherenceStaircase.CurrentStaircaseLevel();
             innerStimulus.GetComponent<DotManager>().InitializeWithSettings(_innerStimulusSettings);
+
+            stimulusSpacer.transform.localPosition = 
+                new Vector3(randomPosition.x, randomPosition.y, sessionSettings.stimulusDepth - stimulusSpacing / 2);
         }
 
         private struct InputData

@@ -19,5 +19,5 @@ MonoBehaviour:
   noiseDotPercentage: 100
   dotSizeArcMinutes: 16
   speed: 10
-  dotLifetime: 0.025
+  dotLifetime: 0.25
   stimDepthMeters: 2
