@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   correctAngle: 0
   coherenceRange: 0
-  apertureRadiusDegrees: 55
+  apertureRadiusDegrees: 45
   density: 1
   noiseDotPercentage: 100
   dotSizeArcMinutes: 16

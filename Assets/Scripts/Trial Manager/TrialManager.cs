@@ -224,7 +224,6 @@ namespace Trial_Manager
             fixationDot.SetActive(true);
             yield return new WaitForSeconds(sessionSettings.fixationTime);
             
-            fixationDot.SetActive(false);
             outerStimulus.SetActive(true);
             stimulusSpacer.SetActive(true);
             innerStimulus.SetActive(true);
@@ -232,6 +231,7 @@ namespace Trial_Manager
         
             laserManager.ActivateLaser();
             innerStimulus.SetActive(false);
+            fixationDot.SetActive(false);
             stimulusSpacer.SetActive(false);
             _waitingForInput = true;
             yield return new WaitForSeconds((sessionSettings.outerStimulusDuration - sessionSettings.innerStimulusDuration) / 1000);
