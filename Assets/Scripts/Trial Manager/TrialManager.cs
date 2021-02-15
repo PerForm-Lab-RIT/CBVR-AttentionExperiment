@@ -23,6 +23,7 @@ namespace Trial_Manager
         [SerializeField] private ActiveLaserManager laserManager;
         [SerializeField] private GameObject correctCircle;
         [SerializeField] private GameObject userCircle;
+        [SerializeField] private float fineErrorTolerance;
 
         [SerializeField] private SoundEffects sfx;
     
@@ -45,6 +46,7 @@ namespace Trial_Manager
     
         private bool _inputReceived;
         private bool _waitingForInput;
+        private bool _isTrialSuccessful;
 
         private InputData _userInput;
     
@@ -89,7 +91,7 @@ namespace Trial_Manager
             laserManager.DeactivateBothLasers();
         
             trial.result["correct_angle"] = _innerStimulusSettings.correctAngle;
-
+            
             if (_inputReceived)
             {
                 var chosenAngle = Mathf.Acos(Vector2.Dot(Vector2.up, 
@@ -104,14 +106,27 @@ namespace Trial_Manager
                 var positionError = Mathf.Acos(Vector3.Dot(innerStimulusPosition.normalized, chosenPosition.normalized)) * 180f / Mathf.PI;
                 trial.result["chosen_angle"] = chosenAngle;
                 trial.result["position_error"] = positionError;
-                _coherenceStaircase.RecordWin();
-            }
+
+                if (sessionSettings.coarseAdjustEnabled &&
+                    Math.Abs(chosenAngle - _innerStimulusSettings.correctAngle) < 0.001f)
+                    _isTrialSuccessful = true;
+                else if (!sessionSettings.coarseAdjustEnabled &&
+                         Math.Abs(chosenAngle - _innerStimulusSettings.correctAngle) < fineErrorTolerance)
+                    _isTrialSuccessful = true;
+                else
+                    _isTrialSuccessful = false;
+                }
             else
             {
                 trial.result["chosen_angle"] = "T/O";
                 trial.result["position_error"] = "T/O";
-                _coherenceStaircase.RecordLoss();
+                _isTrialSuccessful = false;
             }
+            
+            if(_isTrialSuccessful)
+                _coherenceStaircase.RecordWin();
+            else
+                _coherenceStaircase.RecordLoss();
 
             if (_trialCount < sessionSettings.numTrials)
             {
@@ -202,13 +217,13 @@ namespace Trial_Manager
                 userCircle.transform.localRotation = Quaternion.Euler(0f, 0f, userRotation);
             
                 userCircle.SetActive(true);
+            }
+
+            if(_isTrialSuccessful)
                 soundPlayer.PlayOneShot(sfx.success);
-            }
             else
-            {
                 soundPlayer.PlayOneShot(sfx.failure);
-            }
-        
+
             correctCircle.SetActive(true);
         
             yield return new WaitForSeconds(sessionSettings.interTrialDelay);
