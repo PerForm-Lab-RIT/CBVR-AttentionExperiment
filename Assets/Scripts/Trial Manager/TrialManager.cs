@@ -115,7 +115,7 @@ namespace Trial_Manager
                     _isTrialSuccessful = true;
                 else
                     _isTrialSuccessful = false;
-                }
+            }
             else
             {
                 trial.result["chosen_angle"] = "T/O";
