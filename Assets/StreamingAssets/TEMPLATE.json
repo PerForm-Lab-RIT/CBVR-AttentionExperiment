@@ -1,6 +1,6 @@
 {
 	"SessionSettings": {
-		"NumTrials": 30,
+		"NumTrials": 20,
 		"FixationTimeInSeconds": 1,
 		"FixationDotRadiusDegrees": 0.3,
 		"SkyColor": [0.5, 0.5, 0.5],
@@ -8,7 +8,7 @@
 		"OuterStimulusDurationMs": 3000,
 		"OuterStimulusRadiusDegrees": 55,
 		"InnerStimulusDurationMs": 500,
-		"InnerStimulusRadiusDegrees": 20,
+		"InnerStimulusRadiusDegrees": 5,
 		
 		"StimulusDepthMeters": 2,
 		

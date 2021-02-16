@@ -12,24 +12,28 @@ public class AttentionCue : MonoBehaviour
     [SerializeField] private float sampleRate;
     [SerializeField] private float toneFrequency;
 
-    private System.Random random;
+    private System.Random _random;
     
     private int _tick;
 
     public void Start()
     {
-        random = new System.Random();
+        _random = new System.Random();
     }
 
     public void OnEnable()
     {
-        _tick = 0;
-        pulseSource.Play();
+        if (sessionSettings.sessionType == SessionSettings.SessionType.Training)
+        {
+            _tick = 0;
+            pulseSource.Play();
+        }
     }
 
     public void OnDisable()
     {
-        pulseSource.Stop();
+        if(pulseSource.isPlaying)
+            pulseSource.Stop();
     }
 
     public void OnAudioFilterRead(float[] data, int channels)
@@ -54,7 +58,7 @@ public class AttentionCue : MonoBehaviour
     
     private float CreatePulse()
     {
-        var rand = random.NextDouble();
+        var rand = _random.NextDouble();
         return _tick >= (sampleRate * 1 / (2 * pulseFrequency)) ? 0f : (float) rand;
     }
 }

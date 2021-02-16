@@ -127,7 +127,7 @@ namespace Trial_Manager
             else
                 _coherenceStaircase.RecordLoss();
 
-            if (_trialCount < sessionSettings.numTrials)
+            if (_trialCount <= sessionSettings.numTrials)
             {
                 Session.instance.CurrentBlock.CreateTrial();
                 _trialCount++;
@@ -232,8 +232,11 @@ namespace Trial_Manager
         
             correctCircle.SetActive(false);
             userCircle.SetActive(false);
-        
-            Session.instance.BeginNextTrialSafe();
+            
+            if (_trialCount <= sessionSettings.numTrials)
+                Session.instance.BeginNextTrial();
+            else
+                Session.instance.End();
         }
 
         private IEnumerator TrialRoutine(Trial trial)

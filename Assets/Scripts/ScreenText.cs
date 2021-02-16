@@ -2,7 +2,7 @@
 using TMPro;
 using UnityEngine;
 
-public class StartText : MonoBehaviour
+public class ScreenText : MonoBehaviour
 {
     [SerializeField] private TextMeshPro text;
     [SerializeField] private SessionSettings sessionSettings;

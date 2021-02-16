@@ -1,6 +1,4 @@
-﻿using System;
-using ScriptableObjects;
-using UnityEditor;
+﻿using ScriptableObjects;
 using UnityEngine;
 using UXF;
 using Valve.VR;
@@ -54,7 +52,6 @@ public class SessionManager : MonoBehaviour
 
     public void EndSession()
     {
-        Application.Quit();
-        EditorApplication.ExitPlaymode();
+        // TODO
     }
 }
