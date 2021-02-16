@@ -37,6 +37,8 @@ namespace ScriptableObjects
         public bool coarseAdjustEnabled;
         public List<float> choosableAngles;
 
+        public float attentionCueDuration;
+
         // IMPORTANT: Any changes made in this function should be cross-checked with both the corresponding JSON
         // and the UXF data-points collection
         public void LoadFromUxfJson()
@@ -65,6 +67,8 @@ namespace ScriptableObjects
             
             coarseAdjustEnabled = Convert.ToBoolean(sessionSettingsDict["CoarseAdjustment"]);
             choosableAngles = ParseFloatList((List<object>) sessionSettingsDict["ChoosableAngles"]);
+
+            attentionCueDuration = Convert.ToSingle(sessionSettingsDict["AttentionCueDuration"]);
         }
 
         private static List<float> ParseFloatList(IEnumerable<object> list)

@@ -1,6 +1,6 @@
 {
 	"SessionSettings": {
-		"NumTrials": 4,
+		"NumTrials": 5,
 		"FixationTimeInSeconds": 1,
 		"FixationDotRadiusDegrees": 0.3,
 		"SkyColor": [0.5, 0.5, 0.5],
@@ -22,6 +22,8 @@
 		
 		"CoherenceStaircase": [0, 40, 80, 120, 160, 200, 240, 280, 320, 338],
 		"StaircaseIncreaseThreshold": 2,
-		"StaircaseDecreaseThreshold": 1
+		"StaircaseDecreaseThreshold": 1,
+		
+		"AttentionCueDuration": 2
 	}
 }
