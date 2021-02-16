@@ -1,17 +1,31 @@
-﻿using ScriptableObjects;
+﻿using System;
+using ScriptableObjects;
 using UnityEditor;
 using UnityEngine;
 using UXF;
+using Valve.VR;
 
 public class SessionManager : MonoBehaviour
 {
+    [SerializeField] private SessionSettings settings;
+    [SerializeField] private GameObject trialManager;
+    [SerializeField] private SteamVR_Action_Boolean confirmInputAction;
+    
     private int _winStreak;
     private int _score;
     private int _currentDifficulty;
     private Block _primaryBlock;
+    private bool _sessionStarted;
 
-    [SerializeField] private SessionSettings settings;
-    [SerializeField] private GameObject trialManager;
+    public void OnEnable()
+    {
+        confirmInputAction.onStateDown += StartFirstTrial;
+    }
+
+    public void OnDisable()
+    {
+        confirmInputAction.onStateDown -= StartFirstTrial;
+    }
 
     public void StartSession(Session session)
     {
@@ -19,14 +33,23 @@ public class SessionManager : MonoBehaviour
         
         SetSky(settings.skyColor);
         _primaryBlock = session.CreateBlock();
-        var trial = _primaryBlock.CreateTrial();
+        _primaryBlock.CreateTrial();
         trialManager.SetActive(true);
-        trial.Begin();
+        _sessionStarted = true;
     }
     
     private static void SetSky(Color skyColor)
     {
         RenderSettings.skybox.color = skyColor;
+    }
+
+    private void StartFirstTrial(SteamVR_Action_Boolean action, SteamVR_Input_Sources source)
+    {
+        if (_sessionStarted)
+        {
+            Session.instance.BeginNextTrial();
+            _sessionStarted = false;
+        }
     }
 
     public void EndSession()

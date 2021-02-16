@@ -31,7 +31,6 @@ namespace Trial_Manager
         private struct SoundEffects
         {
             public AudioClip experimentStart;
-            public AudioClip attentionCue;
             public AudioClip success;
             public AudioClip failure;
         }
