@@ -42,6 +42,9 @@ namespace Trial_Manager
         private StimulusSettings _innerStimulusSettings;
         private StimulusSettings _outerStimulusSettings;
         private IEnumerator _trialRoutine;
+
+        private float _innerStimMagnitude;
+        private float _innerStimAngle;
     
         private bool _inputReceived;
         private bool _waitingForInput;
@@ -104,7 +107,9 @@ namespace Trial_Manager
 
                 var positionError = Mathf.Acos(Vector3.Dot(innerStimulusPosition.normalized, chosenPosition.normalized)) * 180f / Mathf.PI;
                 trial.result["chosen_angle"] = chosenAngle;
+                trial.result["correct_position"] = $"({_innerStimMagnitude}, {_innerStimAngle})";
                 trial.result["position_error"] = positionError;
+                trial.result["coherence_range"] = _innerStimulusSettings.coherenceRange; 
 
                 if (sessionSettings.coarseAdjustEnabled &&
                     Math.Abs(chosenAngle - _innerStimulusSettings.correctAngle) < 0.001f)
@@ -262,7 +267,7 @@ namespace Trial_Manager
         
         private void RandomizeInnerStimulus()
         {
-            var randomPosition = _partition.RandomInnerStimulusPosition();
+            var randomPosition = _partition.RandomInnerStimulusPosition(out _innerStimMagnitude, out _innerStimAngle);
             innerStimulus.transform.localPosition =
                 new Vector3(randomPosition.x, randomPosition.y, sessionSettings.stimulusDepth - stimulusSpacing);
 

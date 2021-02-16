@@ -48,7 +48,7 @@ namespace Trial_Manager
             }
         }
 
-        public Vector2 RandomInnerStimulusPosition()
+        public Vector2 RandomInnerStimulusPosition(out float magnitude, out float angle)
         {
             var (start, end) = ApertureSlices[Random.Range(0, ApertureSlices.Length)];
             var minDistance = _innerApertureRadius / Mathf.Sin(_sliceSize * Mathf.PI / 180.0f / 2);
@@ -58,6 +58,9 @@ namespace Trial_Manager
             var randomAngle = Random.Range(start + angleOffset, end - angleOffset);
         
             var randomPosition = Utility.Rotate2D(new Vector2(0.0f, randomRadialMagnitude), randomAngle);
+
+            magnitude = Mathf.Atan(randomRadialMagnitude / _sessionSettings.stimulusDepth);
+            angle = randomAngle;
             return randomPosition;
         }
     }
