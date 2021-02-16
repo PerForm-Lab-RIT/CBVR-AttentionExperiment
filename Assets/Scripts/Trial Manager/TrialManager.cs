@@ -144,6 +144,9 @@ namespace Trial_Manager
             _innerStimulusSettings.stimDepthMeters = sessionSettings.stimulusDepth - stimulusSpacing;
             _outerStimulusSettings.stimDepthMeters = sessionSettings.stimulusDepth;
 
+            _innerStimulusSettings.apertureRadiusDegrees = sessionSettings.innerStimulusRadius;
+            _outerStimulusSettings.apertureRadiusDegrees = sessionSettings.outerStimulusRadius;
+
             innerStimulus.GetComponent<DotManager>().InitializeWithSettings(_innerStimulusSettings);
             outerStimulus.GetComponent<DotManager>().InitializeWithSettings(_outerStimulusSettings);
         }
