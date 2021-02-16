@@ -23,6 +23,7 @@ public class AttentionCue : MonoBehaviour
 
     public void OnEnable()
     {
+        _tick = 0;
         pulseSource.Play();
     }
 
