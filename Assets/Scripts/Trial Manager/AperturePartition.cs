@@ -59,7 +59,7 @@ namespace Trial_Manager
         
             var randomPosition = Utility.Rotate2D(new Vector2(0.0f, randomRadialMagnitude), randomAngle);
 
-            magnitude = Mathf.Atan(randomRadialMagnitude / _sessionSettings.stimulusDepth);
+            magnitude = Mathf.Atan(randomRadialMagnitude / _sessionSettings.stimulusDepth) * 180f / Mathf.PI;
             angle = randomAngle;
             return randomPosition;
         }
