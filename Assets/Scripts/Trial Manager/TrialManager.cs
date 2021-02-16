@@ -250,11 +250,14 @@ namespace Trial_Manager
             fixationDot.SetActive(true);
             // TODO: Perform fixation check using eyetracker + coroutine
             yield return new WaitForSeconds(sessionSettings.fixationTime);
-            
-            attentionCue.SetActive(true);
-            yield return new WaitForSeconds(sessionSettings.attentionCueDuration);
-            
-            attentionCue.SetActive(false);
+
+            if (sessionSettings.sessionType == SessionSettings.SessionType.Training)
+            {
+                attentionCue.SetActive(true);
+                yield return new WaitForSeconds(sessionSettings.attentionCueDuration);
+                attentionCue.SetActive(false);
+            }
+
             outerStimulus.SetActive(true);
             stimulusSpacer.SetActive(true);
             innerStimulus.SetActive(true);
