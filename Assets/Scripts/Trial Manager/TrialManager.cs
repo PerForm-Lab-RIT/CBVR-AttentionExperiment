@@ -133,7 +133,7 @@ namespace Trial_Manager
             else
                 _coherenceStaircase.RecordLoss();
 
-            if (_trialCount <= sessionSettings.numTrials)
+            if (_inputReceived && _trialCount <= sessionSettings.numTrials)
             {
                 Session.instance.CurrentBlock.CreateTrial();
                 _trialCount++;
@@ -239,7 +239,10 @@ namespace Trial_Manager
             correctCircle.SetActive(false);
             userCircle.SetActive(false);
             
-            if (_trialCount <= sessionSettings.numTrials)
+            // Redo trial if timed-out
+            if(!_inputReceived)
+                BeginTrial(Session.instance.CurrentTrial);
+            else if (_trialCount <= sessionSettings.numTrials)
                 Session.instance.BeginNextTrial();
             else
                 Session.instance.End();
