@@ -11,6 +11,7 @@ namespace DotStimulus
         [SerializeField] private Material dotMeshMaterial;
         [SerializeField] private StimulusSettings stimulusSettings;
         [SerializeField] private int numDots;
+        [SerializeField] private float randomDepthRange;
         
         private Dot[] _dots;
         private DotShaderData _shaderData;
@@ -90,7 +91,9 @@ namespace DotStimulus
                 // This prevents a 'ring effect' because of dots being spawned in the center
                 var randomPosition = Random.insideUnitCircle * apertureRad;
                 var randomVelocity = Random.insideUnitCircle.normalized * speed;
-                _dots[i] = new Dot(randomVelocity, new Vector3(randomPosition.x, 0, randomPosition.y),
+                var randomDepth = 2 * (Random.value - 0.5f) * randomDepthRange;
+                    
+                _dots[i] = new Dot(randomVelocity, new Vector3(randomPosition.x, randomDepth, randomPosition.y),
                     stimulusSettings);
             }
             GenerateRemainingSignalDots(apertureRad, speed, i);
