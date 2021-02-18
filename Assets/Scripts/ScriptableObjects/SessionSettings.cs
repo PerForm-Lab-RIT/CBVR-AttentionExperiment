@@ -14,8 +14,16 @@ namespace ScriptableObjects
             Training,
             Testing
         }
+        
+        public enum CueType
+        {
+            Neutral,
+            FeatureBased
+        }
+
 
         public SessionType sessionType;
+        public CueType cueType;
         public int numTrials;
         public float fixationTime;
         public float fixationDotRadius;
@@ -38,6 +46,11 @@ namespace ScriptableObjects
         public List<float> choosableAngles;
 
         public float attentionCueDuration;
+        public float attentionCueDepth;
+        public float attentionCueDistance;
+        public float pulseFrequency;
+        public float sampleRate;
+        public float toneFrequency;
 
         // IMPORTANT: Any changes made in this function should be cross-checked with both the corresponding JSON
         // and the UXF data-points collection
@@ -46,6 +59,7 @@ namespace ScriptableObjects
             var sessionSettingsDict = Session.instance.settings.GetDict("SessionSettings");
             
             sessionType = ParseSessionType((string) Session.instance.participantDetails["SessionType"]);
+            cueType = ParseCueType((string) Session.instance.participantDetails["CueType"]);
             numTrials = Convert.ToInt32(sessionSettingsDict["NumTrials"]);
             fixationTime = Convert.ToSingle(sessionSettingsDict["FixationTimeInSeconds"]);
             fixationDotRadius = Convert.ToSingle(sessionSettingsDict["FixationDotRadiusDegrees"]);
@@ -69,6 +83,10 @@ namespace ScriptableObjects
             choosableAngles = ParseFloatList((List<object>) sessionSettingsDict["ChoosableAngles"]);
 
             attentionCueDuration = Convert.ToSingle(sessionSettingsDict["AttentionCueDuration"]);
+            attentionCueDepth = Convert.ToSingle(sessionSettingsDict["AttentionCueDepth"]);
+            attentionCueDistance = Convert.ToSingle(sessionSettingsDict["AttentionCueLengthDegrees"]);
+            pulseFrequency = Convert.ToSingle(sessionSettingsDict["PulseFrequency"]);
+            sampleRate = Convert.ToSingle(sessionSettingsDict["SampleRate"]);
         }
 
         private static List<float> ParseFloatList(IEnumerable<object> list)
@@ -95,6 +113,19 @@ namespace ScriptableObjects
                     return SessionType.Testing;
                 default:
                     return SessionType.Training;
+            }
+        }
+        
+        private static CueType ParseCueType(string cueTypeString)
+        {
+            switch (cueTypeString)
+            {
+                case "Neutral":
+                    return CueType.Neutral;
+                case "Feature-based":
+                    return CueType.FeatureBased;
+                default:
+                    return CueType.Neutral;
             }
         }
     }

@@ -24,6 +24,10 @@
 		"StaircaseIncreaseThreshold": 2,
 		"StaircaseDecreaseThreshold": 1,
 		
-		"AttentionCueDuration": 2
+		"AttentionCueDuration": 2,
+		"AttentionCueDepth": 2,
+		"AttentionCueLengthDegrees": 800,
+		"PulseFrequency": 12,
+		"SampleRate": 44100,
 	}
 }
