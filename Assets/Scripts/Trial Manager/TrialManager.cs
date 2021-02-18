@@ -109,6 +109,7 @@ namespace Trial_Manager
                 var positionError = Mathf.Acos(Vector3.Dot(innerStimulusPosition.normalized, chosenPosition.normalized)) * 180f / Mathf.PI;
                 trial.result["chosen_angle"] = chosenAngle;
                 trial.result["correct_position"] = $"({_innerStimMagnitude}, {_innerStimAngle})";
+                trial.result["chosen_position"] = CalculateChosenPositionPolar(chosenPosition);
                 trial.result["position_error"] = positionError;
                 trial.result["coherence_range"] = _innerStimulusSettings.coherenceRange; 
 
@@ -123,8 +124,6 @@ namespace Trial_Manager
             }
             else
             {
-                trial.result["chosen_angle"] = "T/O";
-                trial.result["position_error"] = "T/O";
                 _isTrialSuccessful = false;
             }
             
@@ -140,6 +139,16 @@ namespace Trial_Manager
             }
         
             StartCoroutine(FeedBackRoutine());
+        }
+
+        private string CalculateChosenPositionPolar(Vector3 chosenPosition)
+        {
+            var chosenPosition2d = new Vector2(chosenPosition.x, chosenPosition.y);
+            var magnitude = Mathf.Atan(chosenPosition2d.magnitude / sessionSettings.stimulusDepth) * 180f / Mathf.PI;
+            var angle = Mathf.Acos(Vector2.Dot(Vector2.up, _userInput.SelectionLocation.normalized)) * 180f / Mathf.PI;
+            if (chosenPosition.x > 0)
+                angle = 360 - angle;
+            return $"({magnitude}, {angle})";
         }
 
         private void InitializeStimuli()
