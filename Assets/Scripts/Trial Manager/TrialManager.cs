@@ -111,7 +111,7 @@ namespace Trial_Manager
                 trial.result["correct_position"] = $"({_innerStimMagnitude}, {_innerStimAngle})";
                 trial.result["chosen_position"] = CalculateChosenPositionPolar(chosenPosition);
                 trial.result["position_error"] = positionError;
-                trial.result["coherence_range"] = _innerStimulusSettings.coherenceRange; 
+                trial.result["coherence_range"] = _innerStimulusSettings.coherenceRange;
 
                 if (sessionSettings.coarseAdjustEnabled &&
                     Math.Abs(chosenAngle - _innerStimulusSettings.correctAngle) < 0.001f)
@@ -126,6 +126,8 @@ namespace Trial_Manager
             {
                 _isTrialSuccessful = false;
             }
+            
+            trial.result["angle_within_threshold"] = _isTrialSuccessful;
             
             if(_isTrialSuccessful)
                 _coherenceStaircase.RecordWin();

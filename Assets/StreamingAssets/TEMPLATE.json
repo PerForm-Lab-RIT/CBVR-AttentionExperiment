@@ -19,6 +19,11 @@
 		
 		"CoarseAdjustment": true,
 		"ChoosableAngles": [0, 45, 90, 135, 180, 225, 270, 315],
+		"AngleErrorToleranceDegrees": 20,
+		"PositionErrorToleranceDegrees": 15,
+		
+		"EnableDirectionalStaircase": true,
+		"EnablePositionalStaircase": true,
 		
 		"CoherenceStaircase": [0, 40, 80, 120, 160, 200, 240, 280, 320, 338],
 		"StaircaseIncreaseThreshold": 2,

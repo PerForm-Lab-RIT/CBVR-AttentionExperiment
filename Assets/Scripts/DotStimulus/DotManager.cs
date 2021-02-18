@@ -1,4 +1,5 @@
-﻿using ScriptableObjects;
+﻿using System;
+using ScriptableObjects;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
@@ -141,6 +142,11 @@ namespace DotStimulus
         }
 
         public void OnDestroy()
+        {
+            _shaderData.ClearBuffers();
+        }
+
+        public void OnApplicationQuit()
         {
             _shaderData.ClearBuffers();
         }
