@@ -93,8 +93,8 @@ namespace ScriptableObjects
             angleErrorTolerance = Convert.ToSingle(sessionSettingsDict["AngleErrorToleranceDegrees"]);
             positionErrorTolerance = Convert.ToSingle(sessionSettingsDict["PositionErrorToleranceDegrees"]);
             
-            positionStaircaseEnabled = Convert.ToBoolean(sessionSettingsDict["EnablePositionalStaircase"]);
-            directionStaircaseEnabled = Convert.ToBoolean(sessionSettingsDict["EnableDirectionalStaircase"]);
+            positionStaircaseEnabled = Convert.ToBoolean(Session.instance.participantDetails["LocationalStaircaseEnabled"]);
+            directionStaircaseEnabled = Convert.ToBoolean(Session.instance.participantDetails["DirectionalStaircaseEnabled"]);
         }
 
         private static List<float> ParseFloatList(IEnumerable<object> list)
