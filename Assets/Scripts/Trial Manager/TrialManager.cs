@@ -24,7 +24,6 @@ namespace Trial_Manager
         [SerializeField] private ActiveLaserManager laserManager;
         [SerializeField] private GameObject correctCircle;
         [SerializeField] private GameObject userCircle;
-        [SerializeField] private float fineErrorTolerance;
 
         [SerializeField] private SoundEffects sfx;
     
@@ -112,12 +111,13 @@ namespace Trial_Manager
                 trial.result["chosen_position"] = CalculateChosenPositionPolar(chosenPosition);
                 trial.result["position_error"] = positionError;
                 trial.result["coherence_range"] = _innerStimulusSettings.coherenceRange;
+                trial.result["position_within_threshold"] = positionError < sessionSettings.positionErrorTolerance;
 
                 if (sessionSettings.coarseAdjustEnabled &&
                     Math.Abs(chosenAngle - _innerStimulusSettings.correctAngle) < 0.001f)
                     _isTrialSuccessful = true;
                 else if (!sessionSettings.coarseAdjustEnabled &&
-                         Math.Abs(chosenAngle - _innerStimulusSettings.correctAngle) < fineErrorTolerance)
+                         Math.Abs(chosenAngle - _innerStimulusSettings.correctAngle) < sessionSettings.angleErrorTolerance)
                     _isTrialSuccessful = true;
                 else
                     _isTrialSuccessful = false;
@@ -128,7 +128,7 @@ namespace Trial_Manager
             }
             
             trial.result["angle_within_threshold"] = _isTrialSuccessful;
-            
+
             if(_isTrialSuccessful)
                 _coherenceStaircase.RecordWin();
             else

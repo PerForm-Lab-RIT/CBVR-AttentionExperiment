@@ -21,7 +21,6 @@ namespace ScriptableObjects
             FeatureBased
         }
 
-
         public SessionType sessionType;
         public CueType cueType;
         public int numTrials;
@@ -50,7 +49,8 @@ namespace ScriptableObjects
         public float attentionCueDistance;
         public float pulseFrequency;
         public float sampleRate;
-        public float toneFrequency;
+        public float angleErrorTolerance;
+        public float positionErrorTolerance;
 
         // IMPORTANT: Any changes made in this function should be cross-checked with both the corresponding JSON
         // and the UXF data-points collection
@@ -87,6 +87,9 @@ namespace ScriptableObjects
             attentionCueDistance = Convert.ToSingle(sessionSettingsDict["AttentionCueLengthDegrees"]);
             pulseFrequency = Convert.ToSingle(sessionSettingsDict["PulseFrequency"]);
             sampleRate = Convert.ToSingle(sessionSettingsDict["SampleRate"]);
+
+            angleErrorTolerance = Convert.ToSingle(sessionSettingsDict["AngleErrorToleranceDegrees"]);
+            positionErrorTolerance = Convert.ToSingle(sessionSettingsDict["PositionErrorToleranceDegrees"]);
         }
 
         private static List<float> ParseFloatList(IEnumerable<object> list)
