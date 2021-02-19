@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections;
+using System.Collections.Generic;
 using DotStimulus;
 using ScriptableObjects;
 using UnityEngine;
@@ -37,7 +38,12 @@ namespace Trial_Manager
         [SerializeField] private AudioSource soundPlayer;
 
         private int _trialCount = 1;
-        private Staircase _coherenceStaircase;
+        private List<Staircase> _staircases;
+        
+        private Staircase _currentStaircase;
+        private Staircase _directionStaircase;
+        private Staircase _locationStaircase;
+        
         private AperturePartition _partition;
         private StimulusSettings _innerStimulusSettings;
         private StimulusSettings _outerStimulusSettings;
@@ -64,9 +70,16 @@ namespace Trial_Manager
             correctCircle.SetActive(false);
             userCircle.SetActive(false);
 
-            _coherenceStaircase = new Staircase(sessionSettings.coherenceStaircase, 
-                sessionSettings.staircaseIncreaseThreshold, 
+            _directionStaircase = new Staircase(sessionSettings.coherenceStaircase,
+                sessionSettings.staircaseIncreaseThreshold,
                 sessionSettings.staircaseDecreaseThreshold);
+
+            _locationStaircase = new Staircase(sessionSettings.coherenceStaircase,
+                sessionSettings.staircaseIncreaseThreshold,
+                sessionSettings.staircaseDecreaseThreshold);
+
+            if (!sessionSettings.directionStaircaseEnabled && !sessionSettings.positionStaircaseEnabled)
+                Debug.LogWarning("No staircase is enabled! Please enable one in the JSON settings.");
 
             confirmInputAction[inputSource].onStateUp += GetUserSelection;
             soundPlayer.volume = 0.5f;
@@ -79,7 +92,9 @@ namespace Trial_Manager
         
         public void BeginTrial(Trial trial)
         {
-            Debug.Log("CURRENT STAIRCASE: " + _coherenceStaircase.CurrentStaircaseLevel());
+            _currentStaircase = PickStaircase();
+            Debug.Log("CURRENT STAIRCASE: " + (_currentStaircase == _locationStaircase ? "location" : "direction"));
+            Debug.Log("CURRENT STAIRCASE LEVEL: " + _currentStaircase.CurrentStaircaseLevel());
             soundPlayer.PlayOneShot(sfx.experimentStart);
             RandomizeInnerStimulus();
             _inputReceived = false;
@@ -113,6 +128,14 @@ namespace Trial_Manager
                 trial.result["coherence_range"] = _innerStimulusSettings.coherenceRange;
                 trial.result["position_within_threshold"] = positionError < sessionSettings.positionErrorTolerance;
 
+                if (_currentStaircase == _locationStaircase)
+                {
+                    if (positionError < sessionSettings.positionErrorTolerance)
+                        _currentStaircase.RecordWin();
+                    else
+                        _currentStaircase.RecordLoss();
+                }
+                
                 if (sessionSettings.coarseAdjustEnabled &&
                     Math.Abs(chosenAngle - _innerStimulusSettings.correctAngle) < 0.001f)
                     _isTrialSuccessful = true;
@@ -123,17 +146,18 @@ namespace Trial_Manager
                     _isTrialSuccessful = false;
             }
             else
-            {
                 _isTrialSuccessful = false;
-            }
-            
+
             trial.result["angle_within_threshold"] = _isTrialSuccessful;
 
-            if(_isTrialSuccessful)
-                _coherenceStaircase.RecordWin();
-            else
-                _coherenceStaircase.RecordLoss();
-
+            if (_currentStaircase == _directionStaircase)
+            {
+                if(_isTrialSuccessful)
+                    _currentStaircase.RecordWin();
+                else
+                    _currentStaircase.RecordLoss();
+            }
+            
             if (_inputReceived && _trialCount <= sessionSettings.numTrials)
             {
                 Session.instance.CurrentBlock.CreateTrial();
@@ -141,6 +165,16 @@ namespace Trial_Manager
             }
         
             StartCoroutine(FeedBackRoutine());
+        }
+        
+        private Staircase PickStaircase()
+        {
+            var possibleStaircases = new List<Staircase>();
+            if(sessionSettings.directionStaircaseEnabled)
+                possibleStaircases.Add(_directionStaircase);
+            if(sessionSettings.positionStaircaseEnabled)
+                possibleStaircases.Add(_locationStaircase);
+            return possibleStaircases[Random.Range(0, possibleStaircases.Count)];
         }
 
         private string CalculateChosenPositionPolar(Vector3 chosenPosition)
@@ -298,7 +332,7 @@ namespace Trial_Manager
                 ? sessionSettings.choosableAngles[Random.Range(0, sessionSettings.choosableAngles.Count)]
                 : Random.Range(0.0f, 360.0f);
 
-            _innerStimulusSettings.coherenceRange = _coherenceStaircase.CurrentStaircaseLevel();
+            _innerStimulusSettings.coherenceRange = _currentStaircase.CurrentStaircaseLevel();
             innerStimulus.GetComponent<DotManager>().InitializeWithSettings(_innerStimulusSettings);
 
             stimulusSpacer.transform.localPosition = 

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace Trial_Manager
 {
@@ -12,7 +13,7 @@ namespace Trial_Manager
 
         private uint _winStreak;
         private uint _loseStreak;
-    
+
         public Staircase(List<float> staircaseLevels, int increaseThreshold, int decreaseThreshold)
         {
             _staircaseLevels = staircaseLevels;
@@ -27,7 +28,7 @@ namespace Trial_Manager
         {
             return _staircaseLevels[_currentStaircase];
         }
-
+        
         public void RecordWin()
         {
             _winStreak++;

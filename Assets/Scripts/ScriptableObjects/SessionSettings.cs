@@ -51,6 +51,8 @@ namespace ScriptableObjects
         public float sampleRate;
         public float angleErrorTolerance;
         public float positionErrorTolerance;
+        public bool positionStaircaseEnabled;
+        public bool directionStaircaseEnabled;
 
         // IMPORTANT: Any changes made in this function should be cross-checked with both the corresponding JSON
         // and the UXF data-points collection
@@ -90,6 +92,9 @@ namespace ScriptableObjects
 
             angleErrorTolerance = Convert.ToSingle(sessionSettingsDict["AngleErrorToleranceDegrees"]);
             positionErrorTolerance = Convert.ToSingle(sessionSettingsDict["PositionErrorToleranceDegrees"]);
+            
+            positionStaircaseEnabled = Convert.ToBoolean(sessionSettingsDict["EnablePositionalStaircase"]);
+            directionStaircaseEnabled = Convert.ToBoolean(sessionSettingsDict["EnableDirectionalStaircase"]);
         }
 
         private static List<float> ParseFloatList(IEnumerable<object> list)
