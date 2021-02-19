@@ -149,6 +149,7 @@ namespace Trial_Manager
                 _isTrialSuccessful = false;
 
             trial.result["angle_within_threshold"] = _isTrialSuccessful;
+            trial.result["staircase"] = _currentStaircase == _locationStaircase ? "location" : "direction";
 
             if (_currentStaircase == _directionStaircase)
             {
