@@ -192,12 +192,16 @@ namespace Trial_Manager
         {
             _innerStimulusSettings = innerStimulus.GetComponent<DotManager>().GetSettings();
             _outerStimulusSettings = outerStimulus.GetComponent<DotManager>().GetSettings();
-
             _innerStimulusSettings.stimDepthMeters = sessionSettings.stimulusDepth - stimulusSpacing;
             _outerStimulusSettings.stimDepthMeters = sessionSettings.stimulusDepth;
-
             _innerStimulusSettings.apertureRadiusDegrees = sessionSettings.innerStimulusRadius;
             _outerStimulusSettings.apertureRadiusDegrees = sessionSettings.outerStimulusRadius;
+            _innerStimulusSettings.density = sessionSettings.stimulusDensity;
+            _outerStimulusSettings.density = sessionSettings.stimulusDensity;
+            _innerStimulusSettings.dotLifetime = sessionSettings.dotLifetime;
+            _outerStimulusSettings.dotLifetime = sessionSettings.dotLifetime;
+            _innerStimulusSettings.dotSizeArcMinutes = sessionSettings.dotSize;
+            _outerStimulusSettings.dotSizeArcMinutes = sessionSettings.dotSize;
 
             innerStimulus.GetComponent<DotManager>().InitializeWithSettings(_innerStimulusSettings);
             outerStimulus.GetComponent<DotManager>().InitializeWithSettings(_outerStimulusSettings);

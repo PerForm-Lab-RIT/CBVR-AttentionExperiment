@@ -27,6 +27,9 @@ namespace ScriptableObjects
         public float fixationTime;
         public float fixationDotRadius;
         public Color skyColor;
+        public float stimulusDensity;
+        public float dotLifetime;
+        public float dotSize;
         public float outerStimulusRadius;
         public float innerStimulusRadius;
         public float outerStimulusDuration;
@@ -66,6 +69,9 @@ namespace ScriptableObjects
             fixationTime = Convert.ToSingle(sessionSettingsDict["FixationTimeInSeconds"]);
             fixationDotRadius = Convert.ToSingle(sessionSettingsDict["FixationDotRadiusDegrees"]);
             skyColor = ParseColor((List<object>) sessionSettingsDict["SkyColor"]);
+            stimulusDensity = Convert.ToSingle(sessionSettingsDict["StimulusDensity"]);
+            dotLifetime = Convert.ToSingle(sessionSettingsDict["DotLifetimeSeconds"]);
+            dotSize = Convert.ToSingle(sessionSettingsDict["StimulusDotSizeArcMinutes"]);
             outerStimulusRadius = Convert.ToSingle(sessionSettingsDict["OuterStimulusRadiusDegrees"]);
             innerStimulusRadius = Convert.ToSingle(sessionSettingsDict["InnerStimulusRadiusDegrees"]);
             outerStimulusDuration = Convert.ToSingle(sessionSettingsDict["OuterStimulusDurationMs"]);

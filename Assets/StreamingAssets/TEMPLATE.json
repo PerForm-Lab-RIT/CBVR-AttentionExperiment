@@ -1,16 +1,19 @@
 {
 	"SessionSettings": {
-		"NumTrials": 30,
+		"NumTrials": 100,
 		"FixationTimeInSeconds": 1,
 		"FixationDotRadiusDegrees": 0.3,
 		"SkyColor": [0.5, 0.5, 0.5],
 		
+		"StimulusDensity": 2.5,
+		"StimulusDotSizeArcMinutes": 16,
+		"DotLifetimeSeconds": 0.25,
 		"OuterStimulusDurationMs": 3000,
 		"OuterStimulusRadiusDegrees": 55,
 		"InnerStimulusDurationMs": 500,
 		"InnerStimulusRadiusDegrees": 15,
 		
-		"StimulusDepthMeters": 2,
+		"StimulusDepthMeters": 0.5,
 		
 		"InterTrialDelaySeconds": 2.5,
 		
@@ -26,9 +29,9 @@
 		"StaircaseIncreaseThreshold": 2,
 		"StaircaseDecreaseThreshold": 1,
 		
-		"AttentionCueDuration": 2,
+		"AttentionCueDuration": 1,
 		"AttentionCueDepth": 2,
-		"AttentionCueLengthDegrees": 800,
+		"AttentionCueLengthDegrees": 80,
 		"PulseFrequency": 12,
 		"SampleRate": 44100,
 	}
