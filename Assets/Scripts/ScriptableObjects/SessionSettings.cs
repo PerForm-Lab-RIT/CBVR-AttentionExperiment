@@ -21,8 +21,15 @@ namespace ScriptableObjects
             FeatureBased
         }
 
+        public enum FeedbackType
+        {
+            Directional,
+            Locational
+        }
+
         public SessionType sessionType;
         public CueType cueType;
+        public FeedbackType feedbackType;
         public int numTrials;
         public float fixationTime;
         public float fixationDotRadius;
@@ -65,6 +72,7 @@ namespace ScriptableObjects
             
             sessionType = ParseSessionType((string) Session.instance.participantDetails["SessionType"]);
             cueType = ParseCueType((string) Session.instance.participantDetails["CueType"]);
+            feedbackType = ParseFeedbackType((string) Session.instance.participantDetails["FeedbackType"]);
             numTrials = Convert.ToInt32(sessionSettingsDict["NumTrials"]);
             fixationTime = Convert.ToSingle(sessionSettingsDict["FixationTimeInSeconds"]);
             fixationDotRadius = Convert.ToSingle(sessionSettingsDict["FixationDotRadiusDegrees"]);
@@ -140,6 +148,19 @@ namespace ScriptableObjects
                     return CueType.FeatureBased;
                 default:
                     return CueType.Neutral;
+            }
+        }
+        
+        private static FeedbackType ParseFeedbackType(string feedbackTypeString)
+        {
+            switch (feedbackTypeString)
+            {
+                case "Directional":
+                    return FeedbackType.Directional;
+                case "Locational":
+                    return FeedbackType.Locational;
+                default:
+                    return FeedbackType.Directional;
             }
         }
     }
