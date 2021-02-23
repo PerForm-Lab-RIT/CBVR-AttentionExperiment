@@ -93,6 +93,7 @@ namespace Trial_Manager
         public void BeginTrial(Trial trial)
         {
             _currentStaircase = PickStaircase();
+            _isTrialSuccessful = false;
             Debug.Log("CURRENT STAIRCASE: " + (_currentStaircase == _locationStaircase ? "location" : "direction"));
             Debug.Log("CURRENT STAIRCASE LEVEL: " + _currentStaircase.CurrentStaircaseLevel());
             soundPlayer.PlayOneShot(sfx.experimentStart);
@@ -127,23 +128,38 @@ namespace Trial_Manager
                 trial.result["position_error"] = positionError;
                 trial.result["coherence_range"] = _innerStimulusSettings.coherenceRange;
                 trial.result["position_within_threshold"] = positionError < sessionSettings.positionErrorTolerance;
-
-                if (_currentStaircase == _locationStaircase)
-                {
-                    if (positionError < sessionSettings.positionErrorTolerance)
-                        _currentStaircase.RecordWin();
-                    else
-                        _currentStaircase.RecordLoss();
-                }
                 
+                if (positionError < sessionSettings.positionErrorTolerance)
+                {
+                    if(_currentStaircase == _locationStaircase)
+                        _currentStaircase.RecordWin();
+                    if (sessionSettings.feedbackType == SessionSettings.FeedbackType.Locational)
+                        _isTrialSuccessful = true;
+                }
+                else if(_currentStaircase == _locationStaircase)
+                    _currentStaircase.RecordLoss();
+
+
                 if (sessionSettings.coarseAdjustEnabled &&
                     Math.Abs(chosenAngle - _innerStimulusSettings.correctAngle) < 0.001f)
-                    _isTrialSuccessful = true;
+                {
+                    if(_currentStaircase == _directionStaircase)
+                        _currentStaircase.RecordWin();
+                    if (sessionSettings.feedbackType == SessionSettings.FeedbackType.Directional)
+                        _isTrialSuccessful = true;
+                }
                 else if (!sessionSettings.coarseAdjustEnabled &&
-                         Math.Abs(chosenAngle - _innerStimulusSettings.correctAngle) < sessionSettings.angleErrorTolerance)
-                    _isTrialSuccessful = true;
+                         Math.Abs(chosenAngle - _innerStimulusSettings.correctAngle) <
+                         sessionSettings.angleErrorTolerance)
+                {
+                    if(_currentStaircase == _directionStaircase)
+                        _currentStaircase.RecordWin();
+                    if (sessionSettings.feedbackType == SessionSettings.FeedbackType.Directional)
+                        _isTrialSuccessful = true;
+                }
                 else
-                    _isTrialSuccessful = false;
+                    if(_currentStaircase == _directionStaircase)
+                        _currentStaircase.RecordLoss();
             }
             else
                 _isTrialSuccessful = false;
@@ -151,14 +167,6 @@ namespace Trial_Manager
             trial.result["angle_within_threshold"] = _isTrialSuccessful;
             trial.result["staircase"] = _currentStaircase == _locationStaircase ? "location" : "direction";
 
-            if (_currentStaircase == _directionStaircase)
-            {
-                if(_isTrialSuccessful)
-                    _currentStaircase.RecordWin();
-                else
-                    _currentStaircase.RecordLoss();
-            }
-            
             if (_inputReceived && _trialCount <= sessionSettings.numTrials)
             {
                 Session.instance.CurrentBlock.CreateTrial();
