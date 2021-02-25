@@ -25,17 +25,7 @@ namespace Trial_Manager
         [SerializeField] private ActiveLaserManager laserManager;
         [SerializeField] private GameObject correctCircle;
         [SerializeField] private GameObject userCircle;
-
-        [SerializeField] private SoundEffects sfx;
-    
-        [Serializable]
-        private struct SoundEffects
-        {
-            public AudioClip experimentStart;
-            public AudioClip success;
-            public AudioClip failure;
-        }
-        [SerializeField] private AudioSource soundPlayer;
+        [SerializeField] private SoundPlayer soundPlayer;
 
         private int _trialCount = 1;
         private List<Staircase> _staircases;
@@ -57,19 +47,20 @@ namespace Trial_Manager
         private bool _isTrialSuccessful;
 
         private InputData _userInput;
-    
+        private DotManager _innerStimulusManager;
+
         public void OnEnable()
         {
             InitializeStimuli();
             InitializeFixationDot();
             InitializeStaircases();
+            _innerStimulusManager = innerStimulus.GetComponent<DotManager>();
             _partition = new AperturePartition(sessionSettings, _outerStimulusSettings, _innerStimulusSettings);
             
             correctCircle.SetActive(false);
             userCircle.SetActive(false);
             
             confirmInputAction[inputSource].onStateUp += GetUserSelection;
-            soundPlayer.volume = 0.5f;
         }
 
         private void InitializeFixationDot()
@@ -105,7 +96,7 @@ namespace Trial_Manager
             _isTrialSuccessful = false;
             Debug.Log("CURRENT STAIRCASE: " + (_currentStaircase == _locationStaircase ? "location" : "direction"));
             Debug.Log("CURRENT STAIRCASE LEVEL: " + _currentStaircase.CurrentStaircaseLevel());
-            soundPlayer.PlayOneShot(sfx.experimentStart);
+            soundPlayer.PlayStartSound();
             RandomizeInnerStimulus();
             _inputReceived = false;
             
@@ -122,12 +113,12 @@ namespace Trial_Manager
             {
                 CalculateOutputs(out var chosenAngle, out var chosenPosition, out var positionError);
                 if (positionError < sessionSettings.positionErrorTolerance)
-                    RecordLocationWin();
+                    CheckForLocationWin();
                 else if(_currentStaircase == _locationStaircase)
                     _currentStaircase.RecordLoss();
                 
                 if (Math.Abs(chosenAngle - _innerStimulusSettings.correctAngle) < sessionSettings.angleErrorTolerance)
-                    RecordDirectionWin();
+                    CheckForDirectionWin();
                 else if(_currentStaircase == _directionStaircase)
                         _currentStaircase.RecordLoss();
                 
@@ -143,7 +134,7 @@ namespace Trial_Manager
             StartCoroutine(FeedBackRoutine());
         }
 
-        private void RecordLocationWin()
+        private void CheckForLocationWin()
         {
             if (_currentStaircase == _locationStaircase)
                 _currentStaircase.RecordWin();
@@ -179,7 +170,7 @@ namespace Trial_Manager
             trial.result["staircase"] = _currentStaircase == _locationStaircase ? "location" : "direction";
         }
 
-        private void RecordDirectionWin()
+        private void CheckForDirectionWin()
         {
             if (_currentStaircase == _directionStaircase)
                 _currentStaircase.RecordWin();
@@ -302,9 +293,9 @@ namespace Trial_Manager
                 UpdateAndDisplayUserCircle(innerApertureRadius);
 
             if (_isTrialSuccessful)
-                soundPlayer.PlayOneShot(sfx.success);
+                soundPlayer.PlayWinSound();
             else
-                soundPlayer.PlayOneShot(sfx.failure);
+                soundPlayer.PlayLoseSound();
         }
 
         private void UpdateAndDisplayCorrectCircle(float innerApertureRadius)
@@ -368,7 +359,7 @@ namespace Trial_Manager
                 : Random.Range(0.0f, 360.0f);
 
             _innerStimulusSettings.coherenceRange = _currentStaircase.CurrentStaircaseLevel();
-            innerStimulus.GetComponent<DotManager>().InitializeWithSettings(_innerStimulusSettings);
+            _innerStimulusManager.InitializeWithSettings(_innerStimulusSettings);
 
             stimulusSpacer.transform.localPosition = 
                 new Vector3(randomPosition.x, randomPosition.y, sessionSettings.stimulusDepth - stimulusSpacing / 2);
