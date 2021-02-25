@@ -1,6 +1,5 @@
 ﻿using ScriptableObjects;
 using UnityEngine;
-using Valve.VR;
 
 public class AttentionCue : MonoBehaviour
 {

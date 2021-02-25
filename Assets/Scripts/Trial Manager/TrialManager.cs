@@ -61,15 +61,26 @@ namespace Trial_Manager
         public void OnEnable()
         {
             InitializeStimuli();
+            InitializeFixationDot();
+            InitializeStaircases();
             _partition = new AperturePartition(sessionSettings, _outerStimulusSettings, _innerStimulusSettings);
+            
+            correctCircle.SetActive(false);
+            userCircle.SetActive(false);
+            
+            confirmInputAction[inputSource].onStateUp += GetUserSelection;
+            soundPlayer.volume = 0.5f;
+        }
 
+        private void InitializeFixationDot()
+        {
             var fixationDotRadius = sessionSettings.fixationDotRadius * Mathf.PI / 180 * sessionSettings.stimulusDepth;
             fixationDot.transform.localScale = new Vector3(2.0f * fixationDotRadius, 0.0f, 2.0f * fixationDotRadius);
             fixationDot.transform.localPosition = new Vector3(0.0f, 0.0f, sessionSettings.stimulusDepth);
-        
-            correctCircle.SetActive(false);
-            userCircle.SetActive(false);
+        }
 
+        private void InitializeStaircases()
+        {
             _directionStaircase = new Staircase(sessionSettings.coherenceStaircase,
                 sessionSettings.staircaseIncreaseThreshold,
                 sessionSettings.staircaseDecreaseThreshold);
@@ -80,16 +91,14 @@ namespace Trial_Manager
 
             if (!sessionSettings.directionStaircaseEnabled && !sessionSettings.positionStaircaseEnabled)
                 Debug.LogWarning("No staircase is enabled! Please enable one in the JSON settings.");
-
-            confirmInputAction[inputSource].onStateUp += GetUserSelection;
-            soundPlayer.volume = 0.5f;
         }
-        
+
         public void OnDisable()
         {
             confirmInputAction[inputSource].onStateUp -= GetUserSelection;
         }
         
+        // Called via UXF event
         public void BeginTrial(Trial trial)
         {
             _currentStaircase = PickStaircase();
@@ -104,68 +113,26 @@ namespace Trial_Manager
             StartCoroutine(_trialRoutine);
         }
 
+        // Called via UXF event
         public void EndTrial(Trial trial)
         {
             laserManager.DeactivateBothLasers();
-        
-            trial.result["correct_angle"] = _innerStimulusSettings.correctAngle;
             
             if (_inputReceived)
             {
-                var chosenAngle = Mathf.Acos(Vector2.Dot(Vector2.up, 
-                    _userInput.ChosenDirection.normalized)) * 180f / Mathf.PI;
-                if (_userInput.ChosenDirection.x > 0)
-                    chosenAngle = 360.0f - chosenAngle;
-
-                var innerStimulusPosition = innerStimulus.transform.localPosition;
-                var chosenPosition = new Vector3(_userInput.SelectionLocation.x, _userInput.SelectionLocation.y,
-                    _outerStimulusSettings.stimDepthMeters);
-
-                var positionError = Mathf.Acos(Vector3.Dot(innerStimulusPosition.normalized, chosenPosition.normalized)) * 180f / Mathf.PI;
-                trial.result["chosen_angle"] = chosenAngle;
-                trial.result["correct_position"] = $"({_innerStimMagnitude}, {_innerStimAngle})";
-                trial.result["chosen_position"] = CalculateChosenPositionPolar(chosenPosition);
-                trial.result["position_error"] = positionError;
-                trial.result["coherence_range"] = _innerStimulusSettings.coherenceRange;
-                trial.result["position_within_threshold"] = positionError < sessionSettings.positionErrorTolerance;
-                
+                CalculateOutputs(out var chosenAngle, out var chosenPosition, out var positionError);
                 if (positionError < sessionSettings.positionErrorTolerance)
-                {
-                    if(_currentStaircase == _locationStaircase)
-                        _currentStaircase.RecordWin();
-                    if (sessionSettings.feedbackType == SessionSettings.FeedbackType.Locational)
-                        _isTrialSuccessful = true;
-                }
+                    RecordLocationWin();
                 else if(_currentStaircase == _locationStaircase)
                     _currentStaircase.RecordLoss();
-
-
-                if (sessionSettings.coarseAdjustEnabled &&
-                    Math.Abs(chosenAngle - _innerStimulusSettings.correctAngle) < 0.001f)
-                {
-                    if(_currentStaircase == _directionStaircase)
-                        _currentStaircase.RecordWin();
-                    if (sessionSettings.feedbackType == SessionSettings.FeedbackType.Directional)
-                        _isTrialSuccessful = true;
-                }
-                else if (!sessionSettings.coarseAdjustEnabled &&
-                         Math.Abs(chosenAngle - _innerStimulusSettings.correctAngle) <
-                         sessionSettings.angleErrorTolerance)
-                {
-                    if(_currentStaircase == _directionStaircase)
-                        _currentStaircase.RecordWin();
-                    if (sessionSettings.feedbackType == SessionSettings.FeedbackType.Directional)
-                        _isTrialSuccessful = true;
-                }
-                else
-                    if(_currentStaircase == _directionStaircase)
+                
+                if (Math.Abs(chosenAngle - _innerStimulusSettings.correctAngle) < sessionSettings.angleErrorTolerance)
+                    RecordDirectionWin();
+                else if(_currentStaircase == _directionStaircase)
                         _currentStaircase.RecordLoss();
+                
+                RecordTrialData(trial, chosenAngle, chosenPosition, positionError);
             }
-            else
-                _isTrialSuccessful = false;
-
-            trial.result["angle_within_threshold"] = _isTrialSuccessful;
-            trial.result["staircase"] = _currentStaircase == _locationStaircase ? "location" : "direction";
 
             if (_inputReceived && _trialCount <= sessionSettings.numTrials)
             {
@@ -175,7 +142,51 @@ namespace Trial_Manager
         
             StartCoroutine(FeedBackRoutine());
         }
-        
+
+        private void RecordLocationWin()
+        {
+            if (_currentStaircase == _locationStaircase)
+                _currentStaircase.RecordWin();
+            if (sessionSettings.feedbackType == SessionSettings.FeedbackType.Locational)
+                _isTrialSuccessful = true;
+        }
+
+        private void CalculateOutputs(out float chosenAngle, out Vector3 chosenPosition, out float positionError)
+        {
+            chosenAngle = Mathf.Acos(Vector2.Dot(Vector2.up,
+                _userInput.chosenDirection.normalized)) * 180f / Mathf.PI;
+            if (_userInput.chosenDirection.x > 0)
+                chosenAngle = 360.0f - chosenAngle;
+
+            var innerStimulusPosition = innerStimulus.transform.localPosition;
+            chosenPosition = new Vector3(_userInput.selectionLocation.x, _userInput.selectionLocation.y,
+                _outerStimulusSettings.stimDepthMeters);
+
+            positionError = Mathf.Acos(Vector3.Dot(innerStimulusPosition.normalized, chosenPosition.normalized)) * 180f /
+                            Mathf.PI;
+        }
+
+        private void RecordTrialData(Trial trial, float chosenAngle, Vector3 chosenPosition, float positionError)
+        {
+            trial.result["correct_angle"] = _innerStimulusSettings.correctAngle;
+            trial.result["chosen_angle"] = chosenAngle;
+            trial.result["correct_position"] = $"({_innerStimMagnitude}, {_innerStimAngle})";
+            trial.result["chosen_position"] = CalculateChosenPositionPolar(chosenPosition);
+            trial.result["position_error"] = positionError;
+            trial.result["coherence_range"] = _innerStimulusSettings.coherenceRange;
+            trial.result["position_within_threshold"] = positionError < sessionSettings.positionErrorTolerance;
+            trial.result["angle_within_threshold"] = _isTrialSuccessful;
+            trial.result["staircase"] = _currentStaircase == _locationStaircase ? "location" : "direction";
+        }
+
+        private void RecordDirectionWin()
+        {
+            if (_currentStaircase == _directionStaircase)
+                _currentStaircase.RecordWin();
+            if (sessionSettings.feedbackType == SessionSettings.FeedbackType.Directional)
+                _isTrialSuccessful = true;
+        }
+
         private Staircase PickStaircase()
         {
             var possibleStaircases = new List<Staircase>();
@@ -190,7 +201,7 @@ namespace Trial_Manager
         {
             var chosenPosition2d = new Vector2(chosenPosition.x, chosenPosition.y);
             var magnitude = Mathf.Atan(chosenPosition2d.magnitude / sessionSettings.stimulusDepth) * 180f / Mathf.PI;
-            var angle = Mathf.Acos(Vector2.Dot(Vector2.up, _userInput.SelectionLocation.normalized)) * 180f / Mathf.PI;
+            var angle = Mathf.Acos(Vector2.Dot(Vector2.up, _userInput.selectionLocation.normalized)) * 180f / Mathf.PI;
             if (chosenPosition.x > 0)
                 angle = 360 - angle;
             return $"({magnitude}, {angle})";
@@ -233,8 +244,8 @@ namespace Trial_Manager
             
                 _userInput = new InputData
                 {
-                    ChosenDirection = chosenDirection,
-                    SelectionLocation = new Vector2(selectionLocation.x, selectionLocation.z)
+                    chosenDirection = chosenDirection,
+                    selectionLocation = new Vector2(selectionLocation.x, selectionLocation.z)
                 };
                 _waitingForInput = false;
                 _inputReceived = true;
@@ -265,33 +276,8 @@ namespace Trial_Manager
 
         private IEnumerator FeedBackRoutine()
         {
-            var innerApertureRadius = Mathf.Tan(_innerStimulusSettings.apertureRadiusDegrees * Mathf.PI / 180) *
-                                      _innerStimulusSettings.stimDepthMeters;
-            correctCircle.transform.localPosition = innerStimulus.transform.localPosition;
-            correctCircle.transform.localScale = new Vector3(2 * innerApertureRadius, 2 * innerApertureRadius, 1.0f);
-            correctCircle.transform.localRotation = Quaternion.Euler(0f, 0f, _innerStimulusSettings.correctAngle);
+            GiveFeedback();
 
-            if (_inputReceived)
-            {
-                var userRotation = Mathf.Acos(Vector2.Dot(Vector3.up, _userInput.ChosenDirection.normalized))
-                    * 180f / Mathf.PI;
-                if (_userInput.ChosenDirection.x > 0)
-                    userRotation = -userRotation;
-                userCircle.transform.localPosition = new Vector3(_userInput.SelectionLocation.x,
-                    _userInput.SelectionLocation.y, _outerStimulusSettings.stimDepthMeters);
-                userCircle.transform.localScale = new Vector3(2 * innerApertureRadius, 2 * innerApertureRadius, 1.0f);
-                userCircle.transform.localRotation = Quaternion.Euler(0f, 0f, userRotation);
-            
-                userCircle.SetActive(true);
-            }
-
-            if(_isTrialSuccessful)
-                soundPlayer.PlayOneShot(sfx.success);
-            else
-                soundPlayer.PlayOneShot(sfx.failure);
-
-            correctCircle.SetActive(true);
-        
             yield return new WaitForSeconds(sessionSettings.interTrialDelay);
         
             correctCircle.SetActive(false);
@@ -304,6 +290,42 @@ namespace Trial_Manager
                 Session.instance.BeginNextTrial();
             else
                 Session.instance.End();
+        }
+
+        private void GiveFeedback()
+        {
+            var innerApertureRadius = Mathf.Tan(_innerStimulusSettings.apertureRadiusDegrees * Mathf.PI / 180) *
+                                      _innerStimulusSettings.stimDepthMeters;
+
+            UpdateAndDisplayCorrectCircle(innerApertureRadius);
+            if (_inputReceived)
+                UpdateAndDisplayUserCircle(innerApertureRadius);
+
+            if (_isTrialSuccessful)
+                soundPlayer.PlayOneShot(sfx.success);
+            else
+                soundPlayer.PlayOneShot(sfx.failure);
+        }
+
+        private void UpdateAndDisplayCorrectCircle(float innerApertureRadius)
+        {
+            correctCircle.transform.localPosition = innerStimulus.transform.localPosition;
+            correctCircle.transform.localScale = new Vector3(2 * innerApertureRadius, 2 * innerApertureRadius, 1.0f);
+            correctCircle.transform.localRotation = Quaternion.Euler(0f, 0f, _innerStimulusSettings.correctAngle);
+            correctCircle.SetActive(true);
+        }
+
+        private void UpdateAndDisplayUserCircle(float innerApertureRadius)
+        {
+            var userRotation = Mathf.Acos(Vector2.Dot(Vector3.up, _userInput.chosenDirection.normalized))
+                * 180f / Mathf.PI;
+            if (_userInput.chosenDirection.x > 0)
+                userRotation = -userRotation;
+            userCircle.transform.localPosition = new Vector3(_userInput.selectionLocation.x,
+                _userInput.selectionLocation.y, _outerStimulusSettings.stimDepthMeters);
+            userCircle.transform.localScale = new Vector3(2 * innerApertureRadius, 2 * innerApertureRadius, 1.0f);
+            userCircle.transform.localRotation = Quaternion.Euler(0f, 0f, userRotation);
+            userCircle.SetActive(true);
         }
 
         private IEnumerator TrialRoutine(Trial trial)
@@ -354,8 +376,8 @@ namespace Trial_Manager
 
         private struct InputData
         {
-            public Vector2 SelectionLocation;
-            public Vector2 ChosenDirection;
+            public Vector2 selectionLocation;
+            public Vector2 chosenDirection;
         }
     }
 }
