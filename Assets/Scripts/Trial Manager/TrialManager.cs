@@ -247,9 +247,9 @@ namespace Trial_Manager
             var minimumDifference = float.MaxValue;
             var bestChoice = new Vector2();
 
-            for (var i = 0; i < angleChoiceList.Count; i++)
+            foreach (var angleChoice in angleChoiceList)
             {
-                var directionChoice = Utility.Rotate2D(Vector2.up, angleChoiceList[i]);
+                var directionChoice = Utility.Rotate2D(Vector2.up, angleChoice);
                 var difference = Mathf.Acos(Vector2.Dot(directionChoice, chosenDirection));
 
                 if (difference < minimumDifference)
