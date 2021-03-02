@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Windows.Forms.VisualStyles;
 using DotStimulus;
+using EyeTracker;
 using ScriptableObjects;
 using UnityEngine;
 using UXF;
@@ -25,6 +27,8 @@ namespace Trial_Manager
         [SerializeField] private ActiveLaserManager laserManager;
         [SerializeField] private SoundPlayer soundPlayer;
         [SerializeField] private FeedbackModule feedbackModule;
+        [SerializeField] private SelectEyeTracker eyeTrackerSelector;
+        [SerializeField] private Transform cameraTransform;
 
         private int _trialCount = 1;
         private List<Staircase> _staircases;
@@ -47,12 +51,14 @@ namespace Trial_Manager
 
         private InputData _userInput;
         private DotManager _innerStimulusManager;
+        private IEyeTracker _eyeTracker;
 
         public void OnEnable()
         {
             InitializeStimuli();
             InitializeFixationDot();
             InitializeStaircases();
+            _eyeTracker = eyeTrackerSelector.ChosenTracker;
             _innerStimulusManager = innerStimulus.GetComponent<DotManager>();
             _partition = new AperturePartition(sessionSettings, _outerStimulusSettings, _innerStimulusSettings);
 
@@ -279,8 +285,8 @@ namespace Trial_Manager
         private IEnumerator TrialRoutine(Trial trial)
         {
             fixationDot.SetActive(true);
-            // TODO: Perform fixation check using eyetracker + coroutine
-            yield return new WaitForSeconds(sessionSettings.fixationTime);
+            yield return WaitForFixation(sessionSettings.fixationTime, 
+                Mathf.Tan(sessionSettings.fixationErrorTolerance * Mathf.PI / 180 * sessionSettings.stimulusDepth));
 
             if (sessionSettings.sessionType == SessionSettings.SessionType.Training)
             {
@@ -304,6 +310,26 @@ namespace Trial_Manager
             _waitingForInput = false;
             outerStimulus.SetActive(false);
             trial.End();
+        }
+
+        private IEnumerator WaitForFixation(float fixationTime, float maxFixationError)
+        {
+            var timeFixated = 0.0f;
+            while (timeFixated < fixationTime)
+            {
+                timeFixated += Time.deltaTime;
+                if (Physics.Raycast(cameraTransform.position, cameraTransform.TransformDirection(_eyeTracker.GetLocalGazeDirection()), out var hit))
+                {
+                    Debug.DrawRay(cameraTransform.position, hit.distance * cameraTransform.TransformDirection(_eyeTracker.GetLocalGazeDirection()), Color.yellow);
+                    if ((hit.point - fixationDot.transform.position).magnitude > maxFixationError)
+                        timeFixated = 0.0f;
+                }
+                else
+                {
+                    timeFixated = 0.0f;
+                }
+                yield return null;
+            }
         }
         
         private void RandomizeInnerStimulus()

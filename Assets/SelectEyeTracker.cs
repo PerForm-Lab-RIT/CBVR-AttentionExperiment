@@ -6,7 +6,8 @@ public class SelectEyeTracker : MonoBehaviour
 {
     private enum ETrackerSelection
     {
-        PupilLabs
+        PupilLabs,
+        Dummy
     }
 
     [SerializeField] private ETrackerSelection selection;
@@ -15,15 +16,21 @@ public class SelectEyeTracker : MonoBehaviour
     [SerializeField] private float debugDistance;
     [SerializeField] private Transform cameraOrigin;
 
+    private DummyEyeTracker _dummyEyeTracker;
+
     public IEyeTracker ChosenTracker { get; private set; }
     
     public void Start()
     {
+        _dummyEyeTracker = new DummyEyeTracker();
         switch (selection)
         {
             case ETrackerSelection.PupilLabs:
                 pupilEyeTracker.SetActive(true);
                 ChosenTracker = pupilEyeTracker.GetComponent<IEyeTracker>();
+                break;
+            case ETrackerSelection.Dummy:
+                ChosenTracker = _dummyEyeTracker;
                 break;
             default:
                 throw new ArgumentOutOfRangeException();

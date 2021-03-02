@@ -63,6 +63,7 @@ namespace ScriptableObjects
         public float positionErrorTolerance;
         public bool positionStaircaseEnabled;
         public bool directionStaircaseEnabled;
+        public float fixationErrorTolerance;
 
         // IMPORTANT: Any changes made in this function should be cross-checked with both the corresponding JSON
         // and the UXF data-points collection
@@ -109,6 +110,8 @@ namespace ScriptableObjects
             
             positionStaircaseEnabled = Convert.ToBoolean(Session.instance.participantDetails["LocationalStaircaseEnabled"]);
             directionStaircaseEnabled = Convert.ToBoolean(Session.instance.participantDetails["DirectionalStaircaseEnabled"]);
+            
+            fixationErrorTolerance = Convert.ToSingle(sessionSettingsDict["FixationErrorToleranceRadiusDegrees"]);
         }
 
         private static List<float> ParseFloatList(IEnumerable<object> list)

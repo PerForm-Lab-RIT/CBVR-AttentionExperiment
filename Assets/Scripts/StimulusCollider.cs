@@ -13,6 +13,7 @@ public class StimulusCollider : MonoBehaviour
     {
         var apertureRadius = Mathf.Tan(settings.apertureRadiusDegrees * Mathf.PI / 180) *
             settings.stimDepthMeters;
-        boxCollider.size = new Vector3(apertureRadius * 2f, 0.01f, apertureRadius * 2f);
+        boxCollider.size = new Vector3(apertureRadius * 2f, 0.005f, apertureRadius * 2f);
+        transform.localPosition = new Vector3(0.0f, 0.0f, settings.stimDepthMeters);
     }
 }
