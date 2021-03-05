@@ -22,7 +22,7 @@
 		"FlipRegions": true,
 		
 		"CoarseAdjustment": true,
-		"ChoosableAngles": [0, 45, 90, 135, 180, 225, 270, 315],
+		"ChoosableAngles": [90, 270],
 		"AngleErrorToleranceDegrees": 20,
 		"PositionErrorToleranceDegrees": 15,
 		

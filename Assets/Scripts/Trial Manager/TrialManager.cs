@@ -295,14 +295,12 @@ namespace Trial_Manager
             }
 
             outerStimulus.SetActive(true);
-            stimulusSpacer.SetActive(true);
             innerStimulus.SetActive(true);
             yield return new WaitForSeconds(sessionSettings.innerStimulusDuration / 1000);
         
             laserManager.ActivateLaser();
             innerStimulus.SetActive(false);
             fixationDot.SetActive(false);
-            stimulusSpacer.SetActive(false);
             _waitingForInput = true;
             yield return new WaitForSeconds((sessionSettings.outerStimulusDuration - sessionSettings.innerStimulusDuration) / 1000);
             
@@ -345,7 +343,7 @@ namespace Trial_Manager
             _innerStimulusManager.InitializeWithSettings(_innerStimulusSettings);
 
             stimulusSpacer.transform.localPosition = 
-                new Vector3(randomPosition.x, randomPosition.y, sessionSettings.stimulusDepth - stimulusSpacing / 2);
+                new Vector3(0, -stimulusSpacing / 2, 0);
         }
     }
 }
