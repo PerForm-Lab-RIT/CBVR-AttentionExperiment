@@ -39,6 +39,7 @@ namespace ScriptableObjects
         public float dotSize;
         public float outerStimulusRadius;
         public float innerStimulusRadius;
+        public float innerStimulusSpawnRadius;
         public float outerStimulusDuration;
         public float innerStimulusDuration;
         public float stimulusDepth;
@@ -83,6 +84,7 @@ namespace ScriptableObjects
             dotSize = Convert.ToSingle(sessionSettingsDict["StimulusDotSizeArcMinutes"]);
             outerStimulusRadius = Convert.ToSingle(sessionSettingsDict["OuterStimulusRadiusDegrees"]);
             innerStimulusRadius = Convert.ToSingle(sessionSettingsDict["InnerStimulusRadiusDegrees"]);
+            innerStimulusSpawnRadius = Convert.ToSingle(sessionSettingsDict["InnerStimulusSpawnRadius"]);
             outerStimulusDuration = Convert.ToSingle(sessionSettingsDict["OuterStimulusDurationMs"]);
             innerStimulusDuration = Convert.ToSingle(sessionSettingsDict["InnerStimulusDurationMs"]);
             stimulusDepth = Convert.ToSingle(sessionSettingsDict["StimulusDepthMeters"]);

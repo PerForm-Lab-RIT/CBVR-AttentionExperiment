@@ -52,7 +52,10 @@ namespace Trial_Manager
         {
             var (start, end) = ApertureSlices[Random.Range(0, ApertureSlices.Length)];
             var minDistance = _innerApertureRadius / Mathf.Sin(_sliceSize * Mathf.PI / 180.0f / 2);
-            var randomRadialMagnitude = Random.Range(minDistance, _outerApertureRadius - _innerApertureRadius);
+            var spawnRadius = Mathf.Tan(_sessionSettings.innerStimulusSpawnRadius * Mathf.PI / 180.0f) *
+                                     _sessionSettings.stimulusDepth;
+            var randomRadialMagnitude = 
+                Random.Range(minDistance, spawnRadius - _innerApertureRadius);
         
             var angleOffset = Mathf.Asin(_innerApertureRadius / randomRadialMagnitude) * 180.0f / Mathf.PI;
             var randomAngle = Random.Range(start + angleOffset, end - angleOffset);

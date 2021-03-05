@@ -13,6 +13,9 @@
 		"OuterStimulusRadiusDegrees": 55,
 		"InnerStimulusDurationMs": 500,
 		"InnerStimulusRadiusDegrees": 15,
+		"InnerStimulusSpawnRadius": 45,
+		
+		"StimulusSpacingMeters": 0.08,
 		
 		"StimulusDepthMeters": 0.5,
 		
@@ -22,7 +25,7 @@
 		"FlipRegions": true,
 		
 		"CoarseAdjustment": true,
-		"ChoosableAngles": [90, 270],
+		"ChoosableAngles": [0, 90, 180, 270],
 		"AngleErrorToleranceDegrees": 20,
 		"PositionErrorToleranceDegrees": 15,
 		
