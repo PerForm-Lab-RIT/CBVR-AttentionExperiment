@@ -44,6 +44,7 @@ namespace ScriptableObjects
         public float innerStimulusDuration;
         public float stimulusDepth;
         public float interTrialDelay;
+        public float stimulusSpacing;
         
         public List<float> coherenceStaircase;
         public int staircaseIncreaseThreshold;
@@ -97,6 +98,8 @@ namespace ScriptableObjects
             staircaseIncreaseThreshold = Convert.ToInt32(sessionSettingsDict["StaircaseIncreaseThreshold"]);
             staircaseDecreaseThreshold = Convert.ToInt32(sessionSettingsDict["StaircaseDecreaseThreshold"]);
             interTrialDelay = Convert.ToSingle(sessionSettingsDict["InterTrialDelaySeconds"]);
+            
+            stimulusSpacing = Convert.ToSingle(sessionSettingsDict["StimulusSpacingMeters"]);
             
             coarseAdjustEnabled = Convert.ToBoolean(sessionSettingsDict["CoarseAdjustment"]);
             choosableAngles = ParseFloatList((List<object>) sessionSettingsDict["ChoosableAngles"]);

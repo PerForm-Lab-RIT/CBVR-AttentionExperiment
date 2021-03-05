@@ -333,7 +333,7 @@ namespace Trial_Manager
         {
             var randomPosition = _partition.RandomInnerStimulusPosition(out _innerStimMagnitude, out _innerStimAngle);
             innerStimulus.transform.localPosition =
-                new Vector3(randomPosition.x, randomPosition.y, sessionSettings.stimulusDepth - stimulusSpacing);
+                new Vector3(randomPosition.x, randomPosition.y, sessionSettings.stimulusDepth - sessionSettings.stimulusSpacing);
 
             _innerStimulusSettings.correctAngle = sessionSettings.coarseAdjustEnabled
                 ? sessionSettings.choosableAngles[Random.Range(0, sessionSettings.choosableAngles.Count)]
@@ -341,9 +341,6 @@ namespace Trial_Manager
 
             _innerStimulusSettings.coherenceRange = _currentStaircase.CurrentStaircaseLevel();
             _innerStimulusManager.InitializeWithSettings(_innerStimulusSettings);
-
-            stimulusSpacer.transform.localPosition = 
-                new Vector3(0, -stimulusSpacing / 2, 0);
         }
     }
 }

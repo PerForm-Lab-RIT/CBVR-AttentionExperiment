@@ -6,16 +6,16 @@
 		"FixationErrorToleranceRadiusDegrees": 5,
 		"SkyColor": [0.5, 0.5, 0.5],
 		
-		"StimulusDensity": 2.5,
+		"StimulusDensity": 1,
 		"StimulusDotSizeArcMinutes": 16,
 		"DotLifetimeSeconds": 0.25,
-		"OuterStimulusDurationMs": 3000,
+		"OuterStimulusDurationMs": 4000,
 		"OuterStimulusRadiusDegrees": 55,
 		"InnerStimulusDurationMs": 500,
 		"InnerStimulusRadiusDegrees": 15,
 		"InnerStimulusSpawnRadius": 45,
 		
-		"StimulusSpacingMeters": 0.08,
+		"StimulusSpacingMeters": 0.003,
 		
 		"StimulusDepthMeters": 0.5,
 		
