@@ -15,9 +15,7 @@ namespace Trial_Manager
     {
         [SerializeField] private GameObject outerStimulus;
         [SerializeField] private GameObject innerStimulus;
-        [SerializeField] private GameObject stimulusSpacer;
         [SerializeField] private GameObject attentionCue;
-        [SerializeField] private float stimulusSpacing;
         [SerializeField] private GameObject fixationDot;
         [SerializeField] private SessionSettings sessionSettings;
         [SerializeField] private SteamVR_Action_Boolean confirmInputAction;
@@ -203,7 +201,7 @@ namespace Trial_Manager
         {
             _innerStimulusSettings = innerStimulus.GetComponent<DotManager>().GetSettings();
             _outerStimulusSettings = outerStimulus.GetComponent<DotManager>().GetSettings();
-            _innerStimulusSettings.stimDepthMeters = sessionSettings.stimulusDepth - stimulusSpacing;
+            _innerStimulusSettings.stimDepthMeters = sessionSettings.stimulusDepth - sessionSettings.stimulusSpacing;
             _outerStimulusSettings.stimDepthMeters = sessionSettings.stimulusDepth;
             _innerStimulusSettings.apertureRadiusDegrees = sessionSettings.innerStimulusRadius;
             _outerStimulusSettings.apertureRadiusDegrees = sessionSettings.outerStimulusRadius;

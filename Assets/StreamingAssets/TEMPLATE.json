@@ -15,7 +15,7 @@
 		"InnerStimulusRadiusDegrees": 15,
 		"InnerStimulusSpawnRadius": 45,
 		
-		"StimulusSpacingMeters": 0.003,
+		"StimulusSpacingMeters": 0.01,
 		
 		"StimulusDepthMeters": 0.5,
 		
