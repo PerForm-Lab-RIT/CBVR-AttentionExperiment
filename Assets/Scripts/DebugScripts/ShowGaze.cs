@@ -5,12 +5,13 @@ namespace DebugScripts
 {
     public class ShowGaze : MonoBehaviour
     {
+
         [SerializeField] private SelectEyeTracker eyeTrackerObject;
         [SerializeField] private GameObject visual;
         [SerializeField] private Transform cameraTransform;
 
         private IEyeTracker _eyeTracker;
-    
+        
         public void OnEnable()
         {
             _eyeTracker = eyeTrackerObject.ChosenTracker;

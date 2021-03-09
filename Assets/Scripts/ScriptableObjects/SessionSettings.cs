@@ -77,7 +77,7 @@ namespace ScriptableObjects
             cueType = ParseCueType((string) Session.instance.participantDetails["CueType"]);
             feedbackType = ParseFeedbackType((string) Session.instance.participantDetails["FeedbackType"]);
             numTrials = Convert.ToInt32(sessionSettingsDict["NumTrials"]);
-            fixationTime = Convert.ToSingle(sessionSettingsDict["FixationTimeInSeconds"]);
+            fixationTime = Convert.ToSingle(sessionSettingsDict["FixationTimeSeconds"]);
             fixationDotRadius = Convert.ToSingle(sessionSettingsDict["FixationDotRadiusDegrees"]);
             skyColor = ParseColor((List<object>) sessionSettingsDict["SkyColor"]);
             stimulusDensity = Convert.ToSingle(sessionSettingsDict["StimulusDensity"]);

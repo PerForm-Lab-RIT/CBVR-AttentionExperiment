@@ -1,7 +1,7 @@
 {
 	"SessionSettings": {
 		"NumTrials": 5,
-		"FixationTimeInSeconds": 1,
+		"FixationTimeSeconds": 1,
 		"FixationDotRadiusDegrees": 0.3,
 		"FixationErrorToleranceRadiusDegrees": 5,
 		"SkyColor": [0.5, 0.5, 0.5],
@@ -37,6 +37,6 @@
 		"AttentionCueDepth": 2,
 		"AttentionCueLengthDegrees": 80,
 		"PulseFrequency": 12,
-		"SampleRate": 44100,
+		"SampleRate": 44100
 	}
 }

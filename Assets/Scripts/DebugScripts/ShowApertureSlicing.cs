@@ -28,7 +28,7 @@ namespace DebugScripts
                 Gizmos.DrawLine(outerStimulusTransform.localToWorldMatrix * new Vector4(0,0,0,1), line);
             }
         }
-    
+        
         private IEnumerable<Vector3> GenerateLines()
         {
             var apertureRadius = Mathf.Tan(outerStimulusSettings.apertureRadiusDegrees * Mathf.PI / 180) *
