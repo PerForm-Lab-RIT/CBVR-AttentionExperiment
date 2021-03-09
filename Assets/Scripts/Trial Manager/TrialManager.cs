@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections;
-using System.Collections.Generic;
 using DotStimulus;
 using EyeTracker;
 using ScriptableObjects;
@@ -28,12 +27,7 @@ namespace Trial_Manager
         [SerializeField] private Transform cameraTransform;
 
         private int _trialCount = 1;
-        private List<Staircase> _staircases;
-        
-        private Staircase _currentStaircase;
-        private Staircase _directionStaircase;
-        private Staircase _locationStaircase;
-        
+
         private AperturePartition _partition;
         private StimulusSettings _innerStimulusSettings;
         private StimulusSettings _outerStimulusSettings;
@@ -49,15 +43,16 @@ namespace Trial_Manager
         private InputData _userInput;
         private DotManager _innerStimulusManager;
         private IEyeTracker _eyeTracker;
+        private StaircaseManager _staircaseManager;
 
         public void OnEnable()
         {
             InitializeStimuli();
             InitializeFixationDot();
-            InitializeStaircases();
             _eyeTracker = eyeTrackerSelector.ChosenTracker;
             _innerStimulusManager = innerStimulus.GetComponent<DotManager>();
             _partition = new AperturePartition(sessionSettings, _outerStimulusSettings, _innerStimulusSettings);
+            _staircaseManager = new StaircaseManager(sessionSettings);
 
             confirmInputAction[inputSource].onStateUp += GetUserSelection;
         }
@@ -69,20 +64,6 @@ namespace Trial_Manager
             fixationDot.transform.localPosition = new Vector3(0.0f, 0.0f, sessionSettings.stimulusDepth);
         }
 
-        private void InitializeStaircases()
-        {
-            _directionStaircase = new Staircase(sessionSettings.coherenceStaircase,
-                sessionSettings.staircaseIncreaseThreshold,
-                sessionSettings.staircaseDecreaseThreshold);
-
-            _locationStaircase = new Staircase(sessionSettings.coherenceStaircase,
-                sessionSettings.staircaseIncreaseThreshold,
-                sessionSettings.staircaseDecreaseThreshold);
-
-            if (!sessionSettings.directionStaircaseEnabled && !sessionSettings.positionStaircaseEnabled)
-                Debug.LogWarning("No staircase is enabled! Please enable one in the JSON settings.");
-        }
-
         public void OnDisable()
         {
             confirmInputAction[inputSource].onStateUp -= GetUserSelection;
@@ -91,10 +72,10 @@ namespace Trial_Manager
         // Called via UXF event
         public void BeginTrial(Trial trial)
         {
-            _currentStaircase = PickStaircase();
+            _staircaseManager.RandomizeStaircase();
+            Debug.Log("CURRENT STAIRCASE: " + _staircaseManager.CurrentStaircaseName());
+            Debug.Log("CURRENT STAIRCASE LEVEL: " + _staircaseManager.CurrentStaircase.CurrentStaircaseLevel());
             _isTrialSuccessful = false;
-            Debug.Log("CURRENT STAIRCASE: " + (_currentStaircase == _locationStaircase ? "location" : "direction"));
-            Debug.Log("CURRENT STAIRCASE LEVEL: " + _currentStaircase.CurrentStaircaseLevel());
             soundPlayer.PlayStartSound();
             RandomizeInnerStimulus();
             _inputReceived = false;
@@ -112,14 +93,20 @@ namespace Trial_Manager
             {
                 CalculateOutputs(out var chosenAngle, out var chosenPosition, out var positionError);
                 if (positionError < sessionSettings.positionErrorTolerance)
-                    CheckForLocationWin();
-                else if(_currentStaircase == _locationStaircase)
-                    _currentStaircase.RecordLoss();
-                
+                {
+                    if (_staircaseManager.CheckForLocationWin())
+                        _isTrialSuccessful = true;
+                }
+                else
+                    _staircaseManager.CheckForLocationLoss();
+
                 if (Math.Abs(chosenAngle - _innerStimulusSettings.correctAngle) < sessionSettings.angleErrorTolerance)
-                    CheckForDirectionWin();
-                else if(_currentStaircase == _directionStaircase)
-                        _currentStaircase.RecordLoss();
+                {
+                    if (_staircaseManager.CheckForDirectionWin())
+                        _isTrialSuccessful = true;
+                }
+                else
+                    _staircaseManager.CheckForDirectionLoss();
                 
                 RecordTrialData(trial, chosenAngle, chosenPosition, positionError);
             }
@@ -131,14 +118,6 @@ namespace Trial_Manager
             }
         
             StartCoroutine(FeedBackRoutine());
-        }
-
-        private void CheckForLocationWin()
-        {
-            if (_currentStaircase == _locationStaircase)
-                _currentStaircase.RecordWin();
-            if (sessionSettings.feedbackType == SessionSettings.FeedbackType.Locational)
-                _isTrialSuccessful = true;
         }
 
         private void CalculateOutputs(out float chosenAngle, out Vector3 chosenPosition, out float positionError)
@@ -166,25 +145,7 @@ namespace Trial_Manager
             trial.result["coherence_range"] = _innerStimulusSettings.coherenceRange;
             trial.result["position_within_threshold"] = positionError < sessionSettings.positionErrorTolerance;
             trial.result["angle_within_threshold"] = _isTrialSuccessful;
-            trial.result["staircase"] = _currentStaircase == _locationStaircase ? "location" : "direction";
-        }
-
-        private void CheckForDirectionWin()
-        {
-            if (_currentStaircase == _directionStaircase)
-                _currentStaircase.RecordWin();
-            if (sessionSettings.feedbackType == SessionSettings.FeedbackType.Directional)
-                _isTrialSuccessful = true;
-        }
-
-        private Staircase PickStaircase()
-        {
-            var possibleStaircases = new List<Staircase>();
-            if(sessionSettings.directionStaircaseEnabled)
-                possibleStaircases.Add(_directionStaircase);
-            if(sessionSettings.positionStaircaseEnabled)
-                possibleStaircases.Add(_locationStaircase);
-            return possibleStaircases[Random.Range(0, possibleStaircases.Count)];
+            trial.result["staircase"] = _staircaseManager.CurrentStaircaseName();
         }
 
         private string CalculateChosenPositionPolar(Vector3 chosenPosition)
@@ -337,7 +298,7 @@ namespace Trial_Manager
                 ? sessionSettings.choosableAngles[Random.Range(0, sessionSettings.choosableAngles.Count)]
                 : Random.Range(0.0f, 360.0f);
 
-            _innerStimulusSettings.coherenceRange = _currentStaircase.CurrentStaircaseLevel();
+            _innerStimulusSettings.coherenceRange = _staircaseManager.CurrentStaircase.CurrentStaircaseLevel();
             _innerStimulusManager.InitializeWithSettings(_innerStimulusSettings);
         }
     }
