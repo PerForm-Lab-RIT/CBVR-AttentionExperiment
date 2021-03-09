@@ -42,8 +42,9 @@ namespace Trial_Manager
 
         private InputData _userInput;
         private DotManager _innerStimulusManager;
-        private IEyeTracker _eyeTracker;
         private StaircaseManager _staircaseManager;
+        private IEyeTracker _eyeTracker;
+        
 
         public void OnEnable()
         {
@@ -56,14 +57,7 @@ namespace Trial_Manager
 
             confirmInputAction[inputSource].onStateUp += GetUserSelection;
         }
-
-        private void InitializeFixationDot()
-        {
-            var fixationDotRadius = sessionSettings.fixationDotRadius * Mathf.PI / 180 * sessionSettings.stimulusDepth;
-            fixationDot.transform.localScale = new Vector3(2.0f * fixationDotRadius, 0.0f, 2.0f * fixationDotRadius);
-            fixationDot.transform.localPosition = new Vector3(0.0f, 0.0f, sessionSettings.stimulusDepth);
-        }
-
+        
         public void OnDisable()
         {
             confirmInputAction[inputSource].onStateUp -= GetUserSelection;
@@ -120,6 +114,13 @@ namespace Trial_Manager
             StartCoroutine(FeedBackRoutine());
         }
 
+        private void InitializeFixationDot()
+        {
+            var fixationDotRadius = sessionSettings.fixationDotRadius * Mathf.PI / 180 * sessionSettings.stimulusDepth;
+            fixationDot.transform.localScale = new Vector3(2.0f * fixationDotRadius, 0.0f, 2.0f * fixationDotRadius);
+            fixationDot.transform.localPosition = new Vector3(0.0f, 0.0f, sessionSettings.stimulusDepth);
+        }
+        
         private void CalculateOutputs(out float chosenAngle, out Vector3 chosenPosition, out float positionError)
         {
             chosenAngle = Mathf.Acos(Vector2.Dot(Vector2.up,
