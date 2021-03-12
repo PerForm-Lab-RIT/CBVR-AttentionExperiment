@@ -1,3 +1,9 @@
+# Contents
+[Getting Started](#getting-started)\
+[Choosing an Eye Tracker](#choosing-an-eye-tracker)\
+[JSON Settings](#json-settings)\
+[Data Output](#data-output)
+
 # Getting Started
 First, open the project in [Unity 2019.4.18f1](https://download.unity3d.com/download_unity/3310a4d4f880/UnityDownloadAssistant-2019.4.18f1.exe).
 After opening the project, go into Play mode to open the UXF UI: 
