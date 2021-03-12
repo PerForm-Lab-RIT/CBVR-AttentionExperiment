@@ -32,7 +32,7 @@ outside of the project folder.
 *- Enable Locational Staircase:* Toggles the use of the locational staircase
 
     NOTE: At least one staircase should ALWAYS be enabled otherwise the experiment won't
-    run properly. If both staircases are enabled, they will be shuffled.
+    run properly. If both staircases are enabled, they will be interleaved.
 
 *- Feedback Type:* Determines if positive auditory feedback is based on the success of the participant choosing
 a correct direction for an inner stimulus or a correct location.
@@ -87,3 +87,32 @@ A table explaining each setting is shown below:
 | AttentionCueLengthDegrees           |      float     | The amount of visual degrees the path of the feature-based attention should move                                                                |
 | PulseFrequency                      |      float     | The pulse frequency of the attention cue                                                                                                        |
 | SampleRate                          |       int      | The sample rate of the attention cue                                                                                                            |
+
+# Data Output
+Data will be output to the specified folder defined in the UXF UI. Inside the output folder, the data is organized by the settings used at the top level. Within each settings folder will be another group of folders
+representing the participant ID. From there, data is recorded per session number. The majority of data is stored within the trial_results.csv file. Data provided via the UXF UI (such as the feedback or session type)
+is located in the participantdetails/participant_details.csv file. Finally, a copy of the json settings used can be found in the settings folder of a given session. An explanation of each of the trial_results columns
+is shown below:
+
+**NOTE: All polar coordinate magnitudes are represented in visual degrees from the center of the outer stimulus. The rotational part of a polar coordinate represents the angular distance starting
+from the local up vector of the outer stimulus and is measured counter-clockwise from 0 to 360 degrees**
+
+| Result                    |         Type        |                                                                                     Explanation |
+|---------------------------|:-------------------:|------------------------------------------------------------------------------------------------:|
+| experiment                |        string       | The name of the settings used for this experiment                                               |
+| ppid                      |        string       | The participant id                                                                              |
+| session_num               |         int         |                                                                                                 |
+| trial_num                 |         int         |                                                                                                 |
+| block_num                 |         int         |                                                                                                 |
+| trial_num_in_block        |         int         |                                                                                                 |
+| start_time                |        float        | The start time of the trial, measured starting from the start of the session                    |
+| end_time                  |        float        | The end time of the trial, measured starting from the start of the session                      |
+| correct_angle             |        float        | The overall correct angle of the inner stimulus                                                 |
+| chosen_angle              |        float        | The participant-chosen direction                                                                |
+| correct_position          | tuple<float, float> | The overall correct position of the inner stimulus                                              |
+| chosen_position           | tuple<float, float> | The participant-chosen position                                                                 |
+| position_error            |        float        | How 'off' the center of the chosen position is from the correct position (in visual degrees)    |
+| coherence_range           |        float        | The variance in the movement angle of the inner stimulus' signal dots (controlled by staircase) |
+| position_within_threshold |         bool        | Whether or not the participant was within the defined position error tolerance                  |
+| angle_within_threshold    |         bool        | Whether or not the participant was within the defined angle error tolerance                     |
+| staircase                 |        string       | The staircase being utilized during a particular trial                                          |
