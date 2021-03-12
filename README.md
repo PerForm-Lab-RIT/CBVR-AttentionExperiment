@@ -69,7 +69,7 @@ A table explaining each setting is shown below:
 | OuterStimulusRadiusDegrees          |      float     |                                                                                                                                                 |
 | InnerStimulusDurationMs             |      float     |                                                                                                                                                 |
 | InnerStimulusRadiusDegrees          |      float     |                                                                                                                                                 |
-| InnerStimulusSpawnRadius            |      float     |                                                                                                                                                 |
+| InnerStimulusSpawnRadius            |      float     | How far from the center the inner stimulus is allowed to spawn (in degrees)                                                                     |
 | StimulusSpacingMeters               |      float     | Defines the distance between the outer and inner stimulus.  This value should be relatively small.  Only adjust if experiencing any flickering. |
 | StimulusDepthMeters                 |      float     | Defines the perceived distance of the stimuli                                                                                                   |
 | InterTrialDelaySeconds              |      float     | The delay between presenting feedback to the participant and the next trial starting                                                            |
