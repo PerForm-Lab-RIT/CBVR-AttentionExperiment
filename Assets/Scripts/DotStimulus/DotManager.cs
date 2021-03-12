@@ -41,20 +41,8 @@ namespace DotStimulus
             worldTransform.localPosition = localPosition;
         }
 
-        public void OnEnable()
-        {
-            _canRender = true;
-        }
-
-        public void OnDisable()
-        {
-            _canRender = false;
-        }
-
         public void Update()
         {
-            if (!_canRender) return;
-            
             for (var i = 0; i < _dots.Length; i++)
             {
                 _dots[i].UpdateDot();

@@ -11,8 +11,6 @@ public class StimulusSpacer : MonoBehaviour
         var innerStimulusRadius = Mathf.Tan(innerStimulusSettings.apertureRadiusDegrees * Mathf.PI / 180f)
                                   * sessionSettings.stimulusDepth;
         GetComponent<MeshRenderer>().material.color = sessionSettings.skyColor;
-        transform.localPosition = 
-            new Vector3(0, -sessionSettings.stimulusSpacing / 2, 0);
         gameObject.transform.localScale = new Vector3(innerStimulusRadius * 2, innerStimulusRadius * 2, 0);
     }
 }

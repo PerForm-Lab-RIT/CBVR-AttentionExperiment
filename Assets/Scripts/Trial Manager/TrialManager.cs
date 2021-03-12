@@ -14,6 +14,7 @@ namespace Trial_Manager
     {
         [SerializeField] private GameObject outerStimulus;
         [SerializeField] private GameObject innerStimulus;
+        [SerializeField] private GameObject stimulusSpacer;
         [SerializeField] private GameObject attentionCue;
         [SerializeField] private GameObject fixationDot;
         [SerializeField] private SessionSettings sessionSettings;
@@ -265,6 +266,7 @@ namespace Trial_Manager
 
             outerStimulus.SetActive(true);
             innerStimulus.SetActive(true);
+            stimulusSpacer.SetActive(true);
             yield return CheckFixationBreakWithDelay(sessionSettings.innerStimulusDuration / 1000, 
                 Mathf.Tan(sessionSettings.fixationErrorTolerance * Mathf.PI / 180 * sessionSettings.stimulusDepth));
 
@@ -274,9 +276,12 @@ namespace Trial_Manager
 
             laserManager.ActivateLaser();
             innerStimulus.SetActive(false);
+            // Inner stimulus renders one frame longer than expected, so wait for next frame.
+            yield return null;
+            stimulusSpacer.SetActive(false);
             fixationDot.SetActive(false);
             _waitingForInput = true;
-            yield return new WaitForSeconds((sessionSettings.outerStimulusDuration - sessionSettings.innerStimulusDuration) / 1000);
+            yield return new WaitForSeconds((sessionSettings.outerStimulusDuration - sessionSettings.innerStimulusDuration) / 1000 - Time.deltaTime);
             
             _waitingForInput = false;
             outerStimulus.SetActive(false);
@@ -342,6 +347,9 @@ namespace Trial_Manager
 
             _innerStimulusSettings.coherenceRange = StaircaseManager.CurrentStaircase.CurrentStaircaseLevel();
             _innerStimulusManager.InitializeWithSettings(_innerStimulusSettings);
+            
+            stimulusSpacer.transform.localPosition = 
+                new Vector3(randomPosition.x, randomPosition.y, sessionSettings.stimulusDepth - sessionSettings.stimulusSpacing / 2);
         }
     }
 }
