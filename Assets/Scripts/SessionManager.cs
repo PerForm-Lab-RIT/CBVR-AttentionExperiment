@@ -52,6 +52,6 @@ public class SessionManager : MonoBehaviour
 
     public void EndSession()
     {
-        // TODO
+        // Do nothing... for now
     }
 }

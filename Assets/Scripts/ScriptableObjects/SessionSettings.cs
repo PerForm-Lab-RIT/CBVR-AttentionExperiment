@@ -38,8 +38,10 @@ namespace ScriptableObjects
         public float dotLifetime;
         public float dotSize;
         public float outerStimulusRadius;
+        public float outerStimulusNoisePercentage;
         public float innerStimulusRadius;
         public float innerStimulusSpawnRadius;
+        public float innerStimulusNoisePercentage;
         public float outerStimulusDuration;
         public float innerStimulusDuration;
         public float stimulusDepth;
@@ -84,6 +86,8 @@ namespace ScriptableObjects
             dotLifetime = Convert.ToSingle(sessionSettingsDict["DotLifetimeSeconds"]);
             dotSize = Convert.ToSingle(sessionSettingsDict["StimulusDotSizeArcMinutes"]);
             outerStimulusRadius = Convert.ToSingle(sessionSettingsDict["OuterStimulusRadiusDegrees"]);
+            outerStimulusNoisePercentage = Convert.ToSingle(sessionSettingsDict["OuterStimulusNoisePercentage"]);
+            innerStimulusNoisePercentage = Convert.ToSingle(sessionSettingsDict["InnerStimulusNoisePercentage"]);
             innerStimulusRadius = Convert.ToSingle(sessionSettingsDict["InnerStimulusRadiusDegrees"]);
             innerStimulusSpawnRadius = Convert.ToSingle(sessionSettingsDict["InnerStimulusSpawnRadius"]);
             outerStimulusDuration = Convert.ToSingle(sessionSettingsDict["OuterStimulusDurationMs"]);

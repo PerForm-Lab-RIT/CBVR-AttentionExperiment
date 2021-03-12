@@ -20,6 +20,7 @@ namespace DotStimulus
         private Bounds _bounds;
         private const float BoundsRange = 5.0f;
         private static readonly int ShaderProperties = Shader.PropertyToID("_Properties");
+        private bool _canRender;
 
         public void Awake()
         {
@@ -29,6 +30,7 @@ namespace DotStimulus
             // at the same time as they require separate material buffers
             dotMeshMaterial = new Material(dotMeshMaterial);
             _bounds = new Bounds(transform.position, Vector3.one * (BoundsRange + 1));
+            _canRender = true;
         }
 
         public void Start()
@@ -39,14 +41,26 @@ namespace DotStimulus
             worldTransform.localPosition = localPosition;
         }
 
+        public void OnEnable()
+        {
+            _canRender = true;
+        }
+
+        public void OnDisable()
+        {
+            _canRender = false;
+        }
+
         public void Update()
         {
-            for(var i = 0; i < _dots.Length; i++)
+            if (!_canRender) return;
+            
+            for (var i = 0; i < _dots.Length; i++)
             {
                 _dots[i].UpdateDot();
                 _shaderData.UpdateMeshPropertiesBuffer(_dots, transform, i);
             }
-        
+
             var meshPropertiesBuffer = _shaderData.MeshPropertiesBuffer;
             meshPropertiesBuffer.SetData(_shaderData.MeshProps);
             dotMeshMaterial.SetBuffer(ShaderProperties, meshPropertiesBuffer);

@@ -44,10 +44,13 @@ namespace Trial_Manager
 
         private InputData _userInput;
         private DotManager _innerStimulusManager;
+        
+        // Property: StaircaseManager
+        // Handles the management and interleaving of staircases
         public StaircaseManager StaircaseManager { get; private set; }
+        
         private IEyeTracker _eyeTracker;
         
-
         public void OnEnable()
         {
             InitializeStimuli();
@@ -177,6 +180,8 @@ namespace Trial_Manager
             _outerStimulusSettings.dotLifetime = sessionSettings.dotLifetime;
             _innerStimulusSettings.dotSizeArcMinutes = sessionSettings.dotSize;
             _outerStimulusSettings.dotSizeArcMinutes = sessionSettings.dotSize;
+            _innerStimulusSettings.noiseDotPercentage = sessionSettings.innerStimulusNoisePercentage;
+            _outerStimulusSettings.noiseDotPercentage = sessionSettings.outerStimulusNoisePercentage;
 
             innerStimulus.GetComponent<DotManager>().InitializeWithSettings(_innerStimulusSettings);
             outerStimulus.GetComponent<DotManager>().InitializeWithSettings(_outerStimulusSettings);
