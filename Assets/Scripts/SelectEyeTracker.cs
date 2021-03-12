@@ -1,5 +1,6 @@
 ﻿using System;
 using EyeTracker;
+using ScriptableObjects;
 using UnityEngine;
 
 public class SelectEyeTracker : MonoBehaviour

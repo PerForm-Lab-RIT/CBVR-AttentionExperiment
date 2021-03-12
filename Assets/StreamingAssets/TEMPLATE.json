@@ -1,9 +1,9 @@
 {
 	"SessionSettings": {
-		"NumTrials": 5,
+		"NumTrials": 25,
 		"FixationTimeSeconds": 1,
 		"FixationDotRadiusDegrees": 0.3,
-		"FixationErrorToleranceRadiusDegrees": 5,
+		"FixationErrorToleranceRadiusDegrees": 8,
 		"SkyColor": [0.5, 0.5, 0.5],
 		
 		"StimulusDensity": 1,

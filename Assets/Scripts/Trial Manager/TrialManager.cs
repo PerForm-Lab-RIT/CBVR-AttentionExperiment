@@ -25,6 +25,7 @@ namespace Trial_Manager
         [SerializeField] private FeedbackModule feedbackModule;
         [SerializeField] private SelectEyeTracker eyeTrackerSelector;
         [SerializeField] private Transform cameraTransform;
+        [SerializeField] private GameEvent staircaseUpdateEvent;
 
         private int _trialCount = 1;
 
@@ -39,10 +40,11 @@ namespace Trial_Manager
         private bool _inputReceived;
         private bool _waitingForInput;
         private bool _isTrialSuccessful;
+        private bool _isFixationBroken;
 
         private InputData _userInput;
         private DotManager _innerStimulusManager;
-        private StaircaseManager _staircaseManager;
+        public StaircaseManager StaircaseManager { get; private set; }
         private IEyeTracker _eyeTracker;
         
 
@@ -53,7 +55,7 @@ namespace Trial_Manager
             _eyeTracker = eyeTrackerSelector.ChosenTracker;
             _innerStimulusManager = innerStimulus.GetComponent<DotManager>();
             _partition = new AperturePartition(sessionSettings, _outerStimulusSettings, _innerStimulusSettings);
-            _staircaseManager = new StaircaseManager(sessionSettings);
+            StaircaseManager = new StaircaseManager(sessionSettings);
 
             confirmInputAction[inputSource].onStateUp += GetUserSelection;
         }
@@ -66,10 +68,13 @@ namespace Trial_Manager
         // Called via UXF event
         public void BeginTrial(Trial trial)
         {
-            _staircaseManager.RandomizeStaircase();
-            Debug.Log("CURRENT STAIRCASE: " + _staircaseManager.CurrentStaircaseName());
-            Debug.Log("CURRENT STAIRCASE LEVEL: " + _staircaseManager.CurrentStaircase.CurrentStaircaseLevel());
+            StaircaseManager.RandomizeStaircase();
+            staircaseUpdateEvent.Raise();
+            
+            Debug.Log("CURRENT STAIRCASE: " + StaircaseManager.CurrentStaircaseName());
+            Debug.Log("CURRENT STAIRCASE LEVEL: " + StaircaseManager.CurrentStaircase.CurrentStaircaseLevel());
             _isTrialSuccessful = false;
+            _isFixationBroken = false;
             soundPlayer.PlayStartSound();
             RandomizeInnerStimulus();
             _inputReceived = false;
@@ -88,20 +93,19 @@ namespace Trial_Manager
                 CalculateOutputs(out var chosenAngle, out var chosenPosition, out var positionError);
                 if (positionError < sessionSettings.positionErrorTolerance)
                 {
-                    if (_staircaseManager.CheckForLocationWin())
+                    if (StaircaseManager.CheckForLocationWin())
                         _isTrialSuccessful = true;
                 }
                 else
-                    _staircaseManager.CheckForLocationLoss();
+                    StaircaseManager.CheckForLocationLoss();
 
                 if (Math.Abs(chosenAngle - _innerStimulusSettings.correctAngle) < sessionSettings.angleErrorTolerance)
                 {
-                    if (_staircaseManager.CheckForDirectionWin())
+                    if (StaircaseManager.CheckForDirectionWin())
                         _isTrialSuccessful = true;
                 }
                 else
-                    _staircaseManager.CheckForDirectionLoss();
-                
+                    StaircaseManager.CheckForDirectionLoss();
                 RecordTrialData(trial, chosenAngle, chosenPosition, positionError);
             }
 
@@ -146,7 +150,7 @@ namespace Trial_Manager
             trial.result["coherence_range"] = _innerStimulusSettings.coherenceRange;
             trial.result["position_within_threshold"] = positionError < sessionSettings.positionErrorTolerance;
             trial.result["angle_within_threshold"] = _isTrialSuccessful;
-            trial.result["staircase"] = _staircaseManager.CurrentStaircaseName();
+            trial.result["staircase"] = StaircaseManager.CurrentStaircaseName();
         }
 
         private string CalculateChosenPositionPolar(Vector3 chosenPosition)
@@ -256,8 +260,13 @@ namespace Trial_Manager
 
             outerStimulus.SetActive(true);
             innerStimulus.SetActive(true);
-            yield return new WaitForSeconds(sessionSettings.innerStimulusDuration / 1000);
-        
+            yield return CheckFixationBreakWithDelay(sessionSettings.innerStimulusDuration / 1000, 
+                Mathf.Tan(sessionSettings.fixationErrorTolerance * Mathf.PI / 180 * sessionSettings.stimulusDepth));
+
+            // End routine if fixation was broken
+            if (_isFixationBroken)
+                yield break;
+
             laserManager.ActivateLaser();
             innerStimulus.SetActive(false);
             fixationDot.SetActive(false);
@@ -267,6 +276,33 @@ namespace Trial_Manager
             _waitingForInput = false;
             outerStimulus.SetActive(false);
             trial.End();
+        }
+
+        private IEnumerator CheckFixationBreakWithDelay(float fixationTime, float maxFixationError)
+        {
+            var time = 0.0f;
+            while (time < fixationTime)
+            {
+                if (Physics.Raycast(cameraTransform.position,
+                    cameraTransform.TransformDirection(_eyeTracker.GetLocalGazeDirection()), out var hit))
+                {
+                    Debug.DrawRay(cameraTransform.position,
+                        hit.distance * cameraTransform.TransformDirection(_eyeTracker.GetLocalGazeDirection()),
+                        Color.yellow);
+                    if ((hit.point - fixationDot.transform.position).magnitude > maxFixationError)
+                    {
+                        StopCoroutine(_trialRoutine);
+                        innerStimulus.SetActive(false);
+                        outerStimulus.SetActive(false);
+                        _isFixationBroken = true;
+
+                        BeginTrial(Session.instance.CurrentTrial);
+                        break;
+                    }
+                }
+                time += Time.deltaTime;
+                yield return null;
+            }
         }
 
         private IEnumerator WaitForFixation(float fixationTime, float maxFixationError)
@@ -288,7 +324,7 @@ namespace Trial_Manager
                 yield return null;
             }
         }
-        
+
         private void RandomizeInnerStimulus()
         {
             var randomPosition = _partition.RandomInnerStimulusPosition(out _innerStimMagnitude, out _innerStimAngle);
@@ -299,7 +335,7 @@ namespace Trial_Manager
                 ? sessionSettings.choosableAngles[Random.Range(0, sessionSettings.choosableAngles.Count)]
                 : Random.Range(0.0f, 360.0f);
 
-            _innerStimulusSettings.coherenceRange = _staircaseManager.CurrentStaircase.CurrentStaircaseLevel();
+            _innerStimulusSettings.coherenceRange = StaircaseManager.CurrentStaircase.CurrentStaircaseLevel();
             _innerStimulusManager.InitializeWithSettings(_innerStimulusSettings);
         }
     }
