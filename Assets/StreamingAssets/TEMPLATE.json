@@ -1,21 +1,21 @@
 {
 	"SessionSettings": {
-		"NumTrials": 25,
+		"NumTrials": 200,
 		"FixationTimeSeconds": 1,
 		"FixationDotRadiusDegrees": 0.3,
 		"FixationErrorToleranceRadiusDegrees": 8,
 		"SkyColor": [0.5, 0.5, 0.5],
 		
-		"StimulusDensity": 1,
-		"StimulusDotSizeArcMinutes": 16,
-		"DotLifetimeSeconds": 0.25,
+		"StimulusDensity": 3.5,
+		"StimulusDotSizeArcMinutes": 14,
+		"DotLifetimeSeconds": 0.27,
 		"OuterStimulusDurationMs": 4000,
 		"OuterStimulusRadiusDegrees": 45,
 		"OuterStimulusNoisePercentage": 100,
 		"InnerStimulusDurationMs": 500,
-		"InnerStimulusRadiusDegrees": 15,
-		"InnerStimulusNoisePercentage": 75,
-		"InnerStimulusSpawnRadius": 45,
+		"InnerStimulusRadiusDegrees": 5,
+		"InnerStimulusNoisePercentage": 20,
+		"InnerStimulusSpawnRadius": 30,
 		
 		"StimulusSpacingMeters": 0.01,
 		
@@ -27,12 +27,12 @@
 		"FlipRegions": true,
 		
 		"CoarseAdjustment": true,
-		"ChoosableAngles": [0, 90, 180, 270],
-		"AngleErrorToleranceDegrees": 20,
-		"PositionErrorToleranceDegrees": 15,
+		"ChoosableAngles": [90, 270],
+		"AngleErrorToleranceDegrees": 10,
+		"PositionErrorToleranceDegrees": 7,
 		
 		"CoherenceStaircase": [0, 40, 80, 120, 160, 200, 240, 280, 320, 338],
-		"StaircaseIncreaseThreshold": 2,
+		"StaircaseIncreaseThreshold": 3,
 		"StaircaseDecreaseThreshold": 1,
 		
 		"AttentionCueDuration": 1,

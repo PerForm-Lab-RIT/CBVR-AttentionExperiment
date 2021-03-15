@@ -122,3 +122,8 @@ from the local up vector of the outer stimulus and is measured counter-clockwise
 | position_within_threshold |         bool        | Whether or not the participant was within the defined position error tolerance                  |
 | angle_within_threshold    |         bool        | Whether or not the participant was within the defined angle error tolerance                     |
 | staircase                 |        string       | The staircase being utilized during a particular trial                                          |
+
+# Toggling Debug Visualizations
+
+To enable/disable debug visualizations such as a staircase counter, or gaze visualizer, simply activate or deactivate the "-----DEBUG SCRIPTS-----"
+GameObject in the hierarchy.
