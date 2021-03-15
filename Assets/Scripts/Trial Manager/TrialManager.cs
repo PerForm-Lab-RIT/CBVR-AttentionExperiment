@@ -276,11 +276,14 @@ namespace Trial_Manager
 
             laserManager.ActivateLaser();
             innerStimulus.SetActive(false);
-            // Inner stimulus renders one frame longer than expected, so wait for next frame.
+            
+            // Inner stimulus renders one frame longer after it's disabled, so wait for next frame.
             yield return null;
             stimulusSpacer.SetActive(false);
             fixationDot.SetActive(false);
             _waitingForInput = true;
+            
+            // Delta time is subtracted here to account for the extra frame we wait for a few lines above
             yield return new WaitForSeconds((sessionSettings.outerStimulusDuration - sessionSettings.innerStimulusDuration) / 1000 - Time.deltaTime);
             
             _waitingForInput = false;
