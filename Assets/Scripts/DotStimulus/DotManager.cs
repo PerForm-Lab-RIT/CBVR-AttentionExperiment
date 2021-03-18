@@ -1,5 +1,4 @@
-﻿using System;
-using ScriptableObjects;
+﻿using ScriptableObjects;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
@@ -20,7 +19,6 @@ namespace DotStimulus
         private Bounds _bounds;
         private const float BoundsRange = 5.0f;
         private static readonly int ShaderProperties = Shader.PropertyToID("_Properties");
-        private bool _canRender;
 
         public void Awake()
         {
@@ -30,7 +28,6 @@ namespace DotStimulus
             // at the same time as they require separate material buffers
             dotMeshMaterial = new Material(dotMeshMaterial);
             _bounds = new Bounds(transform.position, Vector3.one * (BoundsRange + 1));
-            _canRender = true;
         }
 
         public void Start()

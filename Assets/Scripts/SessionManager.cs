@@ -6,12 +6,12 @@ using Valve.VR;
 public class SessionManager : MonoBehaviour
 {
     [SerializeField] private SessionSettings settings;
+    
+    // Variable: trialManager
+    // A GameObject containing a TrialManager monobehaviour. Should start inactive.
     [SerializeField] private GameObject trialManager;
     [SerializeField] private SteamVR_Action_Boolean confirmInputAction;
     
-    private int _winStreak;
-    private int _score;
-    private int _currentDifficulty;
     private Block _primaryBlock;
     private bool _sessionStarted;
 
@@ -25,6 +25,7 @@ public class SessionManager : MonoBehaviour
         confirmInputAction.onStateDown -= StartFirstTrial;
     }
 
+    // Called via UXF Event
     public void StartSession(Session session)
     {
         settings.LoadFromUxfJson();
@@ -50,8 +51,9 @@ public class SessionManager : MonoBehaviour
         }
     }
 
+    // Called via UXF Event
     public void EndSession()
     {
-        // Do nothing... for now
+        // Do nothing
     }
 }

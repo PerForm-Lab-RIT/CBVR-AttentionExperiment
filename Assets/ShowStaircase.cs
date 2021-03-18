@@ -12,7 +12,6 @@ public class ShowStaircase : MonoBehaviour
     [SerializeField] private float textSize;
     [SerializeField] private SessionSettings sessionSettings;
     
-    // Start is called before the first frame update
     private void OnEnable()
     {
         text.fontSize = textSize * sessionSettings.stimulusDepth;
