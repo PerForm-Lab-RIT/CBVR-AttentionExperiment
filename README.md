@@ -2,7 +2,8 @@
 [Getting Started](#getting-started)\
 [Choosing an Eye Tracker](#choosing-an-eye-tracker)\
 [JSON Settings](#json-settings)\
-[Data Output](#data-output)
+[Data Output](#data-output)\
+[Toggling Debug Visualizations](#toggling-debug-visualizations)
 
 # Getting Started
 First, open the project in [Unity 2019.4.18f1](https://download.unity3d.com/download_unity/3310a4d4f880/UnityDownloadAssistant-2019.4.18f1.exe).
@@ -122,6 +123,22 @@ from the local up vector of the outer stimulus and is measured counter-clockwise
 | position_within_threshold |         bool        | Whether or not the participant was within the defined position error tolerance                  |
 | angle_within_threshold    |         bool        | Whether or not the participant was within the defined angle error tolerance                     |
 | staircase                 |        string       | The staircase being utilized during a particular trial                                          |
+
+# Program Flow
+
+The majority of the main program flow are the scripts under the "-----MAIN SCRIPTS-----" GameObject. The flow is ultimately driven through
+the UXF event system, which you can view by selecting [UXF_Rig] in the Hierarchy then going to the Events tab in the Inspector.
+
+![eyetracker](docs/Events.PNG)
+
+After clicking "Begin Session" in the UI, the OnSessionBegin event will fire. When this happens, a method called
+StartSession acts as the entry point of the program. The SessionManager only acts as a setup and jumping off point
+to the TrialManager, where the core of the application lies. Take note that a lot of the TrialManager logic utilizes coroutines in order
+to perform tasks that require timing (checking fixation, delays between states, etc).
+
+When the Session finishes setting up, BeginTrial is called in the TrialManager. Whenever a trial ends,
+the maximum trial capacity is checked. If enough trials have been performed, the session is ended.
+Otherwise, a new Trial is created and then started.
 
 # Toggling Debug Visualizations
 
