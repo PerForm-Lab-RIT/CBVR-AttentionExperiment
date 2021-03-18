@@ -3,6 +3,7 @@
 [Choosing an Eye Tracker](#choosing-an-eye-tracker)\
 [JSON Settings](#json-settings)\
 [Data Output](#data-output)\
+[Program Flow](#program-flow)\
 [Toggling Debug Visualizations](#toggling-debug-visualizations)
 
 # Getting Started
