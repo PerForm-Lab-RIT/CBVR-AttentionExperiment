@@ -12,17 +12,25 @@ namespace Trial_Manager
 {
     public class TrialManager : MonoBehaviour
     {
+        [SerializeField] private SessionSettings sessionSettings;
+        
+        [Header("Stimuli")]
         [SerializeField] private GameObject outerStimulus;
         [SerializeField] private GameObject innerStimulus;
         [SerializeField] private GameObject stimulusSpacer;
-        [SerializeField] private GameObject attentionCue;
-        [SerializeField] private GameObject fixationDot;
-        [SerializeField] private SessionSettings sessionSettings;
+        
+        [Header("Input")]
         [SerializeField] private SteamVR_Action_Boolean confirmInputAction;
         [SerializeField] private SteamVR_Action_Vector2 angleSelectAction;
         [SerializeField] private SteamVR_Input_Sources inputSource;
         [SerializeField] private ActiveLaserManager laserManager;
+        
+        [Header("Sound")]
+        [SerializeField] private GameObject attentionCue;
         [SerializeField] private SoundPlayer soundPlayer;
+        
+        [Header("Misc")]
+        [SerializeField] private GameObject fixationDot;
         [SerializeField] private FeedbackModule feedbackModule;
         [SerializeField] private SelectEyeTracker eyeTrackerSelector;
         [SerializeField] private Transform cameraTransform;
