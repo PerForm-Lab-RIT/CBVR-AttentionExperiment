@@ -72,7 +72,8 @@ A table explaining each setting is shown below:
 | SkyColor                            | List<float>[3] | The color of the background, in RGB values                                                                                                      |
 | StimulusDensity                     |      float     |                                                                                                                                                 |
 | StimulusDotSizeArcMinutes           |      float     |                                                                                                                                                 |
-| DotLifetimeSeconds                  |      float     | How long it takes for both stimuli to shuffle their dots around                                                                                 |
+| MinDotLifetimeSeconds               |      float     | The minimum amount of time it takes for both stimuli to shuffle their dots around                                                               |
+| MaxDotLifetimeSeconds               |      float     | The maximum amount of time it takes for both stimuli to shuffle their dots around                                                               |
 | OuterStimulusDurationMs             |      float     |                                                                                                                                                 |
 | OuterStimulusRadiusDegrees          |      float     |                                                                                                                                                 |
 | InnerStimulusDurationMs             |      float     |                                                                                                                                                 |
