@@ -68,6 +68,8 @@ namespace ScriptableObjects
         public bool positionStaircaseEnabled;
         public bool directionStaircaseEnabled;
         public float fixationErrorTolerance;
+        public float minDotLifetime;
+        public float maxDotLifetime;
 
         // IMPORTANT: Any changes made in this function should be cross-checked with both the corresponding JSON
         // and the UXF data-points collection
@@ -83,7 +85,8 @@ namespace ScriptableObjects
             fixationDotRadius = Convert.ToSingle(sessionSettingsDict["FixationDotRadiusDegrees"]);
             skyColor = ParseColor((List<object>) sessionSettingsDict["SkyColor"]);
             stimulusDensity = Convert.ToSingle(sessionSettingsDict["StimulusDensity"]);
-            dotLifetime = Convert.ToSingle(sessionSettingsDict["DotLifetimeSeconds"]);
+            minDotLifetime = Convert.ToSingle(sessionSettingsDict["MinDotLifetimeSeconds"]);
+            maxDotLifetime = Convert.ToSingle(sessionSettingsDict["MaxDotLifetimeSeconds"]);
             dotSize = Convert.ToSingle(sessionSettingsDict["StimulusDotSizeArcMinutes"]);
             outerStimulusRadius = Convert.ToSingle(sessionSettingsDict["OuterStimulusRadiusDegrees"]);
             outerStimulusNoisePercentage = Convert.ToSingle(sessionSettingsDict["OuterStimulusNoisePercentage"]);

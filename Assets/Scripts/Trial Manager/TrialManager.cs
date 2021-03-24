@@ -185,8 +185,8 @@ namespace Trial_Manager
             _outerStimulusSettings.apertureRadiusDegrees = sessionSettings.outerStimulusRadius;
             _innerStimulusSettings.density = sessionSettings.stimulusDensity;
             _outerStimulusSettings.density = sessionSettings.stimulusDensity;
-            _innerStimulusSettings.dotLifetime = sessionSettings.dotLifetime;
-            _outerStimulusSettings.dotLifetime = sessionSettings.dotLifetime;
+            _innerStimulusSettings.minDotLifetime = sessionSettings.minDotLifetime;
+            _outerStimulusSettings.maxDotLifetime = sessionSettings.maxDotLifetime;
             _innerStimulusSettings.dotSizeArcMinutes = sessionSettings.dotSize;
             _outerStimulusSettings.dotSizeArcMinutes = sessionSettings.dotSize;
             _innerStimulusSettings.noiseDotPercentage = sessionSettings.innerStimulusNoisePercentage;

@@ -6,20 +6,21 @@
 		"FixationErrorToleranceRadiusDegrees": 8,
 		"SkyColor": [0.5, 0.5, 0.5],
 		
-		"StimulusDensity": 3.5,
+		"StimulusDensity": 2,
 		"StimulusDotSizeArcMinutes": 14,
-		"DotLifetimeSeconds": 0.27,
-		"OuterStimulusDurationMs": 4000,
+		"MinDotLifetimeSeconds": 0.2,
+		"MaxDotLifetimeSeconds": 0.5,
+		"OuterStimulusDurationMs": 5000,
 		"OuterStimulusRadiusDegrees": 45,
 		"OuterStimulusNoisePercentage": 100,
 		"InnerStimulusDurationMs": 500,
 		"InnerStimulusRadiusDegrees": 5,
-		"InnerStimulusNoisePercentage": 20,
+		"InnerStimulusNoisePercentage": 25,
 		"InnerStimulusSpawnRadius": 30,
 		
-		"StimulusSpacingMeters": 0.01,
+		"StimulusSpacingMeters": 0.001,
 		
-		"StimulusDepthMeters": 2.0,
+		"StimulusDepthMeters": 0.57,
 		
 		"InterTrialDelaySeconds": 2.5,
 		

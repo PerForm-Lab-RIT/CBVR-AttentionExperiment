@@ -1,4 +1,5 @@
-﻿using ScriptableObjects;
+﻿using System;
+using ScriptableObjects;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
@@ -58,8 +59,10 @@ namespace DotStimulus
             var apertureRadius = Mathf.Tan(stimulusSettings.apertureRadiusDegrees * Mathf.PI / 180) *
                                  stimulusSettings.stimDepthMeters;
 
-            numDots = Mathf.RoundToInt(Mathf.Pow(stimulusSettings.apertureRadiusDegrees, 2.0f) * Mathf.PI *
+            var approxMeterPerDegree = Mathf.Tan(1.0f * Mathf.PI / 180.0f) * stimulusSettings.stimDepthMeters;
+            numDots = Mathf.RoundToInt(Mathf.Pow( apertureRadius / approxMeterPerDegree, 2.0f) * Mathf.PI *
                                        stimulusSettings.density);
+            
             if (buddyDotNoiseGeneration && numDots % 2 != 0)
                 numDots += 1;
             

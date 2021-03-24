@@ -22,7 +22,8 @@ namespace ScriptableObjects
         public float noiseDotPercentage;
         public float dotSizeArcMinutes;
         public float speed;
-        public float dotLifetime;
+        public float minDotLifetime;
+        public float maxDotLifetime;
         public float stimDepthMeters;
     }
 }

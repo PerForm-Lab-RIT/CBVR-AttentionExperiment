@@ -14,7 +14,7 @@ namespace DotStimulus
         private readonly float _apertureRadius;
         private readonly float _sqrApertureRadius;
         private float _elapsedTime;
-    
+
         public Dot(Vector2 velocity, Vector3 startingPosition, StimulusSettings settings)
         {
             _velocity = velocity;
@@ -34,7 +34,7 @@ namespace DotStimulus
 
         public void UpdateDot()
         {
-            if (_elapsedTime > _settings.dotLifetime)
+            if (_elapsedTime > Random.Range(_settings.minDotLifetime, _settings.maxDotLifetime))
             {
                 var randomPosition = Random.insideUnitCircle * _apertureRadius;
                 _position.x = randomPosition.x;

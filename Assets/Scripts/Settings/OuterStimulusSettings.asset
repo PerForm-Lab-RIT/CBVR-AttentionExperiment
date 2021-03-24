@@ -15,9 +15,9 @@ MonoBehaviour:
   correctAngle: 0
   coherenceRange: 0
   apertureRadiusDegrees: 45
-  density: 1
+  density: 3.5
   noiseDotPercentage: 100
-  dotSizeArcMinutes: 16
+  dotSizeArcMinutes: 14
   speed: 10
-  dotLifetime: 0.25
-  stimDepthMeters: 2
+  dotLifetime: 0.3
+  stimDepthMeters: 0.57
