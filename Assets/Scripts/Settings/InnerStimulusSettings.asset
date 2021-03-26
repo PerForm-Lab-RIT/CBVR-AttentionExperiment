@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1015bda014a000d449230ede5f2f6db5, type: 3}
   m_Name: InnerStimulusSettings
   m_EditorClassIdentifier: 
-  correctAngle: 270
+  correctAngle: 90
   coherenceRange: 0
   apertureRadiusDegrees: 5
   density: 2

@@ -18,7 +18,8 @@ namespace ScriptableObjects
         public enum CueType
         {
             Neutral,
-            FeatureBased
+            FeatureBased,
+            StimulusBased
         }
 
         public enum FeedbackType
@@ -35,7 +36,6 @@ namespace ScriptableObjects
         public float fixationDotRadius;
         public Color skyColor;
         public float stimulusDensity;
-        public float dotLifetime;
         public float dotSize;
         public float outerStimulusRadius;
         public float outerStimulusNoisePercentage;
@@ -161,6 +161,8 @@ namespace ScriptableObjects
                     return CueType.Neutral;
                 case "Feature-based":
                     return CueType.FeatureBased;
+                case "Stimulus-based":
+                    return CueType.StimulusBased;
                 default:
                     return CueType.Neutral;
             }

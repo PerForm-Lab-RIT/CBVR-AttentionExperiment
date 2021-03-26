@@ -1,4 +1,5 @@
-﻿using ScriptableObjects;
+﻿using System;
+using ScriptableObjects;
 using UnityEngine;
 
 public class AttentionCue : MonoBehaviour
@@ -7,6 +8,7 @@ public class AttentionCue : MonoBehaviour
     [SerializeField] private AudioSource pulseSource;
     [SerializeField] private SessionSettings sessionSettings;
     [SerializeField] private StimulusSettings innerStimulusSettings;
+    [SerializeField] private GameObject innerStimulus;
 
     private float _pulseFrequency;
     private float _sampleRate;
@@ -25,33 +27,47 @@ public class AttentionCue : MonoBehaviour
 
     public void OnEnable()
     {
-        if (sessionSettings.cueType == SessionSettings.CueType.Neutral)
-            gameObject.transform.localPosition = new Vector3(0, 0, sessionSettings.attentionCueDepth);
-        else
+        // Cue is disabled in testing mode
+        if (sessionSettings.sessionType == SessionSettings.SessionType.Testing) return;
+        
+        switch (sessionSettings.cueType)
         {
-            var direction = Utility.Rotate2D(Vector2.up, innerStimulusSettings.correctAngle);
-            var cueDistance = Mathf.Tan(sessionSettings.attentionCueDistance * Mathf.PI / 180f) * sessionSettings.attentionCueDepth;
-            var startingPosition = -cueDistance * direction;
-            gameObject.transform.localPosition = new Vector3(startingPosition.x, startingPosition.y, sessionSettings.attentionCueDepth);
+            case SessionSettings.CueType.Neutral:
+                gameObject.transform.localPosition = new Vector3(0, 0, sessionSettings.attentionCueDepth);
+                break;
+            
+            case SessionSettings.CueType.FeatureBased:
+                var direction = Utility.Rotate2D(Vector2.up, innerStimulusSettings.correctAngle);
+                var cueDistance = Mathf.Tan(sessionSettings.attentionCueDistance * Mathf.PI / 180f) * sessionSettings.attentionCueDepth;
+                var startingPosition = -cueDistance * direction;
+                gameObject.transform.localPosition = new Vector3(startingPosition.x, startingPosition.y, sessionSettings.attentionCueDepth);
 
-            var speed = cueDistance / sessionSettings.attentionCueDuration;
-            _velocity = speed * direction;
+                var speed = cueDistance / sessionSettings.attentionCueDuration;
+                _velocity = speed * direction;
+                break;
+
+            case SessionSettings.CueType.StimulusBased:
+                break;
+            
+            default:
+                throw new ArgumentOutOfRangeException();
         }
         
-        if (sessionSettings.sessionType == SessionSettings.SessionType.Training)
-        {
-            _tick = 0;
-            pulseSource.Play();
-        }
+        _tick = 0;
+        pulseSource.Play();
     }
 
     public void Update()
     {
         if (sessionSettings.cueType == SessionSettings.CueType.FeatureBased)
         {
-            var position = gameObject.transform.localPosition;
+            var selfObject = gameObject;
+            var position = selfObject.transform.localPosition;
             var delta = _velocity * (2 * Time.deltaTime);
-            gameObject.transform.localPosition = new Vector3(position.x + delta.x, position.y + delta.y, sessionSettings.attentionCueDepth);
+            selfObject.transform.localPosition = new Vector3(position.x + delta.x, position.y + delta.y, sessionSettings.attentionCueDepth);
+        } else if (sessionSettings.cueType == SessionSettings.CueType.StimulusBased)
+        {
+            gameObject.transform.localPosition = innerStimulus.transform.localPosition;
         }
     }
 
