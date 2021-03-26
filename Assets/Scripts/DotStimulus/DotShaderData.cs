@@ -25,11 +25,11 @@ namespace DotStimulus
             ArgsBuffer.SetData(args);
         }
 
-        public void UpdateMeshPropertiesBuffer(Dot[] dots, Transform stimulusCenter, int i)
+        public void UpdateMeshPropertiesBuffer(Dot[] dots, Matrix4x4 stimulusCenterLocalToWorld, int i)
         {
             MeshProps[i].LocalPosition = dots[i].GetPosition();
             MeshProps[i].LocalScale = dots[i].GetScale();
-            MeshProps[i].ParentLocalToWorld = stimulusCenter.localToWorldMatrix;
+            MeshProps[i].ParentLocalToWorld = stimulusCenterLocalToWorld;
         }
 
         public void ClearBuffers()

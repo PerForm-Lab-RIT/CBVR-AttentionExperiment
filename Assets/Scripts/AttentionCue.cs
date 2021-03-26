@@ -68,7 +68,9 @@ public class AttentionCue : MonoBehaviour
         // The object cannot be parented to the inner stimulus since it is disabled when the cue should play
         } else if (sessionSettings.cueType == SessionSettings.CueType.StimulusBased)
         {
-            gameObject.transform.localPosition = innerStimulus.transform.localPosition;
+            var stimulusPosition = innerStimulus.transform.localPosition;
+            gameObject.transform.localPosition = 
+                new Vector3(stimulusPosition.x, stimulusPosition.y, sessionSettings.attentionCueDepth);
         }
     }
 

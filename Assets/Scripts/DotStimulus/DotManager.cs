@@ -41,10 +41,11 @@ namespace DotStimulus
 
         public void Update()
         {
+            var localStimulusToWorld = transform.localToWorldMatrix;
             for (var i = 0; i < _dots.Length; i++)
             {
                 _dots[i].UpdateDot();
-                _shaderData.UpdateMeshPropertiesBuffer(_dots, transform, i);
+                _shaderData.UpdateMeshPropertiesBuffer(_dots, localStimulusToWorld, i);
             }
 
             var meshPropertiesBuffer = _shaderData.MeshPropertiesBuffer;
