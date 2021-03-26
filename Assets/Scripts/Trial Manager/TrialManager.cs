@@ -186,6 +186,8 @@ namespace Trial_Manager
             _innerStimulusSettings.density = sessionSettings.stimulusDensity;
             _outerStimulusSettings.density = sessionSettings.stimulusDensity;
             _innerStimulusSettings.minDotLifetime = sessionSettings.minDotLifetime;
+            _outerStimulusSettings.minDotLifetime = sessionSettings.minDotLifetime;
+            _innerStimulusSettings.maxDotLifetime = sessionSettings.maxDotLifetime;
             _outerStimulusSettings.maxDotLifetime = sessionSettings.maxDotLifetime;
             _innerStimulusSettings.dotSizeArcMinutes = sessionSettings.dotSize;
             _outerStimulusSettings.dotSizeArcMinutes = sessionSettings.dotSize;

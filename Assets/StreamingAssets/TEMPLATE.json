@@ -15,7 +15,7 @@
 		"OuterStimulusNoisePercentage": 100,
 		"InnerStimulusDurationMs": 500,
 		"InnerStimulusRadiusDegrees": 5,
-		"InnerStimulusNoisePercentage": 25,
+		"InnerStimulusNoisePercentage": 50,
 		"InnerStimulusSpawnRadius": 30,
 		
 		"StimulusSpacingMeters": 0.001,

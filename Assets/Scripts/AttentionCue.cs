@@ -65,6 +65,7 @@ public class AttentionCue : MonoBehaviour
             var position = selfObject.transform.localPosition;
             var delta = _velocity * (2 * Time.deltaTime);
             selfObject.transform.localPosition = new Vector3(position.x + delta.x, position.y + delta.y, sessionSettings.attentionCueDepth);
+        // The object cannot be parented to the inner stimulus since it is disabled when the cue should play
         } else if (sessionSettings.cueType == SessionSettings.CueType.StimulusBased)
         {
             gameObject.transform.localPosition = innerStimulus.transform.localPosition;
