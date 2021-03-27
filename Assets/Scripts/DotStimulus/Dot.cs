@@ -6,9 +6,10 @@ namespace DotStimulus
     public class Dot
     {
         private readonly Vector2 _velocity;
-        private Vector3 _position;
+        public Vector3 Position { get; private set; }
+        private Vector3 _currentPosition;
         private Vector3 _oldPosition;
-        private readonly float _scale;
+        public readonly float scale;
         private readonly StimulusSettings _settings;
 
         private readonly float _apertureRadius;
@@ -18,14 +19,15 @@ namespace DotStimulus
         public Dot(Vector2 velocity, Vector3 startingPosition, StimulusSettings settings)
         {
             _velocity = velocity;
-            _position = startingPosition;
+            _currentPosition = startingPosition;
+            Position = _currentPosition;
             _settings = settings;
             _elapsedTime = 0;
 
             var dotSize = settings.dotSizeArcMinutes * Mathf.PI / (60 * 180) * settings.stimDepthMeters;
             _apertureRadius = Mathf.Tan(settings.apertureRadiusDegrees * Mathf.PI / 180) * settings.stimDepthMeters;
             _sqrApertureRadius = _apertureRadius * _apertureRadius;
-            _scale = dotSize;
+            scale = dotSize;
         
             // In case first update puts dot outside circle
             var randomPosition = Random.insideUnitCircle * _apertureRadius;
@@ -37,35 +39,26 @@ namespace DotStimulus
             if (_elapsedTime > Random.Range(_settings.minDotLifetime, _settings.maxDotLifetime))
             {
                 var randomPosition = Random.insideUnitCircle * _apertureRadius;
-                _position.x = randomPosition.x;
-                _position.z = randomPosition.y;
+                _currentPosition.x = randomPosition.x;
+                _currentPosition.z = randomPosition.y;
                 _elapsedTime = 0.0f;
             }
             else
             {
-                _position.x += _velocity.x * Time.deltaTime;
-                _position.z += _velocity.y * Time.deltaTime;
+                _currentPosition.x += _velocity.x * Time.deltaTime;
+                _currentPosition.z += _velocity.y * Time.deltaTime;
 
                 // Square magnitude used for efficiency
-                if (_position.sqrMagnitude > _sqrApertureRadius)
+                if (_currentPosition.sqrMagnitude > _sqrApertureRadius)
                 {
-                    _position.x = -_oldPosition.x;
-                    _position.z = -_oldPosition.z;
+                    _currentPosition.x = -_oldPosition.x;
+                    _currentPosition.z = -_oldPosition.z;
                 }
             }
 
+            Position = _currentPosition;
             _elapsedTime += Time.deltaTime;
-            _oldPosition = _position;
-        }
-
-        public Vector3 GetPosition()
-        {
-            return _position;
-        }
-    
-        public float GetScale()
-        {
-            return _scale;
+            _oldPosition = _currentPosition;
         }
     }
 }

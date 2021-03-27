@@ -39,13 +39,21 @@ namespace DotStimulus
             worldTransform.localPosition = localPosition;
         }
 
+        public void OnEnable()
+        {
+            for (var i = 0; i < _dots.Length; i++)
+            {
+                _shaderData.BufferLocalToWorld(transform.localToWorldMatrix, i);
+            }
+        }
+
         public void Update()
         {
             var localStimulusToWorld = transform.localToWorldMatrix;
             for (var i = 0; i < _dots.Length; i++)
             {
                 _dots[i].UpdateDot();
-                _shaderData.UpdateMeshPropertiesBuffer(_dots, localStimulusToWorld, i);
+                _shaderData.UpdateMeshPropertiesBuffer(_dots, i);
             }
 
             var meshPropertiesBuffer = _shaderData.MeshPropertiesBuffer;

@@ -25,11 +25,15 @@ namespace DotStimulus
             ArgsBuffer.SetData(args);
         }
 
-        public void UpdateMeshPropertiesBuffer(Dot[] dots, Matrix4x4 stimulusCenterLocalToWorld, int i)
+        public void BufferLocalToWorld(Matrix4x4 stimulusCenterLocalToWorld, int i)
         {
-            MeshProps[i].LocalPosition = dots[i].GetPosition();
-            MeshProps[i].LocalScale = dots[i].GetScale();
-            MeshProps[i].ParentLocalToWorld = stimulusCenterLocalToWorld;
+            MeshProps[i].parentLocalToWorld = stimulusCenterLocalToWorld;
+        }
+
+        public void UpdateMeshPropertiesBuffer(Dot[] dots, int i)
+        {
+            MeshProps[i].localPosition = dots[i].Position;
+            MeshProps[i].localScale = dots[i].scale;
         }
 
         public void ClearBuffers()
@@ -42,9 +46,9 @@ namespace DotStimulus
         }
         
         public struct MeshProperties {
-            public Vector3 LocalPosition;
-            public float LocalScale;
-            public Matrix4x4 ParentLocalToWorld;
+            public Vector3 localPosition;
+            public float localScale;
+            public Matrix4x4 parentLocalToWorld;
 
             public static int Size()
             {
