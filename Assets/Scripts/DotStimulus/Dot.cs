@@ -36,6 +36,8 @@ namespace DotStimulus
 
         public void UpdateDot()
         {
+            var deltaTime = Time.deltaTime;
+            
             if (_elapsedTime > Random.Range(_settings.minDotLifetime, _settings.maxDotLifetime))
             {
                 var randomPosition = Random.insideUnitCircle * _apertureRadius;
@@ -45,8 +47,8 @@ namespace DotStimulus
             }
             else
             {
-                _currentPosition.x += _velocity.x * Time.deltaTime;
-                _currentPosition.z += _velocity.y * Time.deltaTime;
+                _currentPosition.x += _velocity.x * deltaTime;
+                _currentPosition.z += _velocity.y * deltaTime;
 
                 // Square magnitude used for efficiency
                 if (_currentPosition.sqrMagnitude > _sqrApertureRadius)
@@ -57,7 +59,7 @@ namespace DotStimulus
             }
 
             Position = _currentPosition;
-            _elapsedTime += Time.deltaTime;
+            _elapsedTime += deltaTime;
             _oldPosition = _currentPosition;
         }
     }

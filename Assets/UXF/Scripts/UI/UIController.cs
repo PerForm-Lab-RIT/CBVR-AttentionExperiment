@@ -157,6 +157,7 @@ namespace UXF.UI
         {
             if (session == null) session = GetComponentInParent<Session>();
             if (canvas == null) canvas = GetComponent<Canvas>();
+            if (popupController == null) popupController = GetComponentInChildren<PopupController>(true);
             // read word list
             if (uuidWordList) words = uuidWordList.text.Split(new[] { "\r\n", "\r", "\n" }, StringSplitOptions.None);
             GenerateSidebar();
@@ -389,7 +390,7 @@ namespace UXF.UI
 
             if (exists)
             {
-                Popup newPopup = new Popup()
+                Popup newPopup = new Popup
                 {
                     message = string.Format(
                         "{0} - {1} - Session #{2} already exists! Press OK to start the session anyway, data may be overwritten.",

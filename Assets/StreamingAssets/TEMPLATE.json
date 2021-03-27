@@ -11,16 +11,16 @@
 		"MinDotLifetimeSeconds": 0.2,
 		"MaxDotLifetimeSeconds": 0.5,
 		"OuterStimulusDurationMs": 5000,
-		"OuterStimulusRadiusDegrees": 45,
+		"OuterStimulusRadiusDegrees": 55,
 		"OuterStimulusNoisePercentage": 100,
 		"InnerStimulusDurationMs": 500,
 		"InnerStimulusRadiusDegrees": 5,
-		"InnerStimulusNoisePercentage": 25,
+		"InnerStimulusNoisePercentage": 100,
 		"InnerStimulusSpawnRadius": 30,
 		
 		"StimulusSpacingMeters": 0.001,
 		
-		"StimulusDepthMeters": 0.57,
+		"StimulusDepthMeters": 2.0,
 		
 		"InterTrialDelaySeconds": 2.5,
 		
