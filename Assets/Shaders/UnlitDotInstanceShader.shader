@@ -35,8 +35,8 @@
             struct MeshProperties {
                 float3 localPosition;
                 float localScale;
-                float4x4 parentLocalToWorld;
             };
+            uniform float4x4 parentLocalToWorld;
 
             StructuredBuffer<MeshProperties> _Properties;
 
@@ -63,7 +63,7 @@
                 const float4x4 localTransform =  mul(localPosition, localScale);
                 
                 const float4x4 worldTransform =
-                    mul(_Properties[instanceID].parentLocalToWorld, localTransform);
+                    mul(parentLocalToWorld, localTransform);
                 
                 const float4 pos = mul(worldTransform, v.vertex);
                 o.vertex = UnityWorldToClipPos(pos);

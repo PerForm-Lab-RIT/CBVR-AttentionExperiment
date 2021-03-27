@@ -20,6 +20,7 @@ namespace DotStimulus
         private Bounds _bounds;
         private const float BoundsRange = 5.0f;
         private static readonly int ShaderProperties = Shader.PropertyToID("_Properties");
+        private static readonly int ParentLocalToWorld = Shader.PropertyToID("parentLocalToWorld");
 
         public void Awake()
         {
@@ -38,18 +39,9 @@ namespace DotStimulus
             localPosition = new Vector3(localPosition.x, localPosition.y, stimulusSettings.stimDepthMeters);
             worldTransform.localPosition = localPosition;
         }
-
-        public void OnEnable()
-        {
-            for (var i = 0; i < _dots.Length; i++)
-            {
-                _shaderData.BufferLocalToWorld(transform.localToWorldMatrix, i);
-            }
-        }
-
+        
         public void Update()
         {
-            var localStimulusToWorld = transform.localToWorldMatrix;
             for (var i = 0; i < _dots.Length; i++)
             {
                 _dots[i].UpdateDot();
@@ -59,6 +51,7 @@ namespace DotStimulus
             var meshPropertiesBuffer = _shaderData.MeshPropertiesBuffer;
             meshPropertiesBuffer.SetData(_shaderData.MeshProps);
             dotMeshMaterial.SetBuffer(ShaderProperties, meshPropertiesBuffer);
+            dotMeshMaterial.SetMatrix(ParentLocalToWorld, transform.localToWorldMatrix);
             Graphics.DrawMeshInstancedIndirect(dotMesh, 0, dotMeshMaterial, _bounds, _shaderData.ArgsBuffer);
         }
         

@@ -7,7 +7,7 @@ namespace DotStimulus
         public MeshProperties[] MeshProps { get; }
         public ComputeBuffer MeshPropertiesBuffer { get; private set; }
         public ComputeBuffer ArgsBuffer { get; private set; }
-        
+
         public DotShaderData(Mesh dotMesh, int numDots)
         {
             MeshProps = new MeshProperties[numDots];
@@ -24,12 +24,7 @@ namespace DotStimulus
             ArgsBuffer = new ComputeBuffer(1, args.Length * sizeof(uint), ComputeBufferType.IndirectArguments);
             ArgsBuffer.SetData(args);
         }
-
-        public void BufferLocalToWorld(Matrix4x4 stimulusCenterLocalToWorld, int i)
-        {
-            MeshProps[i].parentLocalToWorld = stimulusCenterLocalToWorld;
-        }
-
+        
         public void UpdateMeshPropertiesBuffer(Dot[] dots, int i)
         {
             MeshProps[i].localPosition = dots[i].Position;
@@ -48,12 +43,10 @@ namespace DotStimulus
         public struct MeshProperties {
             public Vector3 localPosition;
             public float localScale;
-            public Matrix4x4 parentLocalToWorld;
 
             public static int Size()
             {
-                return (sizeof(float) * 4 * 4) +
-                       (sizeof(float) * 4);
+                return (sizeof(float) * 4);
             }
         }
     }
