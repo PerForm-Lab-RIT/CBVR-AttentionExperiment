@@ -1,4 +1,5 @@
-﻿using ScriptableObjects;
+﻿using System;
+using ScriptableObjects;
 using UnityEngine;
 using UXF;
 using Valve.VR;
@@ -24,12 +25,11 @@ public class SessionManager : MonoBehaviour
     {
         confirmInputAction.onStateDown -= StartFirstTrial;
     }
-
+    
     // Called via UXF Event
     public void StartSession(Session session)
     {
         settings.LoadFromUxfJson();
-        
         SetSky(settings.skyColor);
         _primaryBlock = session.CreateBlock();
         _primaryBlock.CreateTrial();
@@ -43,6 +43,15 @@ public class SessionManager : MonoBehaviour
     }
 
     private void StartFirstTrial(SteamVR_Action_Boolean action, SteamVR_Input_Sources source)
+    {
+        if (_sessionStarted)
+        {
+            Session.instance.BeginNextTrial();
+            _sessionStarted = false;
+        }
+    }
+    
+    public void StartFirstTrial()
     {
         if (_sessionStarted)
         {

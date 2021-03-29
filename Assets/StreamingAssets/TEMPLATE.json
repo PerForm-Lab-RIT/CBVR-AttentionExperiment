@@ -18,6 +18,8 @@
 		"InnerStimulusNoisePercentage": 100,
 		"InnerStimulusSpawnRadius": 30,
 		
+		"EnableBuddyDots": true,
+		
 		"StimulusSpacingMeters": 0.001,
 		
 		"StimulusDepthMeters": 2.0,

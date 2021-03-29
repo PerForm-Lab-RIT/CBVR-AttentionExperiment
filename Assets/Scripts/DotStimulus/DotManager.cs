@@ -7,7 +7,6 @@ namespace DotStimulus
 {
     public class DotManager : MonoBehaviour
     {
-        [SerializeField] private bool buddyDotNoiseGeneration;
         [SerializeField] private Mesh dotMesh;
         [SerializeField] private Material dotMeshMaterial;
         [SerializeField] private StimulusSettings stimulusSettings;
@@ -65,7 +64,7 @@ namespace DotStimulus
             numDots = Mathf.RoundToInt(Mathf.Pow( apertureRadius / approxMeterPerDegree, 2.0f) * Mathf.PI *
                                        stimulusSettings.density);
             
-            if (buddyDotNoiseGeneration && numDots % 2 != 0)
+            if (settings.buddyDotsEnabled && numDots % 2 != 0)
                 numDots += 1;
             
             _shaderData?.ClearBuffers();
@@ -73,7 +72,7 @@ namespace DotStimulus
             
             var dotSpeed = stimulusSettings.speed * (Mathf.PI / 180) * stimulusSettings.stimDepthMeters;
 
-            if (buddyDotNoiseGeneration)
+            if (settings.buddyDotsEnabled)
                 GenerateDotsWithBuddy(apertureRadius, dotSpeed);
             else
                 GenerateDots(apertureRadius, dotSpeed);

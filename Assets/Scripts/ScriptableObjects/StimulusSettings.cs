@@ -25,5 +25,6 @@ namespace ScriptableObjects
         public float minDotLifetime;
         public float maxDotLifetime;
         public float stimDepthMeters;
+        public bool buddyDotsEnabled;
     }
 }

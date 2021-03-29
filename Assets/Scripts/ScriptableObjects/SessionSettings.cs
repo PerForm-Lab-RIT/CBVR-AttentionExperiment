@@ -70,6 +70,7 @@ namespace ScriptableObjects
         public float fixationErrorTolerance;
         public float minDotLifetime;
         public float maxDotLifetime;
+        public bool buddyDotsEnabled;
 
         // IMPORTANT: Any changes made in this function should be cross-checked with both the corresponding JSON
         // and the UXF data-points collection
@@ -124,6 +125,7 @@ namespace ScriptableObjects
             directionStaircaseEnabled = Convert.ToBoolean(Session.instance.participantDetails["DirectionalStaircaseEnabled"]);
             
             fixationErrorTolerance = Convert.ToSingle(sessionSettingsDict["FixationErrorToleranceRadiusDegrees"]);
+            buddyDotsEnabled = Convert.ToBoolean(sessionSettingsDict["EnableBuddyDots"]);
         }
 
         private static List<float> ParseFloatList(IEnumerable<object> list)

@@ -193,6 +193,8 @@ namespace Trial_Manager
             _outerStimulusSettings.dotSizeArcMinutes = sessionSettings.dotSize;
             _innerStimulusSettings.noiseDotPercentage = sessionSettings.innerStimulusNoisePercentage;
             _outerStimulusSettings.noiseDotPercentage = sessionSettings.outerStimulusNoisePercentage;
+            _innerStimulusSettings.buddyDotsEnabled = sessionSettings.buddyDotsEnabled;
+            _outerStimulusSettings.buddyDotsEnabled = sessionSettings.buddyDotsEnabled;
 
             innerStimulus.GetComponent<DotManager>().InitializeWithSettings(_innerStimulusSettings);
             outerStimulus.GetComponent<DotManager>().InitializeWithSettings(_outerStimulusSettings);
