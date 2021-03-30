@@ -8,11 +8,13 @@ public class SelectEyeTracker : MonoBehaviour
     private enum ETrackerSelection
     {
         PupilLabs,
+        ViveProEye,
         Dummy
     }
 
     [SerializeField] private ETrackerSelection selection;
     [SerializeField] private GameObject pupilEyeTracker;
+    [SerializeField] private GameObject viveProEye;
     [SerializeField] private bool enableDebugView;
     [SerializeField] private float debugDistance;
     [SerializeField] private Transform cameraOrigin;
@@ -32,6 +34,10 @@ public class SelectEyeTracker : MonoBehaviour
                 break;
             case ETrackerSelection.Dummy:
                 ChosenTracker = _dummyEyeTracker;
+                break;
+            case ETrackerSelection.ViveProEye:
+                viveProEye.SetActive(true);
+                ChosenTracker = viveProEye.GetComponent<IEyeTracker>();
                 break;
             default:
                 throw new ArgumentOutOfRangeException();

@@ -8,9 +8,9 @@ public class StimulusSpacer : MonoBehaviour
 
     public void OnEnable()
     {
-        var innerStimulusRadius = Mathf.Tan(innerStimulusSettings.apertureRadiusDegrees * Mathf.PI / 180f)
+        var spacerRadius = Mathf.Tan(innerStimulusSettings.apertureRadiusDegrees * Mathf.PI / 180f)
                                   * sessionSettings.stimulusDepth;
         GetComponent<MeshRenderer>().material.color = sessionSettings.skyColor;
-        gameObject.transform.localScale = new Vector3(innerStimulusRadius * 2, innerStimulusRadius * 2, 0);
+        gameObject.transform.localScale = new Vector3(spacerRadius * 2, spacerRadius * 2, 0);
     }
 }
