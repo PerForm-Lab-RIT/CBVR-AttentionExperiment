@@ -54,7 +54,7 @@ In the Hierarchy view, select the EyeTracker GameObject:
 
 Then, in the inspector, change the 'Selection' option in the EyeTracker to the desired
 EyeTracker implementation. Make sure that any required 3rd party software is already running (i.e.
-if using a PupilLabs eye tracker):
+Pupil Capture is required before using the PupilLabs eye tracker):
 
 ![eyetracker](docs/eyetracker.PNG)
 
