@@ -71,6 +71,14 @@ namespace ScriptableObjects
         public float minDotLifetime;
         public float maxDotLifetime;
         public bool buddyDotsEnabled;
+        public float outerStimulusStart;
+        public float innerStimulusStart;
+        public float attentionCueStart;
+
+        public float inputStart;
+        public float inputDuration;
+        public float fixationBreakCheckStart;
+        public float fixationBreakCheckDuration;
 
         // IMPORTANT: Any changes made in this function should be cross-checked with both the corresponding JSON
         // and the UXF data-points collection
@@ -94,7 +102,9 @@ namespace ScriptableObjects
             innerStimulusNoisePercentage = Convert.ToSingle(sessionSettingsDict["InnerStimulusNoisePercentage"]);
             innerStimulusRadius = Convert.ToSingle(sessionSettingsDict["InnerStimulusRadiusDegrees"]);
             innerStimulusSpawnRadius = Convert.ToSingle(sessionSettingsDict["InnerStimulusSpawnRadius"]);
+            outerStimulusStart = Convert.ToSingle(sessionSettingsDict["OuterStimulusStartMs"]);
             outerStimulusDuration = Convert.ToSingle(sessionSettingsDict["OuterStimulusDurationMs"]);
+            innerStimulusStart = Convert.ToSingle(sessionSettingsDict["InnerStimulusStartMs"]);
             innerStimulusDuration = Convert.ToSingle(sessionSettingsDict["InnerStimulusDurationMs"]);
             stimulusDepth = Convert.ToSingle(sessionSettingsDict["StimulusDepthMeters"]);
             interTrialDelay = Convert.ToSingle(sessionSettingsDict["InterTrialDelaySeconds"]);
@@ -112,7 +122,8 @@ namespace ScriptableObjects
             coarseAdjustEnabled = Convert.ToBoolean(sessionSettingsDict["CoarseAdjustment"]);
             choosableAngles = ParseFloatList((List<object>) sessionSettingsDict["ChoosableAngles"]);
 
-            attentionCueDuration = Convert.ToSingle(sessionSettingsDict["AttentionCueDuration"]);
+            attentionCueStart = Convert.ToSingle(sessionSettingsDict["AttentionCueStartMs"]);
+            attentionCueDuration = Convert.ToSingle(sessionSettingsDict["AttentionCueDurationMs"]);
             attentionCueDepth = Convert.ToSingle(sessionSettingsDict["AttentionCueDepth"]);
             attentionCueDistance = Convert.ToSingle(sessionSettingsDict["AttentionCueLengthDegrees"]);
             pulseFrequency = Convert.ToSingle(sessionSettingsDict["PulseFrequency"]);
@@ -126,6 +137,11 @@ namespace ScriptableObjects
             
             fixationErrorTolerance = Convert.ToSingle(sessionSettingsDict["FixationErrorToleranceRadiusDegrees"]);
             buddyDotsEnabled = Convert.ToBoolean(sessionSettingsDict["EnableBuddyDots"]);
+            
+            inputStart = Convert.ToSingle(sessionSettingsDict["InputStartMs"]);
+            inputDuration = Convert.ToSingle(sessionSettingsDict["InputDurationMs"]);
+            fixationBreakCheckStart = Convert.ToSingle(sessionSettingsDict["FixationBreakCheckStartMs"]);
+            fixationBreakCheckDuration = Convert.ToSingle(sessionSettingsDict["FixationBreakCheckDurationMs"]);
         }
 
         private static List<float> ParseFloatList(IEnumerable<object> list)
