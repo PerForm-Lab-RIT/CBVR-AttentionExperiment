@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Windows.Forms.VisualStyles;
 using ScriptableObjects;
 using UnityEngine;
 using UXF;
@@ -15,15 +16,18 @@ public class SessionManager : MonoBehaviour
     
     private Block _primaryBlock;
     private bool _sessionStarted;
+    private bool _sessionOver;
 
     public void OnEnable()
     {
         confirmInputAction.onStateDown += StartFirstTrial;
+        confirmInputAction.onStateDown += CloseProgram;
     }
 
     public void OnDisable()
     {
         confirmInputAction.onStateDown -= StartFirstTrial;
+        confirmInputAction.onStateDown -= CloseProgram;
     }
     
     // Called via UXF Event
@@ -63,6 +67,18 @@ public class SessionManager : MonoBehaviour
     // Called via UXF Event
     public void EndSession()
     {
-        // Do nothing
+        _sessionOver = true;
+    }
+
+    public void CloseProgram(SteamVR_Action_Boolean action, SteamVR_Input_Sources source)
+    {
+        if(_sessionOver)
+            Application.Quit();
+    }
+    
+    public void CloseProgram()
+    {
+        if(_sessionOver)
+            Application.Quit();
     }
 }
