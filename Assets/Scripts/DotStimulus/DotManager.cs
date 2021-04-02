@@ -1,5 +1,4 @@
-﻿using System;
-using ScriptableObjects;
+﻿using ScriptableObjects;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
@@ -10,7 +9,7 @@ namespace DotStimulus
         [SerializeField] private Mesh dotMesh;
         [SerializeField] private Material dotMeshMaterial;
         [SerializeField] private StimulusSettings stimulusSettings;
-        [SerializeField] private int numDots;
+        [SerializeField][ReadOnly] private int numDots;
         [SerializeField] private float randomDepthRange;
         
         private Dot[] _dots;

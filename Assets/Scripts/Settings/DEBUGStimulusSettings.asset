@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   correctAngle: 160
   coherenceRange: 21
-  apertureRadiusDegrees: 71
+  apertureRadiusDegrees: 70
   density: 1
   noiseDotPercentage: 100
   dotSizeArcMinutes: 24
@@ -22,3 +22,4 @@ MonoBehaviour:
   minDotLifetime: 0.2
   maxDotLifetime: 0.5
   stimDepthMeters: 6
+  buddyDotsEnabled: 0

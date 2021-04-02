@@ -365,9 +365,6 @@ namespace Trial_Manager
 
             _innerStimulusSettings.coherenceRange = StaircaseManager.CurrentStaircase.CurrentStaircaseLevel();
             _innerStimulusManager.InitializeWithSettings(_innerStimulusSettings);
-            
-            stimulusSpacer.transform.localPosition = 
-                new Vector3(randomPosition.x, randomPosition.y, sessionSettings.stimulusDepth - sessionSettings.stimulusSpacing / 2);
         }
     }
 }

@@ -1,6 +1,6 @@
 {
 	"SessionSettings": {
-		"NumTrials": 200,
+		"NumTrials": 10,
 		"FixationTimeSeconds": 1,
 		"FixationDotRadiusDegrees": 0.3,
 		"FixationErrorToleranceRadiusDegrees": 8,
@@ -15,14 +15,14 @@
 		"OuterStimulusNoisePercentage": 100,
 		"InnerStimulusDurationMs": 500,
 		"InnerStimulusRadiusDegrees": 5,
-		"InnerStimulusNoisePercentage": 100,
+		"InnerStimulusNoisePercentage": 50,
 		"InnerStimulusSpawnRadius": 30,
 		
 		"EnableBuddyDots": true,
 		
 		"StimulusSpacingMeters": 0.001,
 		
-		"StimulusDepthMeters": 2.0,
+		"StimulusDepthMeters": 0.57,
 		
 		"InterTrialDelaySeconds": 2.5,
 		
