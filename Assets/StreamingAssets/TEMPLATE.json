@@ -36,7 +36,7 @@
 		
 		"EnableBuddyDots": true,
 		
-		"StimulusSpacingMeters": 0.05,
+		"StimulusSpacingMeters": 0.0001,
 		
 		"StimulusDepthMeters": 0.57,
 		

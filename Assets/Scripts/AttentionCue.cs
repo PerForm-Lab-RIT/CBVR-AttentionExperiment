@@ -42,7 +42,7 @@ public class AttentionCue : MonoBehaviour
                 var startingPosition = -cueDistance * direction;
                 gameObject.transform.localPosition = new Vector3(startingPosition.x, startingPosition.y, sessionSettings.attentionCueDepth);
 
-                var speed = cueDistance / sessionSettings.attentionCueDuration;
+                var speed = 1000 * cueDistance / sessionSettings.attentionCueDuration;
                 _velocity = speed * direction;
                 break;
 

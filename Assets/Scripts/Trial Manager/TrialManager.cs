@@ -300,6 +300,8 @@ namespace Trial_Manager
             outerStimulus.SetActive(false);
             innerStimulus.SetActive(false);
             stimulusSpacer.SetActive(false);
+            attentionCue.SetActive(false);
+            laserManager.DeactivateBothLasers();
 
             // Start trial over if fixation was broken
             if (_isFixationBroken)
