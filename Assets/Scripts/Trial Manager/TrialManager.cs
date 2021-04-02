@@ -156,8 +156,11 @@ namespace Trial_Manager
         {
             trial.result["correct_angle"] = _innerStimulusSettings.correctAngle;
             trial.result["chosen_angle"] = chosenAngle;
-            trial.result["correct_position"] = $"({_innerStimMagnitude}, {_innerStimAngle})";
-            trial.result["chosen_position"] = CalculateChosenPositionPolar(chosenPosition);
+            trial.result["correct_position_magnitude"] = _innerStimMagnitude;
+            trial.result["correct_position_angle"] = _innerStimAngle;
+            var chosenPositionPolar = CalculateChosenPositionPolar(chosenPosition);
+            trial.result["chosen_position_magnitude"] = chosenPositionPolar.magnitude;
+            trial.result["chosen_position_angle"] = chosenPositionPolar.angle;
             trial.result["position_error"] = positionError;
             trial.result["coherence_range"] = _innerStimulusSettings.coherenceRange;
             trial.result["position_within_threshold"] = positionError < sessionSettings.positionErrorTolerance;
@@ -165,14 +168,14 @@ namespace Trial_Manager
             trial.result["staircase"] = StaircaseManager.CurrentStaircaseName();
         }
 
-        private string CalculateChosenPositionPolar(Vector3 chosenPosition)
+        private (float magnitude, float angle) CalculateChosenPositionPolar(Vector3 chosenPosition)
         {
             var chosenPosition2d = new Vector2(chosenPosition.x, chosenPosition.y);
             var magnitude = Mathf.Atan(chosenPosition2d.magnitude / sessionSettings.stimulusDepth) * 180f / Mathf.PI;
             var angle = Mathf.Acos(Vector2.Dot(Vector2.up, _userInput.selectionLocation.normalized)) * 180f / Mathf.PI;
             if (chosenPosition.x > 0)
                 angle = 360 - angle;
-            return $"({magnitude}, {angle})";
+            return (magnitude, angle);
         }
 
         private void InitializeStimuli()
