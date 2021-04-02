@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections;
+using System.Data;
 using DotStimulus;
 using EyeTracker;
 using ScriptableObjects;
@@ -126,7 +127,7 @@ namespace Trial_Manager
                 Session.instance.CurrentBlock.CreateTrial();
                 _trialCount++;
             }
-        
+            
             StartCoroutine(FeedBackRoutine());
         }
 
@@ -272,44 +273,149 @@ namespace Trial_Manager
             yield return WaitForFixation(sessionSettings.fixationTime, 
                 Mathf.Tan(sessionSettings.fixationErrorTolerance * Mathf.PI / 180 * sessionSettings.stimulusDepth));
 
+            var trialDuration = GetTrialDuration();
+
+            var outerStimulusRoutine = StartCoroutine(OuterStimulusRoutine());
+            var innerStimulusRoutine = StartCoroutine(InnerStimulusRoutine());
+            var inputRoutine = StartCoroutine(InputRoutine());
+            var fixationBreakCheckRoutine = StartCoroutine(FixationBreakCheckRoutine());
+            var attentionCueRoutine = AttentionCueRoutine();
+            
             if (sessionSettings.sessionType == SessionSettings.SessionType.Training)
+                StartCoroutine(attentionCueRoutine);
+
+            var elapsedTime = 0.0f;
+            while (!_isFixationBroken && elapsedTime < trialDuration / 1000)
             {
-                attentionCue.SetActive(true);
-                yield return new WaitForSeconds(sessionSettings.attentionCueDuration);
-                attentionCue.SetActive(false);
+                elapsedTime += Time.deltaTime;
+                yield return null;
             }
-
-            outerStimulus.SetActive(true);
-            innerStimulus.SetActive(true);
-            stimulusSpacer.SetActive(true);
-            yield return CheckFixationBreakWithDelay(sessionSettings.innerStimulusDuration / 1000, 
-                Mathf.Tan(sessionSettings.fixationErrorTolerance * Mathf.PI / 180 * sessionSettings.stimulusDepth));
-
-            // End routine if fixation was broken
-            if (_isFixationBroken)
-                yield break;
-
-            laserManager.ActivateLaser();
-            innerStimulus.SetActive(false);
             
-            // Inner stimulus renders one frame longer after it's disabled, so wait for next frame.
-            yield return null;
-            stimulusSpacer.SetActive(false);
-            fixationDot.SetActive(false);
-            _waitingForInput = true;
+            StopCoroutine(outerStimulusRoutine);
+            StopCoroutine(innerStimulusRoutine);
+            StopCoroutine(inputRoutine);
+            StopCoroutine(fixationBreakCheckRoutine);
+            StopCoroutine(attentionCueRoutine);
             
-            // Delta time is subtracted here to account for the extra frame we wait for a few lines above
-            yield return new WaitForSeconds((sessionSettings.outerStimulusDuration - sessionSettings.innerStimulusDuration) / 1000 - Time.deltaTime);
-            
-            _waitingForInput = false;
             outerStimulus.SetActive(false);
+            innerStimulus.SetActive(false);
+            stimulusSpacer.SetActive(false);
+
+            // Start trial over if fixation was broken
+            if (_isFixationBroken)
+            {
+                BeginTrial(trial);
+                yield break;
+            }
+            
             trial.End();
         }
 
-        private IEnumerator CheckFixationBreakWithDelay(float fixationTime, float maxFixationError)
+        private float GetTrialDuration()
         {
-            var time = 0.0f;
-            while (time < fixationTime)
+            var endTimes = new[]
+            {
+                sessionSettings.outerStimulusStart + sessionSettings.outerStimulusDuration,
+                sessionSettings.innerStimulusStart + sessionSettings.innerStimulusDuration,
+                sessionSettings.fixationBreakCheckStart + sessionSettings.fixationBreakCheckDuration,
+                sessionSettings.inputStart + sessionSettings.inputDuration
+            };
+            
+            return Mathf.Max(endTimes);
+        }
+
+        private IEnumerator InputRoutine()
+        {
+            var elapsedTime = 0.0f;
+            while (elapsedTime < sessionSettings.inputStart / 1000)
+            {
+                elapsedTime += Time.deltaTime;
+                yield return null;
+            }
+            _waitingForInput = true;
+            laserManager.ActivateLaser();
+            
+            elapsedTime = 0.0f;
+            while (elapsedTime < sessionSettings.inputDuration / 1000)
+            {
+                elapsedTime += Time.deltaTime;
+                yield return null;
+            }
+            laserManager.DeactivateBothLasers();
+            _waitingForInput = false;
+        }
+        
+        private IEnumerator OuterStimulusRoutine()
+        {
+            var elapsedTime = 0.0f;
+            while (elapsedTime < sessionSettings.outerStimulusStart / 1000)
+            {
+                elapsedTime += Time.deltaTime;
+                yield return null;
+            }
+            
+            elapsedTime = 0.0f;
+            outerStimulus.SetActive(true);
+            while (elapsedTime < sessionSettings.outerStimulusDuration / 1000)
+            {
+                elapsedTime += Time.deltaTime;
+                yield return null;
+            }
+            outerStimulus.SetActive(false);
+        }
+        
+        private IEnumerator InnerStimulusRoutine()
+        {
+            var elapsedTime = 0.0f;
+            while (elapsedTime < sessionSettings.innerStimulusStart / 1000)
+            {
+                elapsedTime += Time.deltaTime;
+                yield return null;
+            }
+            innerStimulus.SetActive(true);
+            stimulusSpacer.SetActive(true);
+
+            elapsedTime = 0.0f;
+            while (elapsedTime < sessionSettings.innerStimulusDuration / 1000)
+            {
+                elapsedTime += Time.deltaTime;
+                yield return null;
+            }
+            innerStimulus.SetActive(false);
+            yield return null;
+            stimulusSpacer.SetActive(false);
+        }
+        
+        private IEnumerator AttentionCueRoutine()
+        {
+            var elapsedTime = 0.0f;
+            while (elapsedTime < sessionSettings.attentionCueStart / 1000)
+            {
+                elapsedTime += Time.deltaTime;
+                yield return null;
+            }
+            attentionCue.SetActive(true);
+            
+            elapsedTime = 0.0f;
+            while (elapsedTime < sessionSettings.attentionCueDuration / 1000)
+            {
+                elapsedTime += Time.deltaTime;
+                yield return null;
+            }
+            attentionCue.SetActive(false);
+        }
+
+        private IEnumerator FixationBreakCheckRoutine()
+        {
+            var elapsedTime = 0.0f;
+            while (elapsedTime < sessionSettings.attentionCueStart / 1000)
+            {
+                elapsedTime += Time.deltaTime;
+                yield return null;
+            }
+            
+            elapsedTime = 0.0f;
+            while (elapsedTime < sessionSettings.attentionCueDuration / 1000)
             {
                 if (Physics.Raycast(cameraTransform.position,
                     cameraTransform.TransformDirection(_eyeTracker.GetLocalGazeDirection()), out var hit))
@@ -317,18 +423,17 @@ namespace Trial_Manager
                     Debug.DrawRay(cameraTransform.position,
                         hit.distance * cameraTransform.TransformDirection(_eyeTracker.GetLocalGazeDirection()),
                         Color.yellow);
-                    if ((hit.point - fixationDot.transform.position).magnitude > maxFixationError)
+                    var fixationError = Mathf.Tan(sessionSettings.fixationErrorTolerance * Mathf.PI / 180 *
+                                                  sessionSettings.stimulusDepth);
+                    if ((hit.point - fixationDot.transform.position).magnitude > fixationError)
                     {
-                        StopCoroutine(_trialRoutine);
                         innerStimulus.SetActive(false);
                         outerStimulus.SetActive(false);
                         _isFixationBroken = true;
-
-                        BeginTrial(Session.instance.CurrentTrial);
-                        break;
+                        yield break;
                     }
                 }
-                time += Time.deltaTime;
+                elapsedTime += Time.deltaTime;
                 yield return null;
             }
         }
