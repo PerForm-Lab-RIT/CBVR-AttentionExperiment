@@ -11,11 +11,14 @@ public class ShowStaircase : MonoBehaviour
     [SerializeField] private TextMeshPro text;
     [SerializeField] private float textSize;
     [SerializeField] private SessionSettings sessionSettings;
+    [SerializeField] private float offsetInDegrees;
     
     private void OnEnable()
     {
         text.fontSize = textSize * sessionSettings.stimulusDepth;
-        text.transform.localPosition = new Vector3(0, 0, 0);
+        var offset = Mathf.Tan(offsetInDegrees * Mathf.PI / 180f)
+                     * sessionSettings.stimulusDepth;
+        text.transform.localPosition = new Vector3(offset, 0, -offset);
         text.gameObject.SetActive(true);
     }
 

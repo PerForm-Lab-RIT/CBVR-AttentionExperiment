@@ -54,4 +54,9 @@
 		"StaircaseIncreaseThreshold": 3,
 		"StaircaseDecreaseThreshold": 1,
 	}
+	
+	"DebugSettings": {
+		"ShowGaze": false,
+		"ShowStaircase": false
+	}
 }
