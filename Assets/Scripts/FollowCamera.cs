@@ -1,11 +1,9 @@
-﻿using ScriptableObjects;
-using UnityEngine;
+﻿using UnityEngine;
 
 public class FollowCamera : MonoBehaviour
 {
     [SerializeField] private Transform cameraTransform;
-
-    // Update is called once per frame
+    
     private void FixedUpdate()
     {
         var o = gameObject;

@@ -2,6 +2,7 @@
 using EyeTracker;
 using ScriptableObjects;
 using UnityEngine;
+using UXF;
 
 public class SelectEyeTracker : MonoBehaviour
 {
@@ -41,6 +42,28 @@ public class SelectEyeTracker : MonoBehaviour
                 break;
             default:
                 throw new ArgumentOutOfRangeException();
+        }
+    }
+
+    public void SelectFromUxf()
+    {
+        var tracker = (string) Session.instance.participantDetails["Eyetracker"];
+        switch (tracker)
+        {
+            case "Dummy":
+                ChosenTracker = _dummyEyeTracker;
+                selection = ETrackerSelection.Dummy;
+                break;
+            case "Pupil Labs":
+                pupilEyeTracker.SetActive(true);
+                ChosenTracker = pupilEyeTracker.GetComponent<IEyeTracker>();
+                selection = ETrackerSelection.PupilLabs;
+                break;
+            case "VIVE Pro Eye":
+                viveProEye.SetActive(true);
+                ChosenTracker = viveProEye.GetComponent<IEyeTracker>();
+                selection = ETrackerSelection.ViveProEye;
+                break;
         }
     }
 

@@ -15,7 +15,8 @@ public class ShowStaircase : MonoBehaviour
     private void OnEnable()
     {
         text.fontSize = textSize * sessionSettings.stimulusDepth;
-        gameObject.transform.localPosition = new Vector3(0, 0, 0);
+        text.transform.localPosition = new Vector3(0, 0, 0);
+        text.gameObject.SetActive(true);
     }
 
     public void UpdateStaircaseDisplay()

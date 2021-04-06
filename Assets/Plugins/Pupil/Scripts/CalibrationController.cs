@@ -110,6 +110,7 @@ namespace PupilLabs
                 UpdateCalibration();
             }
 
+            /*
             if (Input.GetKeyUp(KeyCode.C))
             {
                 ToggleCalibration();
@@ -118,6 +119,7 @@ namespace PupilLabs
             {
                 showPreview = !showPreview;
             }
+            */
         }
 
         public void ToggleCalibration()

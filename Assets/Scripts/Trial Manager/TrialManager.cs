@@ -383,6 +383,7 @@ namespace Trial_Manager
                 elapsedTime += Time.deltaTime;
                 yield return null;
             }
+            Debug.Log(elapsedTime);
             innerStimulus.SetActive(false);
             yield return null;
             stimulusSpacer.SetActive(false);
