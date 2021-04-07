@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections;
-using System.Data;
 using DotStimulus;
-using EyeTracker;
 using ScriptableObjects;
 using UnityEngine;
 using UXF;
@@ -58,14 +56,11 @@ namespace Trial_Manager
         // Property: StaircaseManager
         // Handles the management and interleaving of staircases
         public StaircaseManager StaircaseManager { get; private set; }
-        
-        private IEyeTracker _eyeTracker;
-        
+
         public void OnEnable()
         {
             InitializeStimuli();
             InitializeFixationDot();
-            _eyeTracker = eyeTrackerSelector.ChosenTracker;
             _innerStimulusManager = innerStimulus.GetComponent<DotManager>();
             _partition = new AperturePartition(sessionSettings, _outerStimulusSettings, _innerStimulusSettings);
             StaircaseManager = new StaircaseManager(sessionSettings);
@@ -410,20 +405,20 @@ namespace Trial_Manager
         private IEnumerator FixationBreakCheckRoutine()
         {
             var elapsedTime = 0.0f;
-            while (elapsedTime < sessionSettings.attentionCueStart / 1000)
+            while (elapsedTime < sessionSettings.fixationBreakCheckStart / 1000)
             {
                 elapsedTime += Time.deltaTime;
                 yield return null;
             }
             
             elapsedTime = 0.0f;
-            while (elapsedTime < sessionSettings.attentionCueDuration / 1000)
+            while (elapsedTime < sessionSettings.fixationBreakCheckDuration / 1000)
             {
                 if (Physics.Raycast(cameraTransform.position,
-                    cameraTransform.TransformDirection(_eyeTracker.GetLocalGazeDirection()), out var hit))
+                    cameraTransform.TransformDirection(eyeTrackerSelector.ChosenTracker.GetLocalGazeDirection()), out var hit))
                 {
                     Debug.DrawRay(cameraTransform.position,
-                        hit.distance * cameraTransform.TransformDirection(_eyeTracker.GetLocalGazeDirection()),
+                        hit.distance * cameraTransform.TransformDirection(eyeTrackerSelector.ChosenTracker.GetLocalGazeDirection()),
                         Color.yellow);
                     var fixationError = Mathf.Tan(sessionSettings.fixationErrorTolerance * Mathf.PI / 180 *
                                                   sessionSettings.stimulusDepth);
@@ -446,9 +441,11 @@ namespace Trial_Manager
             while (timeFixated < fixationTime)
             {
                 timeFixated += Time.deltaTime;
-                if (Physics.Raycast(cameraTransform.position, cameraTransform.TransformDirection(_eyeTracker.GetLocalGazeDirection()), out var hit))
+                if (Physics.Raycast(cameraTransform.position, 
+                    cameraTransform.TransformDirection(eyeTrackerSelector.ChosenTracker.GetLocalGazeDirection()), out var hit))
                 {
-                    Debug.DrawRay(cameraTransform.position, hit.distance * cameraTransform.TransformDirection(_eyeTracker.GetLocalGazeDirection()), Color.yellow);
+                    Debug.DrawRay(cameraTransform.position, 
+                        hit.distance * cameraTransform.TransformDirection(eyeTrackerSelector.ChosenTracker.GetLocalGazeDirection()), Color.yellow);
                     if ((hit.point - fixationDot.transform.position).magnitude > maxFixationError)
                         timeFixated = 0.0f;
                 }

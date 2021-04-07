@@ -22,17 +22,17 @@
 		"InnerStimulusNoisePercentage": 50,
 		"InnerStimulusSpawnRadius": 30,
 		
-		"InputStartMs": 1500
-		"InputDurationMs": 4500
-		"FixationBreakCheckStartMs": 0
-		"FixationBreakCheckDurationMs": 1500
+		"InputStartMs": 1500,
+		"InputDurationMs": 4500,
+		"FixationBreakCheckStartMs": 0,
+		"FixationBreakCheckDurationMs": 1500,
 		
-		"AttentionCueStartMs": 0
+		"AttentionCueStartMs": 0,
 		"AttentionCueDurationMs": 1000,
 		"AttentionCueDepth": 0.57,
 		"AttentionCueLengthDegrees": 80,
 		"PulseFrequency": 12,
-		"SampleRate": 44100
+		"SampleRate": 44100,
 		
 		"EnableBuddyDots": true,
 		
@@ -56,7 +56,7 @@
 	}
 	
 	"DebugSettings": {
-		"ShowGaze": false,
-		"ShowStaircase": false
+		"ShowGaze": true,
+		"ShowStaircase": true
 	}
 }
