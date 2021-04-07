@@ -15,6 +15,7 @@ namespace DebugScripts
         public void OnEnable()
         {
             _eyeTracker = eyeTrackerObject.ChosenTracker;
+            visual.SetActive(true);
         }
     
         public void Update()

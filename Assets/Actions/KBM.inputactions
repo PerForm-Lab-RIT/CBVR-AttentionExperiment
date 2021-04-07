@@ -37,7 +37,7 @@
                 {
                     "name": "",
                     "id": "f82d0c76-a172-4d67-a51d-aff31689b85d",
-                    "path": "<Keyboard>/enter",
+                    "path": "<Keyboard>/#(C)",
                     "interactions": "",
                     "processors": "",
                     "groups": "Keyboard&Mouse",
