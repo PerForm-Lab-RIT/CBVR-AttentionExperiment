@@ -117,25 +117,27 @@ is shown below:
 **NOTE: All polar coordinate magnitudes are represented in visual degrees from the center of the outer stimulus. The rotational part of a polar coordinate represents the angular distance starting
 from the local up vector of the outer stimulus and is measured counter-clockwise from 0 to 360 degrees**
 
-| Result                    |         Type        |                                                                                     Explanation |
-|---------------------------|:-------------------:|------------------------------------------------------------------------------------------------:|
-| experiment                |        string       | The name of the settings used for this experiment                                               |
-| ppid                      |        string       | The participant id                                                                              |
-| session_num               |         int         |                                                                                                 |
-| trial_num                 |         int         |                                                                                                 |
-| block_num                 |         int         |                                                                                                 |
-| trial_num_in_block        |         int         |                                                                                                 |
-| start_time                |        float        | The start time of the trial, measured starting from the start of the session                    |
-| end_time                  |        float        | The end time of the trial, measured starting from the start of the session                      |
-| correct_angle             |        float        | The overall correct angle of the inner stimulus                                                 |
-| chosen_angle              |        float        | The participant-chosen direction                                                                |
-| correct_position          | tuple<float, float> | The overall correct position of the inner stimulus                                              |
-| chosen_position           | tuple<float, float> | The participant-chosen position                                                                 |
-| position_error            |        float        | How 'off' the center of the chosen position is from the correct position (in visual degrees)    |
-| coherence_range           |        float        | The variance in the movement angle of the inner stimulus' signal dots (controlled by staircase) |
-| position_within_threshold |         bool        | Whether or not the participant was within the defined position error tolerance                  |
-| angle_within_threshold    |         bool        | Whether or not the participant was within the defined angle error tolerance                     |
-| staircase                 |        string       | The staircase being utilized during a particular trial                                          |
+| Result                     | Type   | Explanation                                                                                     |
+|----------------------------|--------|-------------------------------------------------------------------------------------------------|
+| experiment                 | string | The name of the settings used for this experiment                                               |
+| ppid                       | string | The participant id                                                                              |
+| session_num                | int    |                                                                                                 |
+| trial_num                  | int    |                                                                                                 |
+| block_num                  | int    |                                                                                                 |
+| trial_num_in_block         | int    |                                                                                                 |
+| start_time                 | float  | The start time of the trial, measured starting from the start of the session                    |
+| end_time                   | float  | The end time of the trial, measured starting from the start of the session                      |
+| correct_angle              | float  | The overall correct angle of the inner stimulus                                                 |
+| chosen_angle               | float  | The participant-chosen direction                                                                |
+| correct_position_magnitude | float  | How far from the center the center of the inner stimulus is, in visual degrees                  |
+| correct_position_angle     | float  |                                                                                                 |
+| chosen_position_magnitude  | float  | How far from the center the center of the user input is, in visual degrees                      |
+| chosen_position_angle      | float  |                                                                                                 |
+| position_error             | float  | How 'off' the center of the chosen position is from the correct position (in visual degrees)    |
+| coherence_range            | float  | The variance in the movement angle of the inner stimulus' signal dots (controlled by staircase) |
+| position_within_threshold  | bool   | Whether or not the participant was within the defined position error tolerance                  |
+| angle_within_threshold     | bool   | Whether or not the participant was within the defined angle error tolerance                     |
+| staircase                  | string | The staircase being utilized during a particular trial                                          |
 
 # Program Flow
 
