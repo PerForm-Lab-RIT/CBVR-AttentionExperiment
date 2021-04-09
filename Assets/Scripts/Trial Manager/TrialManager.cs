@@ -100,7 +100,6 @@ namespace Trial_Manager
             trialNumUpdateEvent.Raise();
             percentageCorrectUpdateEvent.Raise();
             
-            
             _isTrialSuccessful = false;
             _isFixationBroken = false;
             soundPlayer.PlayStartSound();
@@ -146,12 +145,9 @@ namespace Trial_Manager
             correctPercentage.value = Convert.ToSingle(_numCorrect) / Convert.ToSingle(trialCount.value) * 100.0f;
             percentageCorrectUpdateEvent.Raise();
             
-            if (_inputReceived && trialCount.value <= sessionSettings.numTrials)
-            {
-                Session.instance.CurrentBlock.CreateTrial();
+            if (_inputReceived || sessionSettings.timeoutIsFailure)
                 trialCount.value++;
-            }
-            
+
             StartCoroutine(FeedBackRoutine());
         }
 
@@ -283,10 +279,13 @@ namespace Trial_Manager
             feedbackModule.HideFeedback();
 
             // Redo trial if timed-out
-            if(!_inputReceived)
+            if(!_inputReceived && !sessionSettings.timeoutIsFailure)
                 BeginTrial(Session.instance.CurrentTrial);
             else if (trialCount.value <= sessionSettings.numTrials)
+            {
+                Session.instance.CurrentBlock.CreateTrial();
                 Session.instance.BeginNextTrial();
+            }
             else
                 Session.instance.End();
         }

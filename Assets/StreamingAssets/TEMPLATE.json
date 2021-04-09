@@ -53,6 +53,8 @@
 		"CoherenceStaircase": [0, 40, 80, 120, 160, 200, 240, 280, 320, 338],
 		"StaircaseIncreaseThreshold": 3,
 		"StaircaseDecreaseThreshold": 1,
+		
+		"FailOnTimeout": true
 	}
 	
 	"DebugSettings": {

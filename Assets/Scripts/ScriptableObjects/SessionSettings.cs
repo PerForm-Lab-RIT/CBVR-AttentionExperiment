@@ -80,6 +80,8 @@ namespace ScriptableObjects
         public float fixationBreakCheckStart;
         public float fixationBreakCheckDuration;
 
+        public bool timeoutIsFailure;
+
         // IMPORTANT: Any changes made in this function should be cross-checked with both the corresponding JSON
         // and the UXF data-points collection
         public void LoadFromUxfJson()
@@ -142,6 +144,8 @@ namespace ScriptableObjects
             inputDuration = Convert.ToSingle(sessionSettingsDict["InputDurationMs"]);
             fixationBreakCheckStart = Convert.ToSingle(sessionSettingsDict["FixationBreakCheckStartMs"]);
             fixationBreakCheckDuration = Convert.ToSingle(sessionSettingsDict["FixationBreakCheckDurationMs"]);
+
+            timeoutIsFailure = Convert.ToBoolean(sessionSettingsDict["FailOnTimeout"]);
         }
 
         private static List<float> ParseFloatList(IEnumerable<object> list)
