@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
 namespace Trial_Manager
 {
@@ -24,7 +23,12 @@ namespace Trial_Manager
             _loseStreak = 0;
         }
 
-        public float CurrentStaircaseLevel()
+        public int CurrentStaircaseLevel()
+        {
+            return _currentStaircase;
+        }
+
+        public float CurrentStaircaseAngle()
         {
             return _staircaseLevels[_currentStaircase];
         }

@@ -65,7 +65,7 @@ namespace Trial_Manager
 
         public string CurrentStaircaseName()
         {
-            return CurrentStaircase == _locationStaircase ? "location" : "direction";
+            return CurrentStaircase == _locationStaircase ? "Location" : "Direction";
         }
     }
 }

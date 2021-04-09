@@ -2,6 +2,7 @@
 using System.Collections;
 using DotStimulus;
 using ScriptableObjects;
+using ScriptableObjects.Variables;
 using UnityEngine;
 using UXF;
 using Valve.VR;
@@ -28,14 +29,24 @@ namespace Trial_Manager
         [SerializeField] private GameObject attentionCue;
         [SerializeField] private SoundPlayer soundPlayer;
         
+        [Header("Events")]
+        [SerializeField] private GameEvent staircaseUpdateEvent;
+        [SerializeField] private GameEvent trialNumUpdateEvent;
+        [SerializeField] private GameEvent percentageCorrectUpdateEvent;
+        
+        [Header("Variables")]
+        [SerializeField] private IntVariable trialCount;
+        [SerializeField] private FloatVariable correctPercentage;
+        [SerializeField] private StringVariable staircaseType;
+        [SerializeField] private IntVariable staircaseLevel;
+        
         [Header("Misc")]
         [SerializeField] private GameObject fixationDot;
         [SerializeField] private FeedbackModule feedbackModule;
         [SerializeField] private SelectEyeTracker eyeTrackerSelector;
         [SerializeField] private Transform cameraTransform;
-        [SerializeField] private GameEvent staircaseUpdateEvent;
-
-        private int _trialCount = 1;
+        
+        private int _numCorrect = 0;
 
         private AperturePartition _partition;
         private StimulusSettings _innerStimulusSettings;
@@ -57,6 +68,12 @@ namespace Trial_Manager
         // Handles the management and interleaving of staircases
         public StaircaseManager StaircaseManager { get; private set; }
 
+        public void Start()
+        {
+            trialCount.value = 1;
+            correctPercentage.value = 100.0f;
+        }
+        
         public void OnEnable()
         {
             InitializeStimuli();
@@ -77,10 +94,13 @@ namespace Trial_Manager
         public void BeginTrial(Trial trial)
         {
             StaircaseManager.RandomizeStaircase();
+            staircaseType.value = StaircaseManager.CurrentStaircaseName();
+            staircaseLevel.value = StaircaseManager.CurrentStaircase.CurrentStaircaseLevel();
             staircaseUpdateEvent.Raise();
+            trialNumUpdateEvent.Raise();
+            percentageCorrectUpdateEvent.Raise();
             
-            Debug.Log("CURRENT STAIRCASE: " + StaircaseManager.CurrentStaircaseName());
-            Debug.Log("CURRENT STAIRCASE LEVEL: " + StaircaseManager.CurrentStaircase.CurrentStaircaseLevel());
+            
             _isTrialSuccessful = false;
             _isFixationBroken = false;
             soundPlayer.PlayStartSound();
@@ -102,7 +122,10 @@ namespace Trial_Manager
                 if (positionError < sessionSettings.positionErrorTolerance)
                 {
                     if (StaircaseManager.CheckForLocationWin())
+                    {
                         _isTrialSuccessful = true;
+                        _numCorrect++;
+                    }
                 }
                 else
                     StaircaseManager.CheckForLocationLoss();
@@ -110,17 +133,23 @@ namespace Trial_Manager
                 if (Math.Abs(chosenAngle - _innerStimulusSettings.correctAngle) < sessionSettings.angleErrorTolerance)
                 {
                     if (StaircaseManager.CheckForDirectionWin())
+                    {
                         _isTrialSuccessful = true;
+                        _numCorrect++;
+                    }
                 }
                 else
                     StaircaseManager.CheckForDirectionLoss();
                 RecordTrialData(trial, chosenAngle, chosenPosition, positionError);
             }
 
-            if (_inputReceived && _trialCount <= sessionSettings.numTrials)
+            correctPercentage.value = Convert.ToSingle(_numCorrect) / Convert.ToSingle(trialCount.value) * 100.0f;
+            percentageCorrectUpdateEvent.Raise();
+            
+            if (_inputReceived && trialCount.value <= sessionSettings.numTrials)
             {
                 Session.instance.CurrentBlock.CreateTrial();
-                _trialCount++;
+                trialCount.value++;
             }
             
             StartCoroutine(FeedBackRoutine());
@@ -154,9 +183,9 @@ namespace Trial_Manager
             trial.result["chosen_angle"] = chosenAngle;
             trial.result["correct_position_magnitude"] = _innerStimMagnitude;
             trial.result["correct_position_angle"] = _innerStimAngle;
-            var chosenPositionPolar = CalculateChosenPositionPolar(chosenPosition);
-            trial.result["chosen_position_magnitude"] = chosenPositionPolar.magnitude;
-            trial.result["chosen_position_angle"] = chosenPositionPolar.angle;
+            var (magnitude, angle) = CalculateChosenPositionPolar(chosenPosition);
+            trial.result["chosen_position_magnitude"] = magnitude;
+            trial.result["chosen_position_angle"] = angle;
             trial.result["position_error"] = positionError;
             trial.result["coherence_range"] = _innerStimulusSettings.coherenceRange;
             trial.result["position_within_threshold"] = positionError < sessionSettings.positionErrorTolerance;
@@ -256,7 +285,7 @@ namespace Trial_Manager
             // Redo trial if timed-out
             if(!_inputReceived)
                 BeginTrial(Session.instance.CurrentTrial);
-            else if (_trialCount <= sessionSettings.numTrials)
+            else if (trialCount.value <= sessionSettings.numTrials)
                 Session.instance.BeginNextTrial();
             else
                 Session.instance.End();
@@ -467,7 +496,7 @@ namespace Trial_Manager
                 ? sessionSettings.choosableAngles[Random.Range(0, sessionSettings.choosableAngles.Count)]
                 : Random.Range(0.0f, 360.0f);
 
-            _innerStimulusSettings.coherenceRange = StaircaseManager.CurrentStaircase.CurrentStaircaseLevel();
+            _innerStimulusSettings.coherenceRange = StaircaseManager.CurrentStaircase.CurrentStaircaseAngle();
             _innerStimulusManager.InitializeWithSettings(_innerStimulusSettings);
         }
     }

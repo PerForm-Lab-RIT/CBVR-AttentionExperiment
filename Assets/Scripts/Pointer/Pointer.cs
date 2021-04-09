@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using ScriptableObjects.Variables;
+using UnityEngine;
 using Valve.VR;
 
 public class Pointer : MonoBehaviour

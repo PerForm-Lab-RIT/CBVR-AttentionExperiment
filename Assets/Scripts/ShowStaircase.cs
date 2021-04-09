@@ -25,6 +25,6 @@ public class ShowStaircase : MonoBehaviour
     public void UpdateStaircaseDisplay()
     {
         text.text = 
-            Convert.ToString(trialManager.StaircaseManager.CurrentStaircase.CurrentStaircaseLevel(), CultureInfo.InvariantCulture);
+            Convert.ToString(trialManager.StaircaseManager.CurrentStaircase.CurrentStaircaseAngle(), CultureInfo.InvariantCulture);
     }
 }
