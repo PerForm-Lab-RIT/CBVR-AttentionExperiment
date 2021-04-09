@@ -63,39 +63,50 @@ JSON settings are located in the Assets/StreamingAssets folder of the project. T
 file contains all the required settings that need to be set and an example of their expected type of value.
 A table explaining each setting is shown below:
 
-| Setting                             |  Expects Type  |                                                                                                                                     Explanation |
-|-------------------------------------|:--------------:|------------------------------------------------------------------------------------------------------------------------------------------------:|
-| NumTrials                           |       int      | The number of trials to run in a single session                                                                                                 |
-| FixationTimeSeconds                 |      float     | How long a participant is required to fixate before starting a trial                                                                            |
-| FixationDotRadiusDegrees            |      float     |                                                                                                                                                 |
-| FixationErrorToleranceRadiusDegrees |      float     | How 'off' a participant's gaze is allowed to be when fixating                                                                                   |
-| SkyColor                            | List<float>[3] | The color of the background, in RGB values                                                                                                      |
-| StimulusDensity                     |      float     |                                                                                                                                                 |
-| StimulusDotSizeArcMinutes           |      float     |                                                                                                                                                 |
-| MinDotLifetimeSeconds               |      float     | The minimum amount of time it takes for both stimuli to shuffle their dots around                                                               |
-| MaxDotLifetimeSeconds               |      float     | The maximum amount of time it takes for both stimuli to shuffle their dots around                                                               |
-| OuterStimulusDurationMs             |      float     |                                                                                                                                                 |
-| OuterStimulusRadiusDegrees          |      float     |                                                                                                                                                 |
-| InnerStimulusDurationMs             |      float     |                                                                                                                                                 |
-| InnerStimulusRadiusDegrees          |      float     |                                                                                                                                                 |
-| InnerStimulusSpawnRadius            |      float     | How far from the center the inner stimulus is allowed to spawn (in degrees)                                                                     |
-| StimulusSpacingMeters               |      float     | Defines the distance between the outer and inner stimulus.  This value should be relatively small.  Only adjust if experiencing any flickering. |
-| StimulusDepthMeters                 |      float     | Defines the perceived distance of the stimuli                                                                                                   |
-| InterTrialDelaySeconds              |      float     | The delay between presenting feedback to the participant and the next trial starting                                                            |
-| TotalRegionSlices                   |       int      | (Must be even!) Defines how many equally-sized 'slices' of the outer aperture are created                                                       |
-| FlipRegions                         |      bool      | Swaps the slices that get utilized for Training and Testing mode                                                                                |
-| CoarseAdjustment                    |      bool      | Enables the use of defined selectable angles in the experiment                                                                                  |
-| ChoosableAngles                     |      List      | The selectable angles (when CoarseAdjustment is enabled). All angles are given in degrees.                                                      |
-| AngleErrorToleranceDegrees          |      float     | How 'off' the selected direction of a participant's input is allowed to be for positive feedback and staircasing                                |
-| PositionErrorToleranceDegrees       |      float     | How 'off' the selected location of a participant's input is allowed to be for positive feedback and staircasing                                 |
-| CoherenceStaircase                  |   List<float>  | The staircase values to use for the inner stimulus' coherence range. All angles are given in degrees.                                           |
-| StaircaseIncreaseThreshold          |       int      | How many successful trials in a row it takes in order to move up the staircase                                                                  |
-| StaircaseDecreaseThreshold          |       int      | How many unsuccessful trials in a row it takes in order to move down the staircase                                                              |
-| AttentionCueDuration                |      float     | The amount of time the attention cue plays before displaying the visual stimuli (in seconds)                                                    |
-| AttentionCueDepth                   |      float     | The perceived depth of the attention cue                                                                                                        |
-| AttentionCueLengthDegrees           |      float     | The amount of visual degrees the path of the feature-based attention should move                                                                |
-| PulseFrequency                      |      float     | The pulse frequency of the attention cue                                                                                                        |
-| SampleRate                          |       int      | The sample rate of the attention cue                                                                                                            |
+| Setting                             | Expects Type | Explanation                                                                                                                                     |
+|-------------------------------------|--------------|-------------------------------------------------------------------------------------------------------------------------------------------------|
+| NumTrials                           | int          | The number of trials to run in a single session                                                                                                 |
+| FixationTimeSeconds                 | float        | How long a participant is required to fixate before starting a trial                                                                            |
+| FixationDotRadiusDegrees            | float        |                                                                                                                                                 |
+| FixationErrorToleranceRadiusDegrees | float        | How 'off' a participant's gaze is allowed to be when fixating                                                                                   |
+| SkyColor                            | List[3]      | The color of the background, in RGB values                                                                                                      |
+| StimulusDensity                     | float        |                                                                                                                                                 |
+| StimulusDotSizeArcMinutes           | float        |                                                                                                                                                 |
+| MinDotLifetimeSeconds               | float        | The minimum amount of time it takes for both stimuli to shuffle their dots around                                                               |
+| MaxDotLifetimeSeconds               | float        | The maximum amount of time it takes for both stimuli to shuffle their dots around                                                               |
+| OuterStimulusStartMs                | float        | The amount of time after the initial fixation stage to start presenting the outer stimulus                                                      |
+| OuterStimulusDurationMs             | float        |                                                                                                                                                 |
+| OuterStimulusRadiusDegrees          | float        |                                                                                                                                                 |
+| OuterStimulusNoisePercentage        | float        | The percentage of the outer stimulus that contains dots that move in random directions, the rest of the dots will be signal dots                |
+| InnerStimulusStartMs                | float        | The amount of time after the initial fixation stage to start presenting the inner stimulus                                                      |
+| InnerStimulusDurationMs             | float        |                                                                                                                                                 |
+| InnerStimulusRadiusDegrees          | float        |                                                                                                                                                 |
+| InnerStimulusNoisePercentage        | float        | The percentage of the inner stimulus that contains dots that move in random directions, the rest of the dots will be signal dots                |
+| InnerStimulusSpawnRadius            | float        | How far from the center the inner stimulus is allowed to spawn (in degrees)                                                                     |
+| InputStartMs                        | float        | The amount of time after the initial fixation stage to allow input from the user                                                                |
+| InputDurationMs                     | float        |                                                                                                                                                 |
+| FixationBreakCheckStartMs           | float        | The amount of time after the initial fixation stage to check for a break in fixation when using an Eye Tracker                                  |
+| FixationBreakCheckDurationMs        | float        |                                                                                                                                                 |
+| AttentionCueStartMs                 | float        | The amount of time after the initial fixation stage to play the auditory attention cue                                                          |
+| AttentionCueDurationMs              | float        |                                                                                                                                                 |
+| AttentionCueDepth                   | float        | The perceived depth of the attention cue                                                                                                        |
+| AttentionCueLengthDegrees           | float        | The amount of visual degrees the path of the feature-based attention should move                                                                |
+| PulseFrequency                      | float        | The pulse frequency of the attention cue                                                                                                        |
+| SampleRate                          | int          | The sample rate of the attention cue                                                                                                            |
+| EnableBuddyDots                     | bool         | Toggles a stimulus generation mode where each dot's velocity is paired with another and moves in the opposite direction                         |
+| StimulusSpacingMeters               | float        | Defines the distance between the outer and inner stimulus.  This value should be relatively small.  Only adjust if experiencing any flickering. |
+| StimulusDepthMeters                 | float        | Defines the perceived distance of the stimuli                                                                                                   |
+| InterTrialDelaySeconds              | float        | The delay between presenting feedback to the participant and the next trial starting                                                            |
+| TotalRegionSlices                   | int          | (Must be even!) Defines how many equally-sized 'slices' of the outer aperture are created                                                       |
+| FlipRegions                         | bool         | Swaps the slices that get utilized for Training and Testing mode                                                                                |
+| CoarseAdjustment                    | bool         | Enables the use of defined selectable angles in the experiment                                                                                  |
+| ChoosableAngles                     | List         | The selectable angles (when CoarseAdjustment is enabled). All angles are given in degrees.                                                      |
+| AngleErrorToleranceDegrees          | float        | How 'off' the selected direction of a participant's input is allowed to be for positive feedback and staircasing                                |
+| PositionErrorToleranceDegrees       | float        | How 'off' the selected location of a participant's input is allowed to be for positive feedback and staircasing                                 |
+| CoherenceStaircase                  | List         | The staircase values to use for the inner stimulus' coherence range. All angles are given in degrees.                                           |
+| StaircaseIncreaseThreshold          | int          | How many successful trials in a row it takes in order to move up the staircase                                                                  |
+| StaircaseDecreaseThreshold          | int          | How many unsuccessful trials in a row it takes in order to move down the staircase                                                              |
+| FailOnTimeout                       | bool         | Toggles an option to consider a trial failed if the user doesn't provide input, otherwise the trial will restart if set to false                |
 
 # Data Output
 Data will be output to the specified folder defined in the UXF UI. Inside the output folder, the data is organized by the settings used at the top level. Within each settings folder will be another group of folders

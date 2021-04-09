@@ -13,7 +13,7 @@
 		
 		"OuterStimulusStartMs": 1000,
 		"OuterStimulusDurationMs": 5000,
-		"OuterStimulusRadiusDegrees": 55,
+		"OuterStimulusRadiusDegrees": 45,
 		"OuterStimulusNoisePercentage": 100,
 		
 		"InnerStimulusStartMs": 1000,
