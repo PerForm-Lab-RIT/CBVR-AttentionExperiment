@@ -1,7 +1,6 @@
 # Contents
 [Introduction](#getting-started)\
 [Getting Started](#getting-started)\
-[Choosing an Eye Tracker](#choosing-an-eye-tracker)\
 [JSON Settings](#json-settings)\
 [Data Output](#data-output)\
 [Program Flow](#program-flow)\
@@ -66,17 +65,6 @@ a correct direction for an inner stimulus or a correct location.
     - VIVE Pro Eye: Uses the built in Tobii eye tracker on the VIVE Pro Eye. Ensure that SRAnipal is running and the eye tracker is properly calibrated before starting the application.
 
 After accepting the data agreement and clicking the 'Begin Session' button, the session will start.
-
-# Choosing an Eye Tracker
-In the Hierarchy view, select the EyeTracker GameObject:
-
-![hierarchy](docs/hierarchy.PNG)
-
-Then, in the inspector, change the 'Selection' option in the EyeTracker to the desired
-EyeTracker implementation. Make sure that any required 3rd party software is already running (i.e.
-Pupil Capture is required before using the PupilLabs eye tracker):
-
-![eyetracker](docs/eyetracker.PNG)
 
 # JSON settings
 JSON settings are located in the Assets/StreamingAssets folder of the project. The TEMPLATE.json
