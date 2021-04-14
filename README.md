@@ -1,4 +1,5 @@
 # Contents
+[Introduction](#getting-started)\
 [Getting Started](#getting-started)\
 [Choosing an Eye Tracker](#choosing-an-eye-tracker)\
 [JSON Settings](#json-settings)\
@@ -6,9 +7,22 @@
 [Program Flow](#program-flow)\
 [Toggling Debug Visualizations](#toggling-debug-visualizations)
 
+# Introduction
+This experiment is designed as a training experiment with a pre and post-test. This is represented by two selectable session types in the UI called Training and Testing,
+respectively. The Training mode is designed to have an audible attention cue play during the course of the experiment, while Testing mode disables the cue. The experiment
+was originally designed to be run as a training session for 10 days, then run as a testing session where the results can compared between the two.
+
+A large variety of options can be designated by creating a JSON settings file based off the TEMPLATE file found inside Assets/StreamingAssets of the project folder.
+More details on what each of these settings do is found in the [JSON Settings](#json-settings) section. New settings files should be created on a per-participant
+basis. Data is output at the end of a session in the designated folder specified in the UXF UI, organized by participant/settings.
+
+The project is built in [Unity 2019.4.18f1](https://download.unity3d.com/download_unity/3310a4d4f880/UnityDownloadAssistant-2019.4.18f1.exe). Ensure that this is the version you are opening
+it in. The SteamVR version shouldn't matter, but the latest tested version is STEAMVR beta 1.17.5.
+
 # Getting Started
-First, open the project in [Unity 2019.4.18f1](https://download.unity3d.com/download_unity/3310a4d4f880/UnityDownloadAssistant-2019.4.18f1.exe).
-After opening the project, go into Play mode to open the UXF UI: 
+First, open the project in [Unity 2019.4.18f1](https://download.unity3d.com/download_unity/3310a4d4f880/UnityDownloadAssistant-2019.4.18f1.exe) or
+download the standalone version on the [releases page](https://github.com/JFrit/CBVR-AttentionExperiment/releases).
+After opening the project, if in the editor, go into Play mode to open the UXF UI: 
 ![UXFUI](docs/uxfui.PNG)
 
 From top to bottom:
@@ -45,6 +59,12 @@ outside of the project folder.
 *- Feedback Type:* Determines if positive auditory feedback is based on the success of the participant choosing
 a correct direction for an inner stimulus or a correct location.
 
+*- Eye Tracker:* The Eye Tracker implementation to use. These are:
+
+    - Dummy: A 'fake' eye tracker that always is focused in the center of the display. This effectively disables any sort of fixation checking.
+    - Pupil Labs: Any Pupil Labs eye tracker that is meant to run alongside the Pupil Capture software in order to work properly. Press 'c' to calibrate the eye tracker just after starting the session.
+    - VIVE Pro Eye: Uses the built in Tobii eye tracker on the VIVE Pro Eye. Ensure that SRAnipal is running and the eye tracker is properly calibrated before starting the application.
+
 After accepting the data agreement and clicking the 'Begin Session' button, the session will start.
 
 # Choosing an Eye Tracker
@@ -69,10 +89,10 @@ A table explaining each setting is shown below:
 | FixationTimeSeconds                 | float        | How long a participant is required to fixate before starting a trial                                                                            |
 | FixationDotRadiusDegrees            | float        |                                                                                                                                                 |
 | FixationErrorToleranceRadiusDegrees | float        | How 'off' a participant's gaze is allowed to be when fixating                                                                                   |
-| SkyColor                            | List[3]      | The color of the background, in RGB values                                                                                                      |
-| StimulusDensity                     | float        |                                                                                                                                                 |
+| SkyColor                            | List[3]      | The color of the background, in RGB values ranging from 0.0 to 1.0                                                                              |
+| StimulusDensity                     | float        | The density of the dots determined to calculate the total number of dots, approximately in dots per square visual degree                        |                                                                    |
 | StimulusDotSizeArcMinutes           | float        |                                                                                                                                                 |
-| MinDotLifetimeSeconds               | float        | The minimum amount of time it takes for both stimuli to shuffle their dots around                                                               |
+| MinDotLifetimeSeconds               | float        | The minimum amount of time it takes for both stimuli to shuffle their dots around (The actual time will be randomized between the min and max dot lifetimes per dot) |                                                               |
 | MaxDotLifetimeSeconds               | float        | The maximum amount of time it takes for both stimuli to shuffle their dots around                                                               |
 | OuterStimulusStartMs                | float        | The amount of time after the initial fixation stage to start presenting the outer stimulus                                                      |
 | OuterStimulusDurationMs             | float        |                                                                                                                                                 |
@@ -95,7 +115,7 @@ A table explaining each setting is shown below:
 | SampleRate                          | int          | The sample rate of the attention cue                                                                                                            |
 | EnableBuddyDots                     | bool         | Toggles a stimulus generation mode where each dot's velocity is paired with another and moves in the opposite direction                         |
 | StimulusSpacingMeters               | float        | Defines the distance between the outer and inner stimulus.  This value should be relatively small.  Only adjust if experiencing any flickering. |
-| StimulusDepthMeters                 | float        | Defines the perceived distance of the stimuli                                                                                                   |
+| StimulusDepthMeters                 | float        | Defines the perceived distance of the stimuli, used as a scaling factor for a majority of visible entities as well                              |
 | InterTrialDelaySeconds              | float        | The delay between presenting feedback to the participant and the next trial starting                                                            |
 | TotalRegionSlices                   | int          | (Must be even!) Defines how many equally-sized 'slices' of the outer aperture are created                                                       |
 | FlipRegions                         | bool         | Swaps the slices that get utilized for Training and Testing mode                                                                                |
