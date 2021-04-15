@@ -58,7 +58,7 @@
 	}
 	
 	"DebugSettings": {
-		"ShowGaze": true,
-		"ShowStaircase": true
+		"ShowGaze": false,
+		"ShowStaircase": false
 	}
 }

@@ -22,6 +22,7 @@ it in. The SteamVR version shouldn't matter, but the latest tested version is ST
 First, open the project in [Unity 2019.4.18f1](https://download.unity3d.com/download_unity/3310a4d4f880/UnityDownloadAssistant-2019.4.18f1.exe) or
 download the standalone version on the [releases page](https://github.com/JFrit/CBVR-AttentionExperiment/releases).
 After opening the project, if in the editor, go into Play mode to open the UXF UI: 
+
 ![UXFUI](docs/uxfui.PNG)
 
 From top to bottom:
