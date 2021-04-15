@@ -81,4 +81,9 @@ public class SessionManager : MonoBehaviour
         if(_sessionOver)
             Application.Quit();
     }
+
+    public void ForceQuit()
+    {
+        Application.Quit();
+    }
 }

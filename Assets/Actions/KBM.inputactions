@@ -20,6 +20,14 @@
                     "expectedControlType": "Button",
                     "processors": "",
                     "interactions": ""
+                },
+                {
+                    "name": "ForceQuit",
+                    "type": "Button",
+                    "id": "65f3a37a-3acf-467b-a586-95a0a403e94e",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": ""
                 }
             ],
             "bindings": [
@@ -42,6 +50,17 @@
                     "processors": "",
                     "groups": "Keyboard&Mouse",
                     "action": "Calibrate",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "07b4d1a0-47cb-4ca8-a8df-f1b6163972d3",
+                    "path": "<Keyboard>/escape",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Keyboard&Mouse",
+                    "action": "ForceQuit",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }
