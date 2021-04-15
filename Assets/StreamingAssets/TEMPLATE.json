@@ -1,6 +1,6 @@
 {
 	"SessionSettings": {
-		"NumTrials": 10,
+		"NumTrials": 3,
 		"FixationTimeSeconds": 1,
 		"FixationDotRadiusDegrees": 0.3,
 		"FixationErrorToleranceRadiusDegrees": 8,

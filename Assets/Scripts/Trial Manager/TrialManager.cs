@@ -46,7 +46,8 @@ namespace Trial_Manager
         [SerializeField] private SelectEyeTracker eyeTrackerSelector;
         [SerializeField] private Transform cameraTransform;
         
-        private int _numCorrect = 0;
+        private int _numCorrect;
+        private int _totalNumTrials;
 
         private AperturePartition _partition;
         private StimulusSettings _innerStimulusSettings;
@@ -72,6 +73,7 @@ namespace Trial_Manager
         {
             trialCount.value = 1;
             correctPercentage.value = 100.0f;
+            _totalNumTrials = sessionSettings.numTrials;
         }
         
         public void OnEnable()
@@ -279,9 +281,16 @@ namespace Trial_Manager
             feedbackModule.HideFeedback();
 
             // Redo trial if timed-out
-            if(!_inputReceived && !sessionSettings.timeoutIsFailure)
+            if (!_inputReceived && !sessionSettings.timeoutIsFailure)
+            {
                 BeginTrial(Session.instance.CurrentTrial);
-            else if (trialCount.value <= sessionSettings.numTrials)
+                yield break;
+            }
+
+            if (!_inputReceived)
+                _totalNumTrials++;
+            
+            if (trialCount.value <= _totalNumTrials)
             {
                 Session.instance.CurrentBlock.CreateTrial();
                 Session.instance.BeginNextTrial();
