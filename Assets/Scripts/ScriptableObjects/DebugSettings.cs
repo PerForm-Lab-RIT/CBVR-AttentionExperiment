@@ -8,6 +8,7 @@ namespace ScriptableObjects
     public class DebugSettings : ScriptableObject
     {
         public bool showGaze;
+        public bool gazeSpectatorOnly;
         public bool showStaircase;
 
         public void LoadFromUxfJson()
@@ -15,6 +16,7 @@ namespace ScriptableObjects
             var debugSettingsDict = Session.instance.settings.GetDict("DebugSettings");
             showGaze = Convert.ToBoolean(debugSettingsDict["ShowGaze"]);
             showStaircase = Convert.ToBoolean(debugSettingsDict["ShowStaircase"]);
+            gazeSpectatorOnly = Convert.ToBoolean(debugSettingsDict["GazeSpectatorOnly"]);
         }
     }
 }

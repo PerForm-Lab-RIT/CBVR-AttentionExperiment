@@ -326,7 +326,7 @@ namespace Trial_Manager
             StopCoroutine(outerStimulusRoutine);
             StopCoroutine(innerStimulusRoutine);
             StopCoroutine(inputRoutine);
-            StopCoroutine(fixationBreakCheckRoutine);
+            if(fixationBreakCheckRoutine != null) StopCoroutine(fixationBreakCheckRoutine);
             StopCoroutine(attentionCueRoutine);
             
             outerStimulus.SetActive(false);

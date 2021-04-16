@@ -58,7 +58,9 @@
 	}
 	
 	"DebugSettings": {
-		"ShowGaze": false,
+		"ShowGaze": true,
+		"GazeSpectatorOnly": true,
+		
 		"ShowStaircase": false
 	}
 }
