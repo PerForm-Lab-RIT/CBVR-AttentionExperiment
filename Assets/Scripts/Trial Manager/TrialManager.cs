@@ -56,6 +56,8 @@ namespace Trial_Manager
 
         private float _innerStimMagnitude;
         private float _innerStimAngle;
+        
+        public bool IsPausable { get; private set; }
     
         private bool _inputReceived;
         private bool _waitingForInput;
@@ -74,6 +76,7 @@ namespace Trial_Manager
             trialCount.value = 1;
             correctPercentage.value = 100.0f;
             _totalNumTrials = sessionSettings.numTrials;
+            IsPausable = false;
         }
         
         public void OnEnable()
@@ -302,8 +305,11 @@ namespace Trial_Manager
         private IEnumerator TrialRoutine(Trial trial)
         {
             fixationDot.SetActive(true);
+            
+            IsPausable = true;
             yield return WaitForFixation(sessionSettings.fixationTime, 
                 Mathf.Tan(sessionSettings.fixationErrorTolerance * Mathf.PI / 180 * sessionSettings.stimulusDepth));
+            IsPausable = false;
 
             var trialDuration = GetTrialDuration();
 
@@ -343,6 +349,12 @@ namespace Trial_Manager
             }
             
             trial.End();
+        }
+
+        public void Pause()
+        {
+            StopCoroutine(_trialRoutine);
+            fixationDot.SetActive(false);
         }
 
         private float GetTrialDuration()

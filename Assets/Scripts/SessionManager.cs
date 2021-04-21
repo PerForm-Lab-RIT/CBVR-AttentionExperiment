@@ -1,7 +1,8 @@
 ﻿using System;
-using System.Windows.Forms.VisualStyles;
 using ScriptableObjects;
+using Trial_Manager;
 using UnityEngine;
+using UnityEngine.InputSystem;
 using UXF;
 using Valve.VR;
 
@@ -13,11 +14,20 @@ public class SessionManager : MonoBehaviour
     // A GameObject containing a TrialManager monobehaviour. Should start inactive.
     [SerializeField] private GameObject trialManager;
     [SerializeField] private SteamVR_Action_Boolean confirmInputAction;
-    
+    [SerializeField] private GameObject experimenterUI;
+    [SerializeField] private GameObject pauseUI;
+    [SerializeField] private GameObject spectatorUI;
+    [SerializeField] private GameObject startText;
+
+    private Session _session;
     private Block _primaryBlock;
+    private bool _experimenterStartControlsEnabled;
+    private bool _experimenterPauseControlsEnabled;
     private bool _sessionStarted;
     private bool _sessionOver;
 
+    private bool _isPaused;
+    
     public void OnEnable()
     {
         confirmInputAction.onStateDown += StartFirstTrial;
@@ -34,13 +44,33 @@ public class SessionManager : MonoBehaviour
     public void StartSession(Session session)
     {
         settings.LoadFromUxfJson();
+        StartExperimenterView();
         SetSky(settings.skyColor);
-        _primaryBlock = session.CreateBlock();
-        _primaryBlock.CreateTrial();
-        trialManager.SetActive(true);
-        _sessionStarted = true;
+        _session = session;
     }
-    
+
+    private void StartExperimenterView()
+    {
+        experimenterUI.SetActive(true);
+        _experimenterStartControlsEnabled = true;
+    }
+
+    public void StartMainSession()
+    {
+        if (_experimenterStartControlsEnabled)
+        {
+            _primaryBlock = _session.CreateBlock();
+            _primaryBlock.CreateTrial();
+            
+            _experimenterStartControlsEnabled = false;
+            trialManager.SetActive(true);
+            spectatorUI.SetActive(true);
+            experimenterUI.SetActive(false);
+            startText.SetActive(true);
+            _sessionStarted = true;
+        }
+    }
+
     private static void SetSky(Color skyColor)
     {
         RenderSettings.skybox.color = skyColor;
@@ -48,16 +78,16 @@ public class SessionManager : MonoBehaviour
 
     private void StartFirstTrial(SteamVR_Action_Boolean action, SteamVR_Input_Sources source)
     {
-        if (_sessionStarted)
+        if (_sessionStarted && trialManager.activeInHierarchy)
         {
             Session.instance.BeginNextTrial();
             _sessionStarted = false;
         }
     }
     
-    public void StartFirstTrial()
+    public void StartFirstTrial(InputAction.CallbackContext context)
     {
-        if (_sessionStarted)
+        if (_sessionStarted && context.started)
         {
             Session.instance.BeginNextTrial();
             _sessionStarted = false;
@@ -70,7 +100,7 @@ public class SessionManager : MonoBehaviour
         _sessionOver = true;
     }
 
-    public void CloseProgram(SteamVR_Action_Boolean action, SteamVR_Input_Sources source)
+    private void CloseProgram(SteamVR_Action_Boolean action, SteamVR_Input_Sources source)
     {
         if(_sessionOver)
             Application.Quit();
@@ -80,6 +110,39 @@ public class SessionManager : MonoBehaviour
     {
         if(_sessionOver)
             Application.Quit();
+    }
+
+    public void Pause()
+    {
+        var trialManagerComponent = trialManager.GetComponent<TrialManager>();
+
+        if (trialManagerComponent.IsPausable)
+        {
+            trialManagerComponent.Pause();
+            pauseUI.SetActive(true);
+            _isPaused = true;
+        }
+    }
+
+    public void Resume()
+    {
+        pauseUI.SetActive(false);
+        trialManager.GetComponent<TrialManager>().BeginTrial(Session.instance.CurrentTrial);
+        _isPaused = false;
+    }
+
+    public void TogglePause(InputAction.CallbackContext context)
+    {
+        if (!context.performed) return;
+        
+        if (_isPaused)
+        {
+            Resume();
+        }
+        else
+        {
+            Pause();
+        }
     }
 
     public void ForceQuit()

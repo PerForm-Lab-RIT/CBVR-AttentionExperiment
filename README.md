@@ -148,6 +148,10 @@ from the local up vector of the outer stimulus and is measured counter-clockwise
 | angle_within_threshold     | bool   | Whether or not the participant was within the defined angle error tolerance                     |
 | staircase                  | string | The staircase being utilized during a particular trial                                          |
 
+There are two ways in which a trial timing out can be handled. If the FailOnTimeout JSON option is enabled, a trial will be considered a failure and will be recorded
+with blank data. The total number of trials will also increase so that the number of desired successfully completed trials is reached. If FailOnTimeout is disabled, the trial will
+simply be restarted without recording the fact that the trial timed out.
+
 # Program Flow
 
 The majority of the main program flow are the scripts under the "-----MAIN SCRIPTS-----" GameObject. The flow is ultimately driven through

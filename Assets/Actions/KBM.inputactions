@@ -22,7 +22,7 @@
                     "interactions": ""
                 },
                 {
-                    "name": "ForceQuit",
+                    "name": "Pause",
                     "type": "Button",
                     "id": "65f3a37a-3acf-467b-a586-95a0a403e94e",
                     "expectedControlType": "Button",
@@ -60,7 +60,7 @@
                     "interactions": "",
                     "processors": "",
                     "groups": "Keyboard&Mouse",
-                    "action": "ForceQuit",
+                    "action": "Pause",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }
