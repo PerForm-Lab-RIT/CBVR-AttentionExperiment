@@ -1,8 +1,10 @@
 ﻿using System;
+using PupilLabs;
 using ScriptableObjects;
 using Trial_Manager;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.UI;
 using UXF;
 using Valve.VR;
 
@@ -18,6 +20,8 @@ public class SessionManager : MonoBehaviour
     [SerializeField] private GameObject pauseUI;
     [SerializeField] private GameObject spectatorUI;
     [SerializeField] private GameObject startText;
+    [SerializeField] private Text infoText;
+    [SerializeField] private CalibrationController calibrationController;
 
     private Session _session;
     private Block _primaryBlock;
@@ -67,6 +71,7 @@ public class SessionManager : MonoBehaviour
             spectatorUI.SetActive(true);
             experimenterUI.SetActive(false);
             startText.SetActive(true);
+            infoText.gameObject.SetActive(false);
             _sessionStarted = true;
         }
     }
@@ -116,10 +121,12 @@ public class SessionManager : MonoBehaviour
     {
         var trialManagerComponent = trialManager.GetComponent<TrialManager>();
 
+        infoText.text = "";
         if (trialManagerComponent.IsPausable)
         {
             trialManagerComponent.Pause();
             pauseUI.SetActive(true);
+            infoText.gameObject.SetActive(true);
             _isPaused = true;
         }
     }
@@ -127,8 +134,50 @@ public class SessionManager : MonoBehaviour
     public void Resume()
     {
         pauseUI.SetActive(false);
+        infoText.gameObject.SetActive(false);
         trialManager.GetComponent<TrialManager>().BeginTrial(Session.instance.CurrentTrial);
         _isPaused = false;
+    }
+
+    public void CalibratePupilLabs()
+    {
+        if (calibrationController.subsCtrl.IsConnected)
+        {
+            calibrationController.StartCalibration();
+            calibrationController.OnCalibrationSucceeded += CalibrationSuccessful;
+            calibrationController.OnCalibrationFailed += CalibrationFailed;
+            experimenterUI.SetActive(false);
+            pauseUI.SetActive(false);
+            infoText.gameObject.SetActive(false);
+        }
+        else
+        {
+            infoText.text =
+                "PupilLabs tracker disconnected!\n Ensure that Pupil Capture is running and that the Pupil Labs tracker is selected in the UXF UI.";
+            infoText.color = Color.red;
+        }
+    }
+
+    private void CalibrationSuccessful()
+    {
+        if (_isPaused)
+            pauseUI.SetActive(true);
+        else
+            experimenterUI.SetActive(true);
+        infoText.gameObject.SetActive(true);
+        infoText.text = "Calibration successful!";
+        infoText.color = Color.green;
+    }
+    
+    private void CalibrationFailed()
+    {
+        if (_isPaused)
+            pauseUI.SetActive(true);
+        else
+            experimenterUI.SetActive(true);
+        infoText.gameObject.SetActive(true);
+        infoText.text = "Calibration failed.\n Ensure that Pupil Capture is running with both eye cameras!";
+        infoText.color = Color.red;
     }
 
     public void TogglePause(InputAction.CallbackContext context)
