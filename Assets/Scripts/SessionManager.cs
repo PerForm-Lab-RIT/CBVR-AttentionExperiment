@@ -1,5 +1,4 @@
-﻿using System;
-using PupilLabs;
+﻿using PupilLabs;
 using ScriptableObjects;
 using Trial_Manager;
 using UnityEngine;
@@ -31,7 +30,7 @@ public class SessionManager : MonoBehaviour
     private bool _sessionOver;
 
     private bool _isPaused;
-    
+
     public void OnEnable()
     {
         confirmInputAction.onStateDown += StartFirstTrial;
@@ -43,7 +42,14 @@ public class SessionManager : MonoBehaviour
         confirmInputAction.onStateDown -= StartFirstTrial;
         confirmInputAction.onStateDown -= CloseProgram;
     }
-    
+
+    public void SetEnforcedHeadTransform()
+    {
+        trialManager.GetComponent<TrialManager>().SetEnforcedHeadTransform();
+        infoText.text = "Head transform set!";
+        infoText.color = Color.green;
+    }
+
     // Called via UXF Event
     public void StartSession(Session session)
     {
@@ -153,7 +159,7 @@ public class SessionManager : MonoBehaviour
         else
         {
             infoText.text =
-                "PupilLabs tracker disconnected!\n Ensure that Pupil Capture is running and that the Pupil Labs tracker is selected in the UXF UI.";
+                "PupilLabs tracker disconnected!\n If the tracker was selected in UXF, ensure Pupil Capture is running and try again.";
             infoText.color = Color.red;
         }
     }
@@ -185,13 +191,9 @@ public class SessionManager : MonoBehaviour
         if (!context.performed) return;
         
         if (_isPaused)
-        {
             Resume();
-        }
         else
-        {
             Pause();
-        }
     }
 
     public void ForceQuit()

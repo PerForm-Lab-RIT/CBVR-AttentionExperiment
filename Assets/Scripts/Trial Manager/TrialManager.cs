@@ -66,6 +66,9 @@ namespace Trial_Manager
 
         private InputData _userInput;
         private DotManager _innerStimulusManager;
+
+        [ReadOnly] [SerializeField] private Vector3 enforcedHeadPosition;
+        [ReadOnly] [SerializeField] private Quaternion enforcedHeadRotation;
         
         // Property: StaircaseManager
         // Handles the management and interleaving of staircases
@@ -113,6 +116,12 @@ namespace Trial_Manager
             
             _trialRoutine = TrialRoutine(trial);
             StartCoroutine(_trialRoutine);
+        }
+
+        public void SetEnforcedHeadTransform()
+        {
+            enforcedHeadPosition = cameraTransform.position;
+            enforcedHeadRotation = cameraTransform.rotation;
         }
 
         // Called via UXF event
@@ -317,6 +326,7 @@ namespace Trial_Manager
             var innerStimulusRoutine = StartCoroutine(InnerStimulusRoutine());
             var inputRoutine = StartCoroutine(InputRoutine());
             var fixationBreakCheckRoutine = StartCoroutine(FixationBreakCheckRoutine());
+            var headStabilityCheckRoutine = StartCoroutine(HeadStabilityCheckRoutine());
             var attentionCueRoutine = AttentionCueRoutine();
             
             if (sessionSettings.sessionType == SessionSettings.SessionType.Training)
@@ -334,6 +344,7 @@ namespace Trial_Manager
             StopCoroutine(inputRoutine);
             if(fixationBreakCheckRoutine != null) StopCoroutine(fixationBreakCheckRoutine);
             StopCoroutine(attentionCueRoutine);
+            StopCoroutine(headStabilityCheckRoutine);
             
             outerStimulus.SetActive(false);
             innerStimulus.SetActive(false);
@@ -483,6 +494,33 @@ namespace Trial_Manager
                 yield return null;
             }
         }
+        
+        private IEnumerator HeadStabilityCheckRoutine()
+        {
+            var elapsedTime = 0.0f;
+            while (elapsedTime < sessionSettings.headFixationStart / 1000)
+            {
+                elapsedTime += Time.deltaTime;
+                yield return null;
+            }
+            
+            elapsedTime = 0.0f;
+            while (elapsedTime < sessionSettings.headFixationDuration / 1000)
+            {
+                var sqrDistance = (cameraTransform.localPosition - enforcedHeadPosition).sqrMagnitude;
+                var angularDifference = Quaternion.Angle(cameraTransform.rotation, enforcedHeadRotation);
+                if (sqrDistance > sessionSettings.headFixationDistanceErrorTolerance * sessionSettings.headFixationDistanceErrorTolerance || 
+                    angularDifference > sessionSettings.headFixationAngleErrorTolerance)
+                {
+                    innerStimulus.SetActive(false);
+                    outerStimulus.SetActive(false);
+                    _isFixationBroken = true;
+                    yield break;
+                }
+                elapsedTime += Time.deltaTime;
+                yield return null;
+            }
+        }
 
         private IEnumerator WaitForFixation(float fixationTime, float maxFixationError)
         {
@@ -490,6 +528,8 @@ namespace Trial_Manager
             while (timeFixated < fixationTime)
             {
                 timeFixated += Time.deltaTime;
+                
+                // Gaze Fixation check
                 if (Physics.Raycast(cameraTransform.position, 
                     cameraTransform.TransformDirection(eyeTrackerSelector.ChosenTracker.GetLocalGazeDirection()), out var hit))
                 {
@@ -502,6 +542,16 @@ namespace Trial_Manager
                 {
                     timeFixated = 0.0f;
                 }
+                
+                // Head Fixation check
+                var sqrDistance = (cameraTransform.localPosition - enforcedHeadPosition).sqrMagnitude;
+                var angularDifference = Quaternion.Angle(cameraTransform.rotation, enforcedHeadRotation);
+                if (sqrDistance > sessionSettings.headFixationDistanceErrorTolerance * sessionSettings.headFixationDistanceErrorTolerance || 
+                    angularDifference > sessionSettings.headFixationAngleErrorTolerance)
+                {
+                    timeFixated = 0.0f;
+                }
+                
                 yield return null;
             }
         }

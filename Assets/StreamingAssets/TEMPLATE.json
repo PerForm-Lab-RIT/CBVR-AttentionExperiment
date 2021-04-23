@@ -27,6 +27,11 @@
 		"FixationBreakCheckStartMs": 0,
 		"FixationBreakCheckDurationMs": 1500,
 		
+		"HeadStabilityDistanceErrorToleranceM": 0.1,
+		"HeadStabilityAngleErrorToleranceDegrees": 15,
+		"HeadStabilityCheckStartMs": 0,
+		"HeadStabilityCheckDurationMs": 1500,
+		
 		"AttentionCueStartMs": 0,
 		"AttentionCueDurationMs": 1000,
 		"AttentionCueDepth": 0.57,
@@ -55,7 +60,7 @@
 		"StaircaseDecreaseThreshold": 1,
 		
 		"FailOnTimeout": true
-	}
+	},
 	
 	"DebugSettings": {
 		"ShowGaze": true,

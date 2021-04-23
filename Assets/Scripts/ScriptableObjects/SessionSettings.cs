@@ -80,6 +80,11 @@ namespace ScriptableObjects
         public float fixationBreakCheckStart;
         public float fixationBreakCheckDuration;
 
+        public float headFixationDistanceErrorTolerance;
+        public float headFixationAngleErrorTolerance;
+        public float headFixationStart;
+        public float headFixationDuration;
+
         public bool timeoutIsFailure;
 
         // IMPORTANT: Any changes made in this function should be cross-checked with both the corresponding JSON
@@ -144,6 +149,12 @@ namespace ScriptableObjects
             inputDuration = Convert.ToSingle(sessionSettingsDict["InputDurationMs"]);
             fixationBreakCheckStart = Convert.ToSingle(sessionSettingsDict["FixationBreakCheckStartMs"]);
             fixationBreakCheckDuration = Convert.ToSingle(sessionSettingsDict["FixationBreakCheckDurationMs"]);
+
+            headFixationDistanceErrorTolerance = Convert.ToSingle(sessionSettingsDict["HeadStabilityDistanceErrorToleranceM"]);
+            headFixationAngleErrorTolerance =
+                Convert.ToSingle(sessionSettingsDict["HeadStabilityAngleErrorToleranceDegrees"]);
+            headFixationStart = Convert.ToSingle(sessionSettingsDict["HeadStabilityCheckStartMs"]);
+            headFixationDuration = Convert.ToSingle(sessionSettingsDict["HeadStabilityCheckDurationMs"]);
 
             timeoutIsFailure = Convert.ToBoolean(sessionSettingsDict["FailOnTimeout"]);
         }
