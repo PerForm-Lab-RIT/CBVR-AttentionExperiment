@@ -15,7 +15,6 @@ public class SessionManager : MonoBehaviour
     // A GameObject containing a TrialManager monobehaviour. Should start inactive.
     [SerializeField] private GameObject trialManager;
     [SerializeField] private SteamVR_Action_Boolean confirmInputAction;
-    [SerializeField] private GameObject experimenterUI;
     [SerializeField] private GameObject pauseUI;
     [SerializeField] private GameObject spectatorUI;
     [SerializeField] private GameObject startText;
@@ -25,8 +24,8 @@ public class SessionManager : MonoBehaviour
     private Session _session;
     private Block _primaryBlock;
     private bool _experimenterStartControlsEnabled;
-    private bool _experimenterPauseControlsEnabled;
     private bool _sessionStarted;
+    private bool _sessionBeginButtonClicked;
     private bool _sessionOver;
 
     private bool _isPaused;
@@ -54,15 +53,10 @@ public class SessionManager : MonoBehaviour
     public void StartSession(Session session)
     {
         settings.LoadFromUxfJson();
-        StartExperimenterView();
+        _experimenterStartControlsEnabled = true;
+        pauseUI.SetActive(true);
         SetSky(settings.skyColor);
         _session = session;
-    }
-
-    private void StartExperimenterView()
-    {
-        experimenterUI.SetActive(true);
-        _experimenterStartControlsEnabled = true;
     }
 
     public void StartMainSession()
@@ -75,7 +69,7 @@ public class SessionManager : MonoBehaviour
             _experimenterStartControlsEnabled = false;
             trialManager.SetActive(true);
             spectatorUI.SetActive(true);
-            experimenterUI.SetActive(false);
+            pauseUI.SetActive(false);
             startText.SetActive(true);
             infoText.gameObject.SetActive(false);
             _sessionStarted = true;
@@ -92,7 +86,7 @@ public class SessionManager : MonoBehaviour
         if (_sessionStarted && trialManager.activeInHierarchy)
         {
             Session.instance.BeginNextTrial();
-            _sessionStarted = false;
+            confirmInputAction.onStateDown -= StartFirstTrial;
         }
     }
     
@@ -139,10 +133,18 @@ public class SessionManager : MonoBehaviour
 
     public void Resume()
     {
-        pauseUI.SetActive(false);
-        infoText.gameObject.SetActive(false);
-        trialManager.GetComponent<TrialManager>().BeginTrial(Session.instance.CurrentTrial);
-        _isPaused = false;
+        if (!_sessionBeginButtonClicked)
+        {
+            StartMainSession();
+            _sessionBeginButtonClicked = true;
+        }
+        else
+        {
+            pauseUI.SetActive(false);
+            infoText.gameObject.SetActive(false);
+            trialManager.GetComponent<TrialManager>().BeginTrial(Session.instance.CurrentTrial);
+            _isPaused = false;
+        }
     }
 
     public void CalibratePupilLabs()
@@ -152,7 +154,6 @@ public class SessionManager : MonoBehaviour
             calibrationController.StartCalibration();
             calibrationController.OnCalibrationSucceeded += CalibrationSuccessful;
             calibrationController.OnCalibrationFailed += CalibrationFailed;
-            experimenterUI.SetActive(false);
             pauseUI.SetActive(false);
             infoText.gameObject.SetActive(false);
         }
@@ -168,8 +169,6 @@ public class SessionManager : MonoBehaviour
     {
         if (_isPaused)
             pauseUI.SetActive(true);
-        else
-            experimenterUI.SetActive(true);
         infoText.gameObject.SetActive(true);
         infoText.text = "Calibration successful!";
         infoText.color = Color.green;
@@ -179,8 +178,6 @@ public class SessionManager : MonoBehaviour
     {
         if (_isPaused)
             pauseUI.SetActive(true);
-        else
-            experimenterUI.SetActive(true);
         infoText.gameObject.SetActive(true);
         infoText.text = "Calibration failed.\n Ensure that Pupil Capture is running with both eye cameras!";
         infoText.color = Color.red;
