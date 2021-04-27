@@ -96,6 +96,7 @@ public class SessionManager : MonoBehaviour
         {
             Session.instance.BeginNextTrial();
             _sessionStarted = false;
+            confirmInputAction.onStateDown -= StartFirstTrial;
         }
     }
 
@@ -160,7 +161,7 @@ public class SessionManager : MonoBehaviour
         else
         {
             infoText.text =
-                "PupilLabs tracker disconnected!\n If the tracker was selected in UXF, ensure Pupil Capture is running and try again.";
+                "PupilLabs tracker disconnected!\n If the tracker was selected in the JSON settings, ensure Pupil Capture is running and try again.";
             infoText.color = Color.red;
         }
     }

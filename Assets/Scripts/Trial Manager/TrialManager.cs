@@ -89,6 +89,7 @@ namespace Trial_Manager
             _innerStimulusManager = innerStimulus.GetComponent<DotManager>();
             _partition = new AperturePartition(sessionSettings, _outerStimulusSettings, _innerStimulusSettings);
             StaircaseManager = new StaircaseManager(sessionSettings);
+            SetEnforcedHeadTransform();
 
             confirmInputAction[inputSource].onStateUp += GetUserSelection;
         }

@@ -47,19 +47,20 @@ public class SelectEyeTracker : MonoBehaviour
 
     public void SelectFromUxf()
     {
-        var tracker = (string) Session.instance.participantDetails["Eyetracker"];
-        switch (tracker)
+        var sessionSettingsDict = Session.instance.settings.GetDict("SessionSettings");
+        var tracker = (string) sessionSettingsDict["EyeTracker"];
+        switch (char.ToLower(tracker[0]))
         {
-            case "Dummy":
+            case 'd':
                 ChosenTracker = _dummyEyeTracker;
                 selection = ETrackerSelection.Dummy;
                 break;
-            case "Pupil Labs":
+            case 'p':
                 pupilEyeTracker.SetActive(true);
                 ChosenTracker = pupilEyeTracker.GetComponent<IEyeTracker>();
                 selection = ETrackerSelection.PupilLabs;
                 break;
-            case "VIVE Pro Eye":
+            case 'v':
                 viveProEye.SetActive(true);
                 ChosenTracker = viveProEye.GetComponent<IEyeTracker>();
                 selection = ETrackerSelection.ViveProEye;

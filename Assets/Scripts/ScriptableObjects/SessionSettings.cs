@@ -94,7 +94,7 @@ namespace ScriptableObjects
             var sessionSettingsDict = Session.instance.settings.GetDict("SessionSettings");
             
             sessionType = ParseSessionType((string) Session.instance.participantDetails["SessionType"]);
-            cueType = ParseCueType((string) Session.instance.participantDetails["CueType"]);
+            cueType = ParseCueType((string) sessionSettingsDict["AttentionCueType"]);
             feedbackType = ParseFeedbackType((string) Session.instance.participantDetails["FeedbackType"]);
             numTrials = Convert.ToInt32(sessionSettingsDict["NumTrials"]);
             fixationTime = Convert.ToSingle(sessionSettingsDict["FixationTimeSeconds"]);
@@ -139,8 +139,8 @@ namespace ScriptableObjects
             angleErrorTolerance = Convert.ToSingle(sessionSettingsDict["AngleErrorToleranceDegrees"]);
             positionErrorTolerance = Convert.ToSingle(sessionSettingsDict["PositionErrorToleranceDegrees"]);
             
-            positionStaircaseEnabled = Convert.ToBoolean(Session.instance.participantDetails["LocationalStaircaseEnabled"]);
-            directionStaircaseEnabled = Convert.ToBoolean(Session.instance.participantDetails["DirectionalStaircaseEnabled"]);
+            positionStaircaseEnabled = Convert.ToBoolean(sessionSettingsDict["EnableLocationalStaircase"]);
+            directionStaircaseEnabled = Convert.ToBoolean(sessionSettingsDict["EnableDirectionalStaircase"]);
             
             fixationErrorTolerance = Convert.ToSingle(sessionSettingsDict["FixationErrorToleranceRadiusDegrees"]);
             buddyDotsEnabled = Convert.ToBoolean(sessionSettingsDict["EnableBuddyDots"]);
@@ -188,13 +188,13 @@ namespace ScriptableObjects
         
         private static CueType ParseCueType(string cueTypeString)
         {
-            switch (cueTypeString)
+            switch (char.ToLower(cueTypeString[0]))
             {
-                case "Neutral":
+                case 'n':
                     return CueType.Neutral;
-                case "Feature-based":
+                case 'f':
                     return CueType.FeatureBased;
-                case "Stimulus-based":
+                case 's':
                     return CueType.StimulusBased;
                 default:
                     return CueType.Neutral;
@@ -203,11 +203,11 @@ namespace ScriptableObjects
         
         private static FeedbackType ParseFeedbackType(string feedbackTypeString)
         {
-            switch (feedbackTypeString)
+            switch (char.ToLower(feedbackTypeString[0]))
             {
-                case "Directional":
+                case 'd':
                     return FeedbackType.Directional;
-                case "Locational":
+                case 'l':
                     return FeedbackType.Locational;
                 default:
                     return FeedbackType.Directional;
