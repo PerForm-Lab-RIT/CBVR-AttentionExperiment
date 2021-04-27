@@ -59,7 +59,13 @@
 		"StaircaseIncreaseThreshold": 3,
 		"StaircaseDecreaseThreshold": 1,
 		
-		"FailOnTimeout": true
+		"FailOnTimeout": true,
+		
+		"EyeTracker": "PupilLabs",
+		"AttentionCueType": "Stimulus-based",
+		
+		"EnableDirectionalStaircase": true,
+		"EnableLocationalStaircase": true
 	},
 	
 	"DebugSettings": {
