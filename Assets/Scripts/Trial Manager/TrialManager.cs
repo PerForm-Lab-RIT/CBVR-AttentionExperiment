@@ -74,6 +74,11 @@ namespace Trial_Manager
         // Handles the management and interleaving of staircases
         public StaircaseManager StaircaseManager { get; private set; }
 
+        public void OnValidate()
+        {
+            trialCount.value = 0;
+        }
+        
         public void Start()
         {
             trialCount.value = 1;

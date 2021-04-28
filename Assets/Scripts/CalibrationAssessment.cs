@@ -2,9 +2,13 @@
 using System.Collections;
 
 using System.Collections.Generic;
+using System.Linq;
+using ScriptableObjects;
+using ScriptableObjects.Variables;
 using UnityEngine;
 using UXF;
 using UnityEngine.UI;
+using UnityEngine.Windows.WebCam;
 
 [ExecuteInEditMode]
 public class CalibrationAssessment : MonoBehaviour
@@ -27,20 +31,22 @@ public class CalibrationAssessment : MonoBehaviour
     [NonSerialized] public Transform CurrentTargetTransform;
 
     private bool _presentingTarget;
-    private float _gazeToTargetDist;
+    public float gazeToTargetDist;
 
     private readonly List<int> _remainingTargets = new List<int>() {0,1,2,3,4,5,6,7,8};
     private int _targetIdx;
 
     public Text gazeErrorText;
-
-    private Block _practiceBlock;
+    
     private MeshRenderer[] _targetRenderers;
     private static readonly int ColorProperty = Shader.PropertyToID("_Color");
 
     [SerializeField] private SelectEyeTracker eyeTracker;
     [SerializeField] private Camera vrCamera;
     [SerializeField] private GameObject[] targets;
+    [SerializeField] private Tracker assessmentTracker;
+    [SerializeField] private SessionSettings settings;
+    [SerializeField] private IntVariable trialCount;
     private GameObject[][] _targets2D;
 
     public void OnValidate(){ 
@@ -54,22 +60,23 @@ public class CalibrationAssessment : MonoBehaviour
         _targets2D[1] = new [] {targets[3], targets[4], targets[5]}; 
         _targets2D[2] = new [] {targets[6], targets[7], targets[8]};
         _targetRenderers = new MeshRenderer[targets.Length];
-        // _practiceBlock = Session.instance.CreateBlock();
+        for (var i = 0; i < targets.Length; i++)
+        {
+            _targetRenderers[i] = targets[i].GetComponent<MeshRenderer>();
+            _targetRenderers[i].enabled = false;
+        }
+        _targetRenderers[0].enabled = true;
+        _targetIdx = 0;
+        targetDistance = settings.stimulusDepth;
+        CurrentTargetTransform = GETTargTransformByIndex(0);
+        
         RepositionTargets();
 
         if(randomizeTargetOrder){
             ShuffleTargetList();
         }
     }
-    
-    public void Start()
-    {
-        for (var i = 0; i < targets.Length; i++)
-        {
-            _targetRenderers[i] = targets[i].GetComponent<MeshRenderer>();
-        }
-    }
-    
+
     private void RepositionTargets(){
         var halfAzRad = (azimuthWidth/2.0f) * Mathf.Deg2Rad;
         var halfElRad = (elevationHeight/2.0f) * Mathf.Deg2Rad;
@@ -96,6 +103,9 @@ public class CalibrationAssessment : MonoBehaviour
         }
                 
         var targetBacking = transform.Find("backing");
+        targetBacking.GetComponent<MeshFilter>().mesh.triangles = 
+            targetBacking.GetComponent<MeshFilter>().mesh.triangles.Reverse().ToArray();
+        targetBacking.gameObject.AddComponent<MeshCollider>();
         targetBacking.localScale = new Vector3(targetDistance*2.0f, targetDistance*2.0f, targetDistance*2.0f);
     }
 
@@ -150,7 +160,6 @@ public class CalibrationAssessment : MonoBehaviour
 
 
     private void RecordFixation(){
-        var aTrial = _practiceBlock.CreateTrial();
         var mr = CurrentTargetTransform.gameObject.GetComponent<MeshRenderer>();
 
         StartCoroutine(PresentTarget());
@@ -161,13 +170,14 @@ public class CalibrationAssessment : MonoBehaviour
             mr.material.SetColor(ColorProperty, Color.yellow);
             _presentingTarget = true;
 
-            aTrial.Begin();
-
-            yield return new WaitForSeconds(fixationTime);
             
-            aTrial.End();
-            aTrial.result["trialType"] = "CalibrationAssessment";
-
+            assessmentTracker.StartRecording();
+            yield return new WaitForSeconds(fixationTime);
+            assessmentTracker.StopRecording();
+            
+            mr.material.SetColor(ColorProperty, Color.black);
+            Session.instance.SaveDataTable(assessmentTracker.data, "EyeTrackerAssessmentTrial" + trialCount.value);
+            Debug.Log("Data recorded for target");
             _presentingTarget = false;
         }
     }
@@ -224,12 +234,15 @@ public class CalibrationAssessment : MonoBehaviour
         }
     }
     
-    public void Update()
+    public void LateUpdate()
     {
-        //var gazeInHead = Camera.main.transform.InverseTransformPoint(eyeInHeadTransform.position);
-        //_gazeToTargetDist = Vector3.Angle(CurrentTargetTransform.localPosition, gazeInHead);
-        _gazeToTargetDist = 0.0f;
-        gazeErrorText.text = _gazeToTargetDist.ToString("0.#");
+        if (Physics.Raycast(vrCamera.transform.position,
+            vrCamera.transform.TransformDirection(eyeTracker.ChosenTracker.GetLocalGazeDirection()), out var hit))
+        {
+            gazeToTargetDist = Vector3.Angle(CurrentTargetTransform.localPosition, vrCamera.transform.InverseTransformPoint(hit.point));
+        }
+
+        gazeErrorText.text = "Current Error: " + gazeToTargetDist.ToString("0.#") + " degrees";
     }
 }
 

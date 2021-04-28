@@ -61,7 +61,7 @@
 		
 		"FailOnTimeout": true,
 		
-		"EyeTracker": "Dummy",
+		"EyeTracker": "dum",
 		"AttentionCueType": "Feature-based",
 		
 		"EnableDirectionalStaircase": true,

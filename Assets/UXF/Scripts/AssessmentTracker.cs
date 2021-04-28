@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using ScriptableObjects.Variables;
+using UnityEngine;
 
 namespace UXF
 {
@@ -9,10 +10,13 @@ namespace UXF
     public class AssessmentTracker : Tracker
     {
         private CalibrationAssessment _target;
+        [SerializeField] private IntVariable trialCount;
 
-        private void Start()
+        private void OnEnable()
         {
             _target = gameObject.GetComponent<CalibrationAssessment>();
+            SetupDescriptorAndHeader();
+            data = new UXFDataTable(header);
         }
 
         /// <summary>
@@ -36,7 +40,9 @@ namespace UXF
                 objectName + "TargetPositionZ",
                 objectName + "TargetLocalPositionX",
                 objectName + "TargetLocalPositionY",
-                objectName + "TargetLocalPositionZ"
+                objectName + "TargetLocalPositionZ",
+                objectName + "GazeErrorDegrees",
+                objectName + "TrialEvaluated"
             };
         }
 
@@ -66,11 +72,31 @@ namespace UXF
                 (customHeader[9], position.z.ToString(format)),
                 (customHeader[10], localPosition.x.ToString(format)),
                 (customHeader[11], localPosition.y.ToString(format)),
-                (customHeader[12], localPosition.z.ToString(format))
+                (customHeader[12], localPosition.z.ToString(format)),
+                (customHeader[13], _target.gazeToTargetDist),
+                (customHeader[14], trialCount.value)
             };
             
             dataRow.AddRange(values);
             return dataRow;
+        }
+        
+        /// <summary>
+        /// Records a new row of data at current time. Can run independently of a running trial.
+        /// </summary>
+        public override void RecordRow()
+        {
+            UXFDataRow newRow = GetCurrentValues();
+            newRow.Add(("time", Time.time));
+            data.AddCompleteRow(newRow);
+        }
+
+        public override void StartRecording()
+        {
+            if (data == null)
+                data = new UXFDataTable(header);
+
+            recording = true;
         }
     }
 }

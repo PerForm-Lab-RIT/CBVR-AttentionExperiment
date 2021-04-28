@@ -168,8 +168,7 @@ public class SessionManager : MonoBehaviour
 
     private void CalibrationSuccessful()
     {
-        if (_isPaused)
-            pauseUI.SetActive(true);
+        pauseUI.SetActive(true);
         infoText.gameObject.SetActive(true);
         infoText.text = "Calibration successful!";
         infoText.color = Color.green;
@@ -177,8 +176,7 @@ public class SessionManager : MonoBehaviour
     
     private void CalibrationFailed()
     {
-        if (_isPaused)
-            pauseUI.SetActive(true);
+        pauseUI.SetActive(true);
         infoText.gameObject.SetActive(true);
         infoText.text = "Calibration failed.\n Ensure that Pupil Capture is running with both eye cameras!";
         infoText.color = Color.red;

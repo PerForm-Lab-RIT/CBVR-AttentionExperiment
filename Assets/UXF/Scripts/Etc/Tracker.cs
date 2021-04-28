@@ -39,11 +39,11 @@ namespace UXF
             }
         }
 
-        private bool recording;
+        protected bool recording;
 
         public bool Recording { get { return recording; } }
 
-        public UXFDataTable data { get; private set; } = new UXFDataTable();
+        public UXFDataTable data { get; protected set; } = new UXFDataTable();
         
         /// <summary>
         /// The header that will go at the top of the output file associated with this tracker
@@ -88,7 +88,7 @@ namespace UXF
         /// <summary>
         /// Records a new row of data at current time.
         /// </summary>
-        public void RecordRow()
+        public virtual void RecordRow()
         {
             if (!recording) throw new System.InvalidOperationException("Tracker measurements cannot be taken when not in a trial!");
             
@@ -100,7 +100,7 @@ namespace UXF
         /// <summary>
         /// Begins recording.
         /// </summary>
-        public void StartRecording()
+        public virtual void StartRecording()
         {
             data = new UXFDataTable(header);
             recording = true;
