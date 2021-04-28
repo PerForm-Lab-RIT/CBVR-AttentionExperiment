@@ -43,27 +43,8 @@ outside of the project folder.
     - Training: Enables the attention cue, uses the first set of partition slices (explained in JSON settings section)
     - Testing: Disables the attention cue, uses the second set of partition slices
 
-*- Attention Cue Type:* The type of auditory cue to use. The differences between types is highlighted as follows:
-    
-    - Neutral: The Attention Cue always plays at the center of the visual field and stays there
-    - Feature-based: The Attention Cue pans across the visual field, based on the true direction of the inner
-        stimulus and a few JSON settings
-
-*- Enable Directional Staircase:* Toggles the use of the directional staircase
-
-*- Enable Locational Staircase:* Toggles the use of the locational staircase
-
-    NOTE: At least one staircase should ALWAYS be enabled otherwise the experiment won't
-    run properly. If both staircases are enabled, they will be interleaved.
-
 *- Feedback Type:* Determines if positive auditory feedback is based on the success of the participant choosing
 a correct direction for an inner stimulus or a correct location.
-
-*- Eye Tracker:* The Eye Tracker implementation to use. These are:
-
-    - Dummy: A 'fake' eye tracker that always is focused in the center of the display. This effectively disables any sort of fixation checking.
-    - Pupil Labs: Any Pupil Labs eye tracker that is meant to run alongside the Pupil Capture software in order to work properly. Press 'c' to calibrate the eye tracker just after starting the session.
-    - VIVE Pro Eye: Uses the built in Tobii eye tracker on the VIVE Pro Eye. Ensure that SRAnipal is running and the eye tracker is properly calibrated before starting the application.
 
 After accepting the data agreement and clicking the 'Begin Session' button, the session will start.
 
@@ -116,6 +97,10 @@ A table explaining each setting is shown below:
 | StaircaseIncreaseThreshold          | int          | How many successful trials in a row it takes in order to move up the staircase                                                                  |
 | StaircaseDecreaseThreshold          | int          | How many unsuccessful trials in a row it takes in order to move down the staircase                                                              |
 | FailOnTimeout                       | bool         | Toggles an option to consider a trial failed if the user doesn't provide input, otherwise the trial will restart if set to false                |
+| EyeTracker                          | string       | The EyeTracker implementation to use (Possible values: "dummy", "pupillabs", "vive pro eye", all are case insensitive)                          |
+| AttentionCueType                    | string       | The attention cue type to use (Possible values: "neutral", "feature-based", "stimulus-based", all are case insensitive)                         |
+| EnableDirectionalStaircase          | bool         | Enables staircasing based on direction choice correctness (NOTE: At least one staircase should always be enabled)                               |
+| EnableLocationalStaircase           | bool         | Enables staircasing based on location choice correctness (NOTE: At least one staircase should always be enabled)                                |
 
 # Data Output
 Data will be output to the specified folder defined in the UXF UI. Inside the output folder, the data is organized by the settings used at the top level. Within each settings folder will be another group of folders
