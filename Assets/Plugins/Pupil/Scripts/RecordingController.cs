@@ -1,5 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 
 namespace PupilLabs
@@ -26,9 +25,7 @@ namespace PupilLabs
             {
                 Debug.LogError("RecordingController is missing the required RequestController reference. Please connect the reference, or the component won't work correctly.");
                 enabled = false;
-                return;
             }
-
         }
 
         void OnDisable()

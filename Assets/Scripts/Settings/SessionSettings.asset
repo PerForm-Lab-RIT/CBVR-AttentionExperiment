@@ -13,10 +13,65 @@ MonoBehaviour:
   m_Name: SessionSettings
   m_EditorClassIdentifier: 
   sessionType: 0
-  numTrials: 0
-  fixationTime: 0
-  skyColor: {r: 0, g: 0, b: 0, a: 0}
-  outerStimulusDuration: 0
-  innerStimulusDuration: 0
-  regionSlices: 0
-  flipRegions: 0
+  cueType: 1
+  feedbackType: 0
+  numTrials: 3
+  fixationTime: 1
+  fixationDotRadius: 0.3
+  skyColor: {r: 0.5, g: 0.5, b: 0.5, a: 1}
+  stimulusDensity: 2
+  dotSize: 14
+  outerStimulusRadius: 45
+  outerStimulusNoisePercentage: 100
+  innerStimulusRadius: 5
+  innerStimulusSpawnRadius: 30
+  innerStimulusNoisePercentage: 50
+  outerStimulusDuration: 5000
+  innerStimulusDuration: 500
+  stimulusDepth: 0.57
+  interTrialDelay: 2.5
+  stimulusSpacing: 0.0001
+  coherenceStaircase:
+  - 0
+  - 40
+  - 80
+  - 120
+  - 160
+  - 200
+  - 240
+  - 280
+  - 320
+  - 338
+  staircaseIncreaseThreshold: 3
+  staircaseDecreaseThreshold: 1
+  regionSlices: 8
+  flipRegions: 1
+  coarseAdjustEnabled: 1
+  choosableAngles:
+  - 90
+  - 270
+  attentionCueDuration: 1000
+  attentionCueDepth: 0.57
+  attentionCueDistance: 80
+  pulseFrequency: 12
+  sampleRate: 44100
+  angleErrorTolerance: 10
+  positionErrorTolerance: 7
+  positionStaircaseEnabled: 1
+  directionStaircaseEnabled: 1
+  fixationErrorTolerance: 8
+  minDotLifetime: 0.2
+  maxDotLifetime: 0.5
+  buddyDotsEnabled: 1
+  outerStimulusStart: 1000
+  innerStimulusStart: 1000
+  attentionCueStart: 0
+  inputStart: 1500
+  inputDuration: 4500
+  fixationBreakCheckStart: 0
+  fixationBreakCheckDuration: 1500
+  headFixationDistanceErrorTolerance: 0.1
+  headFixationAngleErrorTolerance: 15
+  headFixationStart: 0
+  headFixationDuration: 1500
+  timeoutIsFailure: 1
