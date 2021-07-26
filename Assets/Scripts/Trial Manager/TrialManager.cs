@@ -33,15 +33,21 @@ namespace Trial_Manager
         [SerializeField] private GameEvent staircaseUpdateEvent;
         [SerializeField] private GameEvent trialNumUpdateEvent;
         [SerializeField] private GameEvent percentageCorrectUpdateEvent;
-        
+        [SerializeField] private GameEvent headFixationUpdateEvent;
+        [SerializeField] private GameEvent eyeFixationUpdateEvent;
+
         [Header("Variables")]
         [SerializeField] private IntVariable trialCount;
         [SerializeField] private FloatVariable correctPercentage;
         [SerializeField] private StringVariable staircaseType;
         [SerializeField] private IntVariable staircaseLevel;
-        
+        [SerializeField] private StringVariable headFixationStatus;
+        [SerializeField] private StringVariable eyeFixationStatus;
+
         [Header("Misc")]
         [SerializeField] private GameObject fixationDot;
+        [SerializeField] private GameObject trueHeadBar;
+        [SerializeField] private GameObject userHeadBar;
         [SerializeField] private FeedbackModule feedbackModule;
         [SerializeField] private SelectEyeTracker eyeTrackerSelector;
         [SerializeField] private Transform cameraTransform;
@@ -67,8 +73,8 @@ namespace Trial_Manager
         private InputData _userInput;
         private DotManager _innerStimulusManager;
 
-        [ReadOnly] [SerializeField] private Vector3 enforcedHeadPosition;
-        [ReadOnly] [SerializeField] private Quaternion enforcedHeadRotation;
+        [ReadOnly] [SerializeField] public Vector3 enforcedHeadPosition;
+        [ReadOnly] [SerializeField] public Quaternion enforcedHeadRotation;
         
         // Property: StaircaseManager
         // Handles the management and interleaving of staircases
@@ -126,6 +132,7 @@ namespace Trial_Manager
 
         public void SetEnforcedHeadTransform()
         {
+            //Debug.Log("head position re-set");
             enforcedHeadPosition = cameraTransform.position;
             enforcedHeadRotation = cameraTransform.rotation;
         }
@@ -205,7 +212,7 @@ namespace Trial_Manager
             trial.result["position_error"] = positionError;
             trial.result["coherence_range"] = _innerStimulusSettings.coherenceRange;
             trial.result["position_within_threshold"] = positionError < sessionSettings.positionErrorTolerance;
-            trial.result["angle_within_threshold"] = _isTrialSuccessful;
+            trial.result["angle_within_threshold"] = _innerStimulusSettings.correctAngle == chosenAngle;
             trial.result["staircase"] = StaircaseManager.CurrentStaircaseName();
         }
 
@@ -320,7 +327,9 @@ namespace Trial_Manager
         private IEnumerator TrialRoutine(Trial trial)
         {
             fixationDot.SetActive(true);
-            
+
+            SetEnforcedHeadTransform(); //resets head location at the beginning of each trial
+
             IsPausable = true;
             yield return WaitForFixation(sessionSettings.fixationTime, 
                 Mathf.Tan(sessionSettings.fixationErrorTolerance * Mathf.PI / 180 * sessionSettings.stimulusDepth));
@@ -344,6 +353,7 @@ namespace Trial_Manager
                 elapsedTime += Time.deltaTime;
                 yield return null;
             }
+
             
             StopCoroutine(outerStimulusRoutine);
             StopCoroutine(innerStimulusRoutine);
@@ -470,6 +480,8 @@ namespace Trial_Manager
 
         private IEnumerator FixationBreakCheckRoutine()
         {
+            eyeFixationStatus.value = "stable gaze";
+            eyeFixationUpdateEvent.Raise();
             var elapsedTime = 0.0f;
             while (elapsedTime < sessionSettings.fixationBreakCheckStart / 1000)
             {
@@ -493,16 +505,23 @@ namespace Trial_Manager
                         innerStimulus.SetActive(false);
                         outerStimulus.SetActive(false);
                         _isFixationBroken = true;
+                        eyeFixationStatus.value = "gaze moved in trial";
+                        eyeFixationUpdateEvent.Raise();
                         yield break;
                     }
                 }
+
                 elapsedTime += Time.deltaTime;
                 yield return null;
+
             }
         }
         
         private IEnumerator HeadStabilityCheckRoutine()
         {
+            headFixationStatus.value = "stable head";
+            headFixationUpdateEvent.Raise();
+
             var elapsedTime = 0.0f;
             while (elapsedTime < sessionSettings.headFixationStart / 1000)
             {
@@ -512,12 +531,22 @@ namespace Trial_Manager
             
             elapsedTime = 0.0f;
             while (elapsedTime < sessionSettings.headFixationDuration / 1000)
-            {
+            {   
+                if(userHeadBar.activeSelf || trueHeadBar.activeSelf)
+                {
+                    userHeadBar.SetActive(false);
+                    trueHeadBar.SetActive(false);
+                }
                 var sqrDistance = (cameraTransform.localPosition - enforcedHeadPosition).sqrMagnitude;
                 var angularDifference = Quaternion.Angle(cameraTransform.rotation, enforcedHeadRotation);
                 if (sqrDistance > sessionSettings.headFixationDistanceErrorTolerance * sessionSettings.headFixationDistanceErrorTolerance || 
                     angularDifference > sessionSettings.headFixationAngleErrorTolerance)
                 {
+                    Debug.Log("head moved in trial");
+                    //userHeadBar.SetActive(true);
+                    //trueHeadBar.SetActive(true);
+                    headFixationStatus.value = "head moved in trial";
+                    headFixationUpdateEvent.Raise();
                     innerStimulus.SetActive(false);
                     outerStimulus.SetActive(false);
                     _isFixationBroken = true;
@@ -530,6 +559,11 @@ namespace Trial_Manager
 
         private IEnumerator WaitForFixation(float fixationTime, float maxFixationError)
         {
+            eyeFixationStatus.value = "Ready for stimulus";
+            headFixationStatus.value = "Ready for stimulus";
+            eyeFixationUpdateEvent.Raise();
+            headFixationUpdateEvent.Raise();
+
             var timeFixated = 0.0f;
             while (timeFixated < fixationTime)
             {
@@ -543,6 +577,8 @@ namespace Trial_Manager
                         hit.distance * cameraTransform.TransformDirection(eyeTrackerSelector.ChosenTracker.GetLocalGazeDirection()), Color.yellow);
                     if ((hit.point - fixationDot.transform.position).magnitude > maxFixationError)
                         timeFixated = 0.0f;
+                    eyeFixationStatus.value = "Broken before trial";
+                    eyeFixationUpdateEvent.Raise();
                 }
                 else
                 {
@@ -555,6 +591,10 @@ namespace Trial_Manager
                 if (sqrDistance > sessionSettings.headFixationDistanceErrorTolerance * sessionSettings.headFixationDistanceErrorTolerance || 
                     angularDifference > sessionSettings.headFixationAngleErrorTolerance)
                 {
+                    //Debug.Log("head fixation interrupted before stimulus");
+                    headFixationStatus.value = "Broken before trial";
+                    headFixationUpdateEvent.Raise();
+                    SetEnforcedHeadTransform();
                     timeFixated = 0.0f;
                 }
                 
@@ -565,8 +605,18 @@ namespace Trial_Manager
         private void RandomizeInnerStimulus()
         {
             var randomPosition = _partition.RandomInnerStimulusPosition(out _innerStimMagnitude, out _innerStimAngle);
-            innerStimulus.transform.localPosition =
-                new Vector3(randomPosition.x, randomPosition.y, sessionSettings.stimulusDepth - sessionSettings.stimulusSpacing);
+           if(sessionSettings.sessionType != SessionSettings.SessionType.Titration)
+            {
+                innerStimulus.transform.localPosition =
+                  new Vector3(randomPosition.x, randomPosition.y, sessionSettings.stimulusDepth - sessionSettings.stimulusSpacing);
+                Debug.Log(sessionSettings.sessionType);
+            }
+            else
+            {
+                innerStimulus.transform.localPosition =
+                    new Vector3(0,0,sessionSettings.stimulusDepth - sessionSettings.stimulusSpacing);
+            }
+           
 
             _innerStimulusSettings.correctAngle = sessionSettings.coarseAdjustEnabled
                 ? sessionSettings.choosableAngles[Random.Range(0, sessionSettings.choosableAngles.Count)]

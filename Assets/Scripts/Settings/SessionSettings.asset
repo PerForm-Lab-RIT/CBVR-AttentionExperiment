@@ -12,19 +12,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b94c9a6e9310de44fbe65be447a61470, type: 3}
   m_Name: SessionSettings
   m_EditorClassIdentifier: 
-  sessionType: 0
+  sessionType: 2
   cueType: 1
   feedbackType: 0
-  numTrials: 3
+  numTrials: 15
   fixationTime: 1
   fixationDotRadius: 0.3
   skyColor: {r: 0.5, g: 0.5, b: 0.5, a: 1}
   stimulusDensity: 2
   dotSize: 14
-  outerStimulusRadius: 45
+  outerStimulusRadius: 5
   outerStimulusNoisePercentage: 100
   innerStimulusRadius: 5
-  innerStimulusSpawnRadius: 30
+  innerStimulusSpawnRadius: 0.01
   innerStimulusNoisePercentage: 50
   outerStimulusDuration: 5000
   innerStimulusDuration: 500
@@ -70,7 +70,7 @@ MonoBehaviour:
   inputDuration: 4500
   fixationBreakCheckStart: 0
   fixationBreakCheckDuration: 1500
-  headFixationDistanceErrorTolerance: 0.1
+  headFixationDistanceErrorTolerance: 0.01
   headFixationAngleErrorTolerance: 15
   headFixationStart: 0
   headFixationDuration: 1500

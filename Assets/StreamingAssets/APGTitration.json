@@ -1,0 +1,78 @@
+{
+	"SessionSettings": {
+		"NumTrials": 100,
+		"FixationTimeSeconds": 1,
+		"FixationDotRadiusDegrees": 0.3,
+		"FixationErrorToleranceRadiusDegrees": 8,
+		"SkyColor": [0.5, 0.5, 0.5],
+		
+		"StimulusDensity": 3.5,
+		"StimulusDotSizeArcMinutes": 14,
+		"MinDotLifetimeSeconds": 0.2,
+		"MaxDotLifetimeSeconds": 0.5,
+		
+		"OuterStimulusStartMs": 1000,
+		"OuterStimulusDurationMs": 500,
+		"OuterStimulusRadiusDegrees": 40,
+		"OuterStimulusNoisePercentage": 100,
+		
+		"InnerStimulusStartMs": 1000,
+		"InnerStimulusDurationMs": 500,
+		"InnerStimulusRadiusDegrees": 5,
+		"InnerStimulusNoisePercentage": 5,
+		"InnerStimulusSpawnRadius": 0.001,
+		
+		"InputStartMs": 1500,
+		"InputDurationMs": 4500,
+		"FixationBreakCheckStartMs": 0,
+		"FixationBreakCheckDurationMs": 1500,
+		
+		"HeadStabilityDistanceErrorToleranceM": 0.01,
+		"HeadStabilityAngleErrorToleranceDegrees": 15,
+		"HeadStabilityCheckStartMs": 0,
+		"HeadStabilityCheckDurationMs": 1500,
+		
+		"AttentionCueStartMs": 0,
+		"AttentionCueDurationMs": 1,
+		"AttentionCueDepth": 0.57,
+		"AttentionCueLengthDegrees": 80,
+		"PulseFrequency": 12,
+		"SampleRate": 44100,
+		
+		"EnableBuddyDots": true,
+		
+		"StimulusSpacingMeters": 0.0001,
+		
+		"StimulusDepthMeters": 0.57,
+		
+		"InterTrialDelaySeconds": 2.5,
+		
+		"TotalRegionSlices": 8,
+		"FlipRegions": true,
+		
+		"CoarseAdjustment": true,
+		"ChoosableAngles": [90, 270],
+		"AngleErrorToleranceDegrees": 10,
+		"PositionErrorToleranceDegrees": 7,
+		
+		"CoherenceStaircase": [0, 40, 80, 120, 160, 200, 240, 280, 320, 338],
+		"StaircaseIncreaseThreshold": 3,
+		"StaircaseDecreaseThreshold": 1,
+		
+		"FailOnTimeout": true,
+		
+		"EyeTracker": "Dummy",
+    "AttentionCueType": "Feature-based",
+    
+		
+		"EnableDirectionalStaircase": true,
+		"EnableLocationalStaircase": false
+	},
+	
+	"DebugSettings": {
+		"ShowGaze": true,
+		"GazeSpectatorOnly": true,
+		
+		"ShowStaircase": false
+	}
+}
