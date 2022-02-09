@@ -12,7 +12,8 @@ namespace ScriptableObjects
         public enum SessionType
         {
             Training,
-            Testing
+            Testing,
+            Titration
         }
         
         public enum CueType
@@ -181,6 +182,9 @@ namespace ScriptableObjects
                     return SessionType.Training;
                 case "Testing":
                     return SessionType.Testing;
+                case "Titration":
+                    return SessionType.Titration;
+
                 default:
                     return SessionType.Training;
             }

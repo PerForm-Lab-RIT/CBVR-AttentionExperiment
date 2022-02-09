@@ -2,13 +2,13 @@
   "source": "Unity",
   "applications": [
     {
-      "app_key": "application.generated.unity.dotstimulustest.exe",
+      "app_key": "application.generated.unity.attentionexperiment.exe",
       "launch_type": "url",
       "url": "steam://launch/",
-      "action_manifest_path": "C:\\Users\\jared\\Documents\\Unity Projects\\DotStimulusTest\\Assets\\StreamingAssets\\SteamVR\\actions.json",
+      "action_manifest_path": "C:\\Users\\performlab-admin\\Desktop\\CBVR-AttentionExperiment\\Assets\\StreamingAssets\\SteamVR\\actions.json",
       "strings": {
         "en_us": {
-          "name": "DotStimulusTest [Testing]"
+          "name": "AttentionExperiment [Testing]"
         }
       }
     }
