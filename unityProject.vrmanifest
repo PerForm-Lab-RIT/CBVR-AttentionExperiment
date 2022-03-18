@@ -5,7 +5,7 @@
       "app_key": "application.generated.unity.attentionexperiment.exe",
       "launch_type": "url",
       "url": "steam://launch/",
-      "action_manifest_path": "C:\\Users\\performlab-admin\\Desktop\\CBVR-AttentionExperiment\\Assets\\StreamingAssets\\SteamVR\\actions.json",
+      "action_manifest_path": "C:\\Users\\Cayla Fromm\\Documents\\GitHub\\Assets\\StreamingAssets\\SteamVR\\actions.json",
       "strings": {
         "en_us": {
           "name": "AttentionExperiment [Testing]"
