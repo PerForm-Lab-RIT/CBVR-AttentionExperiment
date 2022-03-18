@@ -1,45 +1,55 @@
 {
   "SessionSettings": {
-    "NumTrials": 200,
+    "NumTrials": 25,
     "FixationTimeSeconds": 1,
     "FixationDotRadiusDegrees": 0.3,
-    "FixationErrorToleranceRadiusDegrees": 8,
+    "FixationErrorToleranceRadiusDegrees": 3.5,
     "SkyColor": [
       0.5,
       0.5,
       0.5
     ],
+
     "StimulusDensity": 3.5,
     "StimulusDotSizeArcMinutes": 14,
     "MinDotLifetimeSeconds": 0.2,
     "MaxDotLifetimeSeconds": 0.5,
+
     "OuterStimulusStartMs": 1000,
-    "OuterStimulusDurationMs": 5000,
-    "OuterStimulusRadiusDegrees": 45,
+    "OuterStimulusDurationMs": 500,
+    "OuterStimulusRadiusDegrees": 5,
     "OuterStimulusNoisePercentage": 100,
+
     "InnerStimulusStartMs": 1000,
-    "InnerStimulusDurationMs": 1000,
+    "InnerStimulusDurationMs": 500,
     "InnerStimulusRadiusDegrees": 5,
-    "InnerStimulusNoisePercentage": 20,
-    "InnerStimulusSpawnRadius": 30.0,
+    "InnerStimulusNoisePercentage": 5,
+    "InnerStimulusSpawnRadius": 0.001,
+
     "InputStartMs": 1500,
     "InputDurationMs": 4500,
-    "FixationBreakCheckStartMs": 1000,
-    "FixationBreakCheckDurationMs": 2000,
+    "FixationBreakCheckStartMs": 0,
+    "FixationBreakCheckDurationMs": 1500,
+
     "HeadStabilityDistanceErrorToleranceM": 0.01,
     "HeadStabilityAngleErrorToleranceDegrees": 15,
-    "HeadStabilityCheckStartMs": 1100,
-    "HeadStabilityCheckDurationMs": 2000,
+    "HeadStabilityCheckStartMs": 0,
+    "HeadStabilityCheckDurationMs": 1500,
+
     "AttentionCueStartMs": 0,
     "AttentionCueDurationMs": 1000,
     "AttentionCueDepth": 0.57,
     "AttentionCueLengthDegrees": 80,
     "PulseFrequency": 12,
     "SampleRate": 44100,
+
     "EnableBuddyDots": true,
+
     "StimulusSpacingMeters": 0.001,
     "StimulusDepthMeters": 0.57,
+
     "InterTrialDelaySeconds": 2.5,
+
     "TotalRegionSlices": 8,
     "FlipRegions": true,
     "CoarseAdjustment": true,
@@ -67,7 +77,7 @@
     "EyeTracker": "vive pro eye",
     "AttentionCueType": "Feature-based",
     "EnableDirectionalStaircase": true,
-    "EnableLocationalStaircase": true
+    "EnableLocationalStaircase": false
   },
   "DebugSettings": {
     "ShowGaze": true,

@@ -8,6 +8,7 @@ namespace EyeTracker
         public Vector3 GetLocalGazeDirection()
         {
             var trackingData = TobiiXR.GetEyeTrackingData(TobiiXR_TrackingSpace.Local);
+
             return trackingData.GazeRay.Direction;
         }
     }

@@ -62,6 +62,7 @@ namespace Trial_Manager
 
         private float _innerStimMagnitude;
         private float _innerStimAngle;
+        private string _innerStimLabel;
         
         public bool IsPausable { get; private set; }
     
@@ -214,6 +215,7 @@ namespace Trial_Manager
             trial.result["position_within_threshold"] = positionError < sessionSettings.positionErrorTolerance;
             trial.result["angle_within_threshold"] = _innerStimulusSettings.correctAngle == chosenAngle;
             trial.result["staircase"] = StaircaseManager.CurrentStaircaseName();
+            trial.result["slice label"] = _innerStimLabel;
         }
 
         private (float magnitude, float angle) CalculateChosenPositionPolar(Vector3 chosenPosition)
@@ -604,7 +606,7 @@ namespace Trial_Manager
 
         private void RandomizeInnerStimulus()
         {
-            var randomPosition = _partition.RandomInnerStimulusPosition(out _innerStimMagnitude, out _innerStimAngle);
+            var randomPosition = _partition.RandomInnerStimulusPosition(out _innerStimMagnitude, out _innerStimAngle, out _innerStimLabel);
            if(sessionSettings.sessionType != SessionSettings.SessionType.Titration)
             {
                 innerStimulus.transform.localPosition =
